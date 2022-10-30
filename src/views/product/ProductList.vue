@@ -2,9 +2,9 @@
     <div class="content">
         <!-- BEGIN: Content/Function -->
         <div class="function">
-            <div class="function-list">
+            <div class="function__list">
                 <!-- BEGIN: Tìm kiếm tài sản -->
-                <div class="function-item function-item--maright  function-item--search">
+                <div class="function__item function__item--maright  function__item--search">
                     <div class="function__icon"> 
                         <i class="icon icon--search"></i>
                     </div>
@@ -14,117 +14,113 @@
                 <!-- END: Tìm kiếm tài sản -->
 
                 <!-- BEGIN: Lọc loại tài sản -->
-                <div class="function-item function-item--maright function-item--loaitaisan">
+                <div class="function__item function__item--maright function__item--loaitaisan">
                     <div class="function__icon"> 
                         <i class="icon icon--filter"></i>
-                    </div>
-                    
-                    <div class="function-icon-dropdown"> 
-                        <i class="icon icon--dropdown"></i>
                     </div>
 
                     <input class="input input--filter" type="text" value="Loại tài sản" tabindex="-1">
 
-                    <div class="function-dropdown">
-                        <div class="function-dropdown-box">
-                            <div class="function-dropdown-item function-dropdown-head">
-                                <div class="function-dropdown-id"><b>Mã</b></div>
-                                <div class="function-dropdown-name"><b>Tên loại tài sản</b></div>
-                           </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0001</div>
-                                <div class="function-dropdown-name">Máy vi tính xách tay</div>
-                            </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0002</div>
-                                <div class="function-dropdown-name">Đồ dùng văn phòng</div>
-                            </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0003</div>
-                                <div class="function-dropdown-name">Bóng đèn led điện tử</div>
-                            </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0004</div>
-                                <div class="function-dropdown-name">Máy lọc nước</div>
-                            </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0005</div>
-                                <div class="function-dropdown-name">Bàn ghế các loại</div>
-                            </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0006</div>
-                                <div class="function-dropdown-name">Máy điều hoà</div>
-                            </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0007</div>
-                                <div class="function-dropdown-name">Máy tủ lạnh</div>
-                            </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0008</div>
-                                <div class="function-dropdown-name">Máy chiếu</div>
-                            </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0009</div>
-                                <div class="function-dropdown-name">Tivi tinh thể lỏng</div>
-                            </div>
-                        </div>
+                    <div class="function__icon--dropdown" tabindex="0"> 
+                        <i class="icon icon--dropdown"></i>
+                    </div>
+
+                    <div class="drilldown drilldown__normal" tabindex="0">
+                        <ul class="drilldown__box" >
+                            <li class="drilldown__item" tabindex="0">
+                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
+                                <div class="drilldown__name">Máy vi tính xách tay</div>
+                            </li>
+                            <li class="drilldown__item" tabindex="0">
+                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
+                                <div class="drilldown__name">Đồ dùng văn phòng</div>
+                            </li>
+                            <li class="drilldown__item" tabindex="0">
+                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
+                                <div class="drilldown__name">Bóng đèn led điện tử</div>
+                            </li>
+                            <li class="drilldown__item" tabindex="0">
+                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
+                                <div class="drilldown__name">Máy lọc nước</div>
+                            </li>
+                            <li class="drilldown__item" tabindex="0">
+                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
+                                <div class="drilldown__name">Bàn ghế các loại</div>
+                            </li>
+                            <li class="drilldown__item" tabindex="0">
+                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
+                                <div class="drilldown__name">Máy điều hoà</div>
+                            </li>
+                            <li class="drilldown__item" tabindex="0">
+                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
+                                <div class="drilldown__name">Máy tủ lạnh</div>
+                            </li>
+                            <li class="drilldown__item" tabindex="0">
+                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
+                                <div class="drilldown__name">Máy chiếu</div>
+                            </li>
+                            <li class="drilldown__item" tabindex="0">
+                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
+                                <div class="drilldown__name">Tivi tinh thể lỏng</div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <!-- END: Lọc loại tài sản -->
 
                 <!-- BEGIN: Lọc bộ phận sử dụng -->
-                <div class="function-item function-item--maright function-item--loaitaisan">
+                <div class="function__item function__item--maright function__item--loaitaisan">
                     <div class="function__icon"> 
                         <i class="icon icon--filter"></i>
                     </div>
 
-                    <div class="function-icon-dropdown"> 
+                    <div class="function__icon--dropdown"> 
                         <i class="icon icon--dropdown"></i>
                     </div>
                     
                     <input class="input input--filter" type="text" value="Bộ phận sử dụng" tabindex="-1">
 
-                    <div class="function-dropdown">
-                        <div class="function-dropdown-box">
-                            <div class="function-dropdown-item function-dropdown-head">
-                                <div class="function-dropdown-id"><b>Mã</b></div>
-                                <div class="function-dropdown-name"><b>Tên bộ phận sử dụng</b></div>
+                    <div class="function__drilldown function__drilldown--haveId">
+                        <div class="function__drilldown--box">
+                            <div class="function__drilldown--item function__drilldown--head">
+                                <div class="function__drilldown--id"><b>Mã</b></div>
+                                <div class="function__drilldown--name"><b>Tên bộ phận sử dụng</b></div>
                            </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0001</div>
-                                <div class="function-dropdown-name">Máy vi tính xách tay</div>
+                            <div class="function__drilldown--item function__drilldown--body">
+                                <div class="function__drilldown--id">LTS0001</div>
+                                <div class="function__drilldown--name">Máy vi tính xách tay</div>
                             </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0002</div>
-                                <div class="function-dropdown-name">Đồ dùng văn phòng</div>
+                            <div class="function__drilldown--item function__drilldown--body">
+                                <div class="function__drilldown--id">LTS0002</div>
+                                <div class="function__drilldown--name">Đồ dùng văn phòng</div>
                             </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0003</div>
-                                <div class="function-dropdown-name">Bóng đèn led điện tử</div>
+                            <div class="function__drilldown--item function__drilldown--body">
+                                <div class="function__drilldown--id">LTS0003</div>
+                                <div class="function__drilldown--name">Bóng đèn led điện tử</div>
                             </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0004</div>
-                                <div class="function-dropdown-name">Máy lọc nước</div>
+                            <div class="function__drilldown--item function__drilldown--body">
+                                <div class="function__drilldown--id">LTS0004</div>
+                                <div class="function__drilldown--name">Máy lọc nước</div>
                             </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0005</div>
-                                <div class="function-dropdown-name">Bàn ghế các loại</div>
+                            <div class="function__drilldown--item function__drilldown--body">
+                                <div class="function__drilldown--id">LTS0005</div>
+                                <div class="function__drilldown--name">Bàn ghế các loại</div>
                             </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0006</div>
-                                <div class="function-dropdown-name">Máy điều hoà</div>
+                            <div class="function__drilldown--item function__drilldown--body">
+                                <div class="function__drilldown--id">LTS0006</div>
+                                <div class="function__drilldown--name">Máy điều hoà</div>
                             </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0007</div>
-                                <div class="function-dropdown-name">Máy tủ lạnh</div>
+                            <div class="function__drilldown--item function__drilldown--body">
+                                <div class="function__drilldown--id">LTS0007</div>
+                                <div class="function__drilldown--name">Máy tủ lạnh</div>
                             </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0008</div>
-                                <div class="function-dropdown-name">Máy chiếu</div>
+                            <div class="function__drilldown--item function__drilldown--body">
+                                <div class="function__drilldown--id">LTS0008</div>
+                                <div class="function__drilldown--name">Máy chiếu</div>
                             </div>
-                            <div class="function-dropdown-item function-dropdown-body">
-                                <div class="function-dropdown-id">LTS0009</div>
-                                <div class="function-dropdown-name">Tivi tinh thể lỏng</div>
+                            <div class="function__drilldown--item function__drilldown--body">
+                                <div class="function__drilldown--id">LTS0009</div>
+                                <div class="function__drilldown--name">Tivi tinh thể lỏng</div>
                             </div>
                         </div>
                     </div>
@@ -132,19 +128,19 @@
                 <!-- BEGIN: Lọc bộ phận sử dụng -->
             </div>
 
-            <div class="function-list">
+            <div class="function__list">
                 <!-- BEGIN: Thêm tài sản -->
-                <button class="btn btn__add function-item--maleft" @click="openModal()">+ Thêm tài sản</button>
+                <button class="btn btn__add function__item--maleft" @click="openModal()">+ Thêm tài sản</button>
                 <!-- END: Thêm tài sản -->
 
                 <!-- BEGIN: Xuất bảng tài sản -->
-                <button class="btn btn__excel function-item--maleft" data-title="Xuất bảng tài sản">
+                <button class="btn btn__excel function__item--maleft" data-title="Xuất bảng tài sản">
                     <i class="icon icon--excel"></i>
                 </button>    
                 <!-- END: Xuất bảng tài sản -->
 
                 <!-- BEGIN: Xoá tài sản -->
-                <button class="btn btn__del function-item--maleft" data-title="Xoá tài sản">
+                <button class="btn btn__del function__item--maleft" data-title="Xoá tài sản">
                     <i class="icon icon--del"></i>
                 </button>    
                 <!-- END: Xoá tài sản -->
@@ -800,46 +796,46 @@
                             >
                             <i class="icon icon--dropdown"></i>
                             <div class="modal__dropdown">
-                                <div class="function-dropdown-box">
-                                    <div class="function-dropdown-item function-dropdown-head">
-                                        <div class="function-dropdown-id"><b>Mã</b></div>
-                                        <div class="function-dropdown-name"><b>Tên bộ phận sử dụng</b></div>
+                                <div class="function__drilldown--box">
+                                    <div class="function__drilldown--item function__drilldown--head">
+                                        <div class="function__drilldown--id"><b>Mã</b></div>
+                                        <div class="function__drilldown--name"><b>Tên bộ phận sử dụng</b></div>
                                 </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">P0001</div>
-                                        <div class="function-dropdown-name">Phòng hành chính sự nghiệp</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">P0001</div>
+                                        <div class="function__drilldown--name">Phòng hành chính sự nghiệp</div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">P0002</div>
-                                        <div class="function-dropdown-name">Phòng kế toán</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">P0002</div>
+                                        <div class="function__drilldown--name">Phòng kế toán</div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">P0003</div>
-                                        <div class="function-dropdown-name">Bóng thư ký</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">P0003</div>
+                                        <div class="function__drilldown--name">Bóng thư ký</div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">P0004</div>
-                                        <div class="function-dropdown-name">Máy lọc nước</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">P0004</div>
+                                        <div class="function__drilldown--name">Máy lọc nước</div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">P0005</div>
-                                        <div class="function-dropdown-name">Bàn ghế các loại</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">P0005</div>
+                                        <div class="function__drilldown--name">Bàn ghế các loại</div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">P0006</div>
-                                        <div class="function-dropdown-name">Máy điều hoà</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">P0006</div>
+                                        <div class="function__drilldown--name">Máy điều hoà</div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">P0007</div>
-                                        <div class="function-dropdown-name">Máy tủ lạnh</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">P0007</div>
+                                        <div class="function__drilldown--name">Máy tủ lạnh</div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">P0008</div>
-                                        <div class="function-dropdown-name">Máy chiếu</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">P0008</div>
+                                        <div class="function__drilldown--name">Máy chiếu</div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">P0009</div>
-                                        <div class="function-dropdown-name">Tivi tinh thể lỏng</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">P0009</div>
+                                        <div class="function__drilldown--name">Tivi tinh thể lỏng</div>
                                     </div>
                                 </div>
                             </div>
@@ -872,46 +868,46 @@
                             >
                             <i class="icon icon--dropdown"></i>
                             <div class="modal__dropdown">
-                                <div class="function-dropdown-box">
-                                    <div class="function-dropdown-item function-dropdown-head">
-                                        <div class="function-dropdown-id"><b>Mã</b></div>
-                                        <div class="function-dropdown-name"><b>Tên loại tài sản</b></div>
+                                <div class="function__drilldown--box">
+                                    <div class="function__drilldown--item function__drilldown--head">
+                                        <div class="function__drilldown--id"><b>Mã</b></div>
+                                        <div class="function__drilldown--name"><b>Tên loại tài sản</b></div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">LTS0001</div>
-                                        <div class="function-dropdown-name">Máy vi tính xách tay</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">LTS0001</div>
+                                        <div class="function__drilldown--name">Máy vi tính xách tay</div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">LTS0002</div>
-                                        <div class="function-dropdown-name">Đồ dùng văn phòng</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">LTS0002</div>
+                                        <div class="function__drilldown--name">Đồ dùng văn phòng</div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">LTS0003</div>
-                                        <div class="function-dropdown-name">Bóng đèn led điện tử</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">LTS0003</div>
+                                        <div class="function__drilldown--name">Bóng đèn led điện tử</div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">LTS0004</div>
-                                        <div class="function-dropdown-name">Máy lọc nước</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">LTS0004</div>
+                                        <div class="function__drilldown--name">Máy lọc nước</div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">LTS0005</div>
-                                        <div class="function-dropdown-name">Bàn ghế các loại</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">LTS0005</div>
+                                        <div class="function__drilldown--name">Bàn ghế các loại</div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">LTS0006</div>
-                                        <div class="function-dropdown-name">Máy điều hoà</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">LTS0006</div>
+                                        <div class="function__drilldown--name">Máy điều hoà</div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">LTS0007</div>
-                                        <div class="function-dropdown-name">Máy tủ lạnh</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">LTS0007</div>
+                                        <div class="function__drilldown--name">Máy tủ lạnh</div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">LTS0008</div>
-                                        <div class="function-dropdown-name">Máy chiếu</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">LTS0008</div>
+                                        <div class="function__drilldown--name">Máy chiếu</div>
                                     </div>
-                                    <div class="function-dropdown-item function-dropdown-body">
-                                        <div class="function-dropdown-id">LTS0009</div>
-                                        <div class="function-dropdown-name">Tivi tinh thể lỏng</div>
+                                    <div class="function__drilldown--item function__drilldown--body">
+                                        <div class="function__drilldown--id">LTS0009</div>
+                                        <div class="function__drilldown--name">Tivi tinh thể lỏng</div>
                                     </div>
                                 </div>
                             </div>
@@ -1072,6 +1068,8 @@
                     ngayBatDauSD: new Date().toISOString().substring(0,10),
                 },
 
+                hasfocus: false,
+
                 /* Hiển thị modal */
                 displayModal: false,
 
@@ -1084,6 +1082,38 @@
                 /* Hiển thị lỗi cảnh báo input */
                 htmlError: "",
 
+                showCategories: false,
+
+                /* Danh sách năm */
+                years: [],
+
+                /* Danh sách tài sản */
+                categoriesName: [
+                    'Máy vi tính xách tay', 
+                    'Đồ dùng văn phòng', 
+                    'Đèn điện', 
+                    'Máy lọc nước', 
+                    'Tivi LCD', 
+                    'Bàn ghế', 
+                    'Máy điều hoà', 
+                    'Quạt', 
+                    'Máy tủ lạnh', 
+                    'Máy chiếu'
+                ],
+
+                /* Danh sách bộ phận sử dụng */
+                departmentsName: [
+                    'Phòng hành chính sự nghiệp',
+                    'Phòng kế toán',
+                    'Phòng thư ký',
+                    'Phòng giáo dục',
+                    'Phòng nghiên cứu',
+                    'Phòng customize',
+                    'Phòng nhân sự - điều hành',
+                    'Phòng tài chính doanh nghiệp',
+                    'Phòng quản trị kinh doanh',
+                    'Phòng giải pháp bán lẻ'
+                ],
 
                 checkTenTaiSan: {
                     hasError: false
@@ -1101,6 +1131,16 @@
             }
         },
         methods: {
+
+            /* Focus vào một element
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 30/10/2022 
+            */
+            focus (value) {
+                this.hasfocus = value;
+            },
             /* Tab rollback về mã tài sản
                 @param {}
                 @returns void

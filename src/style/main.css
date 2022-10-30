@@ -10,6 +10,7 @@
 @import url(./component/modal.css);
 @import url(./component/toast.css);
 @import url(./component/checkbox.css);
+@import url(./component/drilldown.css);
 
 #container {
     display: flex;

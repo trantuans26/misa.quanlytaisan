@@ -1,5 +1,5 @@
 .input {
-    font-size: 14x;
+    font-size: 13px;
     background-color: #ffffff;
     border-radius: 2.5px;
     border: 1px solid #afafaf;
@@ -13,7 +13,7 @@
 }
 
 .input::placeholder {
-    font-size: 14px;
+    font-size: 13px;
     font-style: italic;
 }
 
@@ -48,7 +48,7 @@
 
 .input--search::placeholder {
     font-size: 13px !important;
-    font-style: Regular Italic;
+    font-style: Roboto Italic;
 }
 /* End: Search input */
 
