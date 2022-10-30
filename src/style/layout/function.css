@@ -1,0 +1,119 @@
+.function {
+    height: var(--function-height);
+    margin: 14px 20px 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+}
+
+.function-list {
+    display: flex;
+}
+
+.function-item {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.function-item--maright {
+    margin-right: 11px;
+}
+
+.function-item--maleft {
+    margin-left: 11px;
+    box-sizing: unset;
+}
+
+.function__icon {
+    position: absolute;
+    left: 7px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.function-icon-dropdown {
+    position: absolute;
+    right: 12px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.function-dropdown {
+    position: absolute;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .16);
+    top:100%;
+    background-color: rgb(249, 250, 252);
+    z-index: 1;
+    width: 140%; 
+    border-radius: 3px;
+    display: none;
+    cursor: pointer;
+    font-size: 13px;
+    z-index: 2;
+}
+
+.function-dropdown::before {
+    content: "";
+    position: absolute;
+    width: 100px;
+    right: 30%;
+    background-color: none;
+    height: 60px;
+    top: -20px;
+}
+
+.function-icon-dropdown:hover ~ .function-dropdown,
+.function-dropdown:hover {
+    display: block;
+
+}
+
+.function-dropdown-box {
+    margin: 4px;
+    overflow: auto;   
+    max-height: 274px;
+    position: relative;
+}
+
+.function-dropdown-box::-webkit-scrollbar {
+    display: none;
+}
+
+.function-dropdown-item {
+    display: flex;
+    border-radius: 3px;
+    padding: 12px;
+    width: 100%;
+}
+
+.function-dropdown-head {
+    background-color: rgb(150, 198, 238);
+    position: sticky;
+    top: 0;
+}
+
+.function-dropdown-body {
+    border-top: 1.6px solid #f1f1f1;
+}
+
+.function-dropdown-body:hover {
+    background-color: rgb(199, 224, 245);
+}
+
+.function-dropdown-id {
+    margin-right: 32px;
+    width: 52px;
+    height: 14px;
+    text-align: center;
+}
+
+.function-dropdown-name {
+
+}

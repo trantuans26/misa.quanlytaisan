@@ -1,0 +1,270 @@
+.modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 2;
+    align-items: center;
+    justify-content: center;
+    display: none;
+}
+
+.open {
+    display:flex;
+}
+
+.modal__main {
+    position: relative;
+    animation: modalFadeIn ease 0.5s;
+    border-radius: 3.5px;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+.modal__section { 
+    margin: 0 8px 0;
+}
+
+.modal__close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: black;
+    padding: 8px;
+    opacity: 0.8;
+    margin: 14px 16px 14px;
+}
+
+.modal__close:hover {
+    color: #ffffff;
+    opacity: 1;
+    cursor: pointer;
+}
+
+.modal__header {
+    font-size: 20px;
+    color: black;
+    margin: 20px 16px 20px;
+    font-weight: 700;
+}
+
+.modal__bag {
+    margin-right: 16px;
+}
+
+.modal__body {
+}
+
+.modal__line {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.modal__item {
+    margin: 0 8px 0;
+    position: relative;
+}
+
+.modal__item em {
+    color: red;
+}
+
+.modal__item--fill {
+    flex: 1;
+}
+
+.modal__item--fill input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal__input--icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal__input--icon i {
+    position: absolute;
+    top: 36;
+    right: 16px;
+    padding-left: 8px;
+}
+
+.modal__label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.modal__item .modal__input--icon i:hover + .modal__dropdown,
+.modal__dropdown:hover {
+    display: block;
+}
+
+.modal__dropdown {
+    position: absolute;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .16);
+    top:100%;
+    left: 0;
+    background-color: rgb(249, 250, 252);
+    z-index: 1;
+    width: 120%; 
+    border-radius: 3px;
+    display: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.modal__dropdown::before {
+    content: "";
+    position: absolute;
+    width: 100px;
+    right: 10%;
+    background-color: none;
+    height: 60px;
+    top: -20px;
+}
+
+.modal__footer {
+    background-color: #f5f5f5;
+    height: 52px;
+    align-items: center;
+    display: flex;
+    flex-direction: row-reverse;
+    margin: 0;
+}
+
+.modal__footer .btn__save {
+    margin-right: 16px;
+    margin-left: 10px;
+}
+
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-200px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+/* BEGIN: TOAST MESSAGE */
+
+/* -- Display -- */
+@keyframes sideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(calc(100% + 8px));
+    } 
+    to {
+        opacity: 1;
+        transform: translateX(0);   
+    }
+}
+
+/* Hidden */
+@keyframes faceOut {
+    to {
+        opacity: 0; 
+    }
+}
+
+#toast__box {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    width: 400px;
+    height: 56px;
+    z-index: 3;
+}
+.toast__item {
+    display: flex;
+    align-items: center;
+    background-color: #FFFF;
+    border-radius: 4px;
+    margin-top: 8px;
+    margin-right: 8px;
+    animation: sideInLeft ease 0.5s, faceOut linear 1s 4s;
+    font-family: Roboto Regular;
+  /*   transition: all linear 0.3s; */ /*???*/
+}
+
+.toast__icon {
+    width: 24px;
+    height: 24px;
+    text-align: center;
+    margin: 18px;
+}
+
+.toast__icon i {
+    font-size: 24px;
+    line-height: 24px;
+}
+
+.toast__text {
+    font-size: 14px;
+}
+
+/* -- Toast message success --*/
+.toast__item-success .toast__icon i {
+    color: #50B83C; 
+}
+
+/* -- message error --*/
+
+
+/* END: TOAST MESSAGE */
+
+/* alert-box */
+.alert__box {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 3;
+    align-items: center;
+    justify-content: center;
+    display: none;
+}
+
+.alert__box--open {
+    display: flex;
+}
+
+.alert__content {
+    background-color: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .16);
+    border-radius: 3.5px;
+}
+
+.alert__body {
+    display: flex;
+    height: 40px;
+    align-items: center;
+    padding: 64px 80px 32px 40px;
+}
+
+.alert__title {
+    margin-left: 24px;
+}
+
+.alert__footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px;
+}
+
+.alert__button--space {
+    margin-left: 16px;
+}
+
+

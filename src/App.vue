@@ -1,26 +1,31 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="container" class="container">
+    <TheSidebar/>
+
+    <TheMain/>
+  </div>
+
+  <TheModal/>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+/* 1. Import components */
+import TheSidebar from './components/layout/TheSidebar.vue';
+import TheMain from './components/layout/TheMain.vue';
+import TheModal from './components/function/TheModal.vue';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
-  }
+    /* 2. Register components */
+    TheSidebar,
+    TheMain,
+    TheModal,
+  },
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+@import url(./style/base.css);
+@import url(./style/main.css);
 </style>

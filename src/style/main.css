@@ -1,0 +1,58 @@
+@import url(./component/button.css);
+@import url(./component/combo-box.css);
+@import url(./component/icon.css);
+@import url(./component/input.css);
+@import url(./component/table.css);
+@import url(./component/table.css);
+@import url(./layout/sidebar.css);
+@import url(./layout/header.css);
+@import url(./layout/function.css);
+@import url(./component/modal.css);
+@import url(./component/toast.css);
+@import url(./component/checkbox.css);
+
+#container {
+    display: flex;
+}
+
+#main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(244, 247, 255);
+}
+
+.content {
+
+}
+
+[data-title]:hover:after {
+    opacity: 0.9;
+    transition: all 0.1s ease 0.5s;
+    visibility: visible;
+
+}
+
+[data-title]:after {
+    content: attr(data-title);
+    background: rgba(0,0,0,0.85);
+    color: #fff;
+    position: absolute;
+    bottom: -2vh;
+    right: 15%;
+    white-space: nowrap;
+    box-shadow: 1px 1px 3px #222222;
+    opacity: 0;
+    visibility: hidden;
+    border-radius: 3.5px;   
+    height: 20px;
+    padding: 0 12px 0 12px;
+    text-align: center;
+    line-height: 20px;
+    font-size: 12px;
+    font-weight: normal;
+    z-index: 3;
+}
+[data-title] {
+    position: relative;
+}

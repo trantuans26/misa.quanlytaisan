@@ -1,0 +1,188 @@
+.icon {
+    background-image: url(../../assets/icons/qlts-icon.svg);
+    background-repeat: no-repeat;
+    display: block;
+	cursor: pointer;
+}
+
+.icon--logo {
+	background-position: -20px -680px;
+    width: 36px;
+	height: 36px;
+}
+
+.icon--trangchu {
+    background-position: -21px -153px;
+	width: 22px;
+	height: 22px;
+}
+
+.icon--taisan {
+    background-position: -65px -153px;
+	width: 22px;
+	height: 23px;
+}
+
+.icon--hdtb {
+    background-position: -110px -153px;
+	width: 21px;
+	height: 23px;
+}
+
+.icon--ccdc {
+    background-position: -153px -153px;
+	width: 22px;
+	height: 22px;
+}
+
+.icon--danhmuc {
+    background-position: -197px -155px;
+    width: 22px;
+	height: 18px;
+}
+
+.icon--tracuu {
+    background-position: -241px -153px;
+	width: 22px;
+	height: 22px;
+}
+
+.icon--baocao {
+    background-position: -329px -153px;
+	width: 22px;
+	height: 22px;
+}
+
+.icon--notify {
+    background-position: -332px -109px;
+	width: 16px;
+	height: 20px;
+}
+
+.icon--system {
+    background-position: -199px -23px;
+	width: 18px;
+	height: 18px;
+}
+
+.icon--support {
+    background-position: -67px -67px;
+	width: 18px;
+	height: 18px;
+}
+
+.icon--user {
+    background-position: -23px -23px;
+	width: 18px;
+	height: 18px;
+}
+
+.icon--dropdown {
+    background-position: -72px -338px;
+	width: 8px;
+	height: 5px;
+}
+
+.icon--multidrop {
+	background-position: -204px -332px;
+	width: 8px;
+	height: 16px;
+}
+
+.icon--pagingleft {
+    background-position: -29px -246px;
+	width: 7px;
+	height: 12px;
+}
+
+.icon--pagingright {
+    background-position: -73px -246px;
+	width: 7px;
+	height: 12px;
+}
+
+.icon--search {
+	background-position: -243px -23px;
+	width: 18px;
+	height: 18px;
+}
+
+.icon--filter {
+	background-position: -243px -69px;
+	width: 17px;
+	height: 16px;
+}
+
+.icon--excel {
+	background-position: -287px -111px;
+	width: 18px;
+	height: 17px;
+}
+
+.icon--del {
+	background-position: -463px -111px;
+	width: 18px;
+	height: 18px;
+}
+
+.icon--edit {
+	background-position: -156px -68px;
+	width: 16px;
+	height: 16px;
+}
+
+.icon--detail {
+	background-position: -244px -112px;
+	width: 16px;
+	height: 16px;
+}
+
+.icon--date {
+	background-position: -287px -67px;
+	width: 18px;
+	height: 18px;
+}
+
+.icon--close {
+	background-position: -375px -287px;
+	width: 18px;
+	height: 18px;
+}
+
+.icon--zoomout{
+	background-position: -329px -417px;
+	width: 22px;
+	height: 22px;
+}
+
+.icon--zoomin {
+	background-position: -285px -417px;
+	width: 22px;
+	height: 22px;
+}
+
+.icon--angle-down {
+	background-position: -158px -293px;
+	width: 11px;
+	height: 7px;	
+}
+
+.icon--alert {
+	background-position: -416px -66px;
+	width: 24px;
+	height: 20px;
+	transform: scale(1.5,1.5);
+}
+
+.icon--checkbox {
+	background-position: -157px -377px;
+	width: 14px;
+	height: 14px;
+	display: block;
+	position: absolute;
+	top: 25%;
+
+}
+/* BEGIN: ICON:HOVER */
+
+/* END: ICON:HOVER */
