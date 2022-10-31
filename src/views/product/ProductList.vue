@@ -35,7 +35,6 @@
                                 @click="selectCategory(item)"
                                 v-on:keyup.enter="selectCategory(item), this.category.show = false "
                                 :key="item"
-                                multiple
                             >
                                 <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
                                 <div class="drilldown__name">{{item}}</div>
@@ -67,7 +66,6 @@
                                 @click="selectDepartment(item)" 
                                 v-on:keyup.enter="selectDepartment(item), this.department.show = false"
                                 :key="item"
-                                multiple
                             >
                                 <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
                                 <div class="drilldown__name">{{item}}</div>
@@ -1096,6 +1094,7 @@
                 this.department.value = option;
             }, 
             /* END: Bộ phận sử dụng */
+
             /* Focus vào một element
                 @param {}
                 @returns void

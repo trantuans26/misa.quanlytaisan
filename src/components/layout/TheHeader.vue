@@ -5,13 +5,28 @@
         <div class="header__list">
             <div class="header__item header__item--text"><b>Sở tài chính</b></div>
             
-            <div class="header__item header__item--date">
+            <div class="header__item header__item--date" @click="this.year.show = !this.year.show">
                 <div class="header__date">
                     Năm 
-                    <b>2021</b>
+                    <b>{{this.year.value}}</b>
                     <i class="icon icon--multidrop"></i>
                 </div>
-                <div class="header__date--dropdown"></div>
+                <div class="drilldown drilldown__normal drilldown--year" v-show="this.year.show">
+                        <ul class="drilldown__box" >
+                            <li 
+                                class="drilldown__item" 
+                                tabindex="0" 
+                                :class="{'drilldown__item--selected': item == this.year.value}"
+                                v-for='item in this.year.list'
+                                @click="selectYear(item)"
+                                v-on:keyup.enter="selectYear(item), this.year.show = false"
+                                :key="item"
+                            >
+                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
+                                <div class="drilldown__name">{{item}}</div>
+                            </li>
+                        </ul>
+                    </div>
             </div>
 
             <div class="header__item header__item--icon">
@@ -41,7 +56,21 @@
 
 <script>
     export default {
+        data() {
+            return {
+                year: {
+                    show: false,
+                    value: 2022,
+                    list: [2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022]
+                }
+            }
+        },
+        methods: {
+            selectYear(option) {
+                this.year.value = option;
+            },
 
+        },
     }
 </script>
 

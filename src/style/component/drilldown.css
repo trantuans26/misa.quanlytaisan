@@ -75,3 +75,8 @@
 .drilldown__name {
     font-size: 13px;
 }
+
+
+.drilldown--year .drilldown__check {
+    margin-right: 11px;
+}

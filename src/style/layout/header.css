@@ -21,7 +21,8 @@
     margin-left: 27px;
 }
 
-.header__item--text {
+.header__item--date {
+    position: relative;
 }
 
 .header__date {
