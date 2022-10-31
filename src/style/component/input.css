@@ -39,7 +39,7 @@
 /* Begin: Search input */
 .input--search {
     width: 180px;
-    padding-left: 39px;
+    padding-left: 38px;
 }
 
 .input--search:active {
@@ -54,8 +54,14 @@
 
 .input--filter {
     width: 219px;
-    padding-left: 39px;
-    pointer-events: none;
+    padding-left: 38px;
+    padding-right: 28px; 
+    
+ /*    pointer-events: none; */
+}
+
+.input--filter::selection {
+    background-color: white;
 }
 
 /* Được dùng cho dữ liệu nhập số */

@@ -1,5 +1,5 @@
 <template>
-    <div class="content">
+    <div class="content" >
         <!-- BEGIN: Content/Function -->
         <div class="function">
             <div class="function__list">
@@ -14,54 +14,31 @@
                 <!-- END: Tìm kiếm tài sản -->
 
                 <!-- BEGIN: Lọc loại tài sản -->
-                <div class="function__item function__item--maright function__item--loaitaisan">
+                <div class="function__item function__item--maright function__item--loaitaisan" @click="this.category.show = !this.category.show">
                     <div class="function__icon"> 
                         <i class="icon icon--filter"></i>
                     </div>
 
-                    <input class="input input--filter" type="text" value="Loại tài sản" tabindex="-1">
+                    <input class="input input--filter" type="text" :value="this.category.value" tabindex="0" v-on:keyup.enter="this.category.show = !this.category.show" readonly>
 
-                    <div class="function__icon--dropdown" tabindex="0"> 
+                    <div class="function__icon--dropdown"> 
                         <i class="icon icon--dropdown"></i>
                     </div>
 
-                    <div class="drilldown drilldown__normal" tabindex="0">
+                    <div class="drilldown drilldown__normal" v-show="this.category.show">
                         <ul class="drilldown__box" >
-                            <li class="drilldown__item" tabindex="0">
+                            <li 
+                                class="drilldown__item" 
+                                tabindex="0" 
+                                :class="{'drilldown__item--selected': item == this.category.value}"
+                                v-for='item in this.category.list'
+                                @click="selectCategory(item)"
+                                v-on:keyup.enter="selectCategory(item), this.category.show = false "
+                                :key="item"
+                                multiple
+                            >
                                 <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                                <div class="drilldown__name">Máy vi tính xách tay</div>
-                            </li>
-                            <li class="drilldown__item" tabindex="0">
-                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                                <div class="drilldown__name">Đồ dùng văn phòng</div>
-                            </li>
-                            <li class="drilldown__item" tabindex="0">
-                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                                <div class="drilldown__name">Bóng đèn led điện tử</div>
-                            </li>
-                            <li class="drilldown__item" tabindex="0">
-                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                                <div class="drilldown__name">Máy lọc nước</div>
-                            </li>
-                            <li class="drilldown__item" tabindex="0">
-                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                                <div class="drilldown__name">Bàn ghế các loại</div>
-                            </li>
-                            <li class="drilldown__item" tabindex="0">
-                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                                <div class="drilldown__name">Máy điều hoà</div>
-                            </li>
-                            <li class="drilldown__item" tabindex="0">
-                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                                <div class="drilldown__name">Máy tủ lạnh</div>
-                            </li>
-                            <li class="drilldown__item" tabindex="0">
-                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                                <div class="drilldown__name">Máy chiếu</div>
-                            </li>
-                            <li class="drilldown__item" tabindex="0">
-                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                                <div class="drilldown__name">Tivi tinh thể lỏng</div>
+                                <div class="drilldown__name">{{item}}</div>
                             </li>
                         </ul>
                     </div>
@@ -69,7 +46,7 @@
                 <!-- END: Lọc loại tài sản -->
 
                 <!-- BEGIN: Lọc bộ phận sử dụng -->
-                <div class="function__item function__item--maright function__item--loaitaisan">
+                <div class="function__item function__item--maright function__item--loaitaisan" @click="this.department.show = !this.department.show">
                     <div class="function__icon"> 
                         <i class="icon icon--filter"></i>
                     </div>
@@ -78,51 +55,24 @@
                         <i class="icon icon--dropdown"></i>
                     </div>
                     
-                    <input class="input input--filter" type="text" value="Bộ phận sử dụng" tabindex="-1">
+                    <input class="input input--filter" type="text" :value="this.department.value" tabindex="0" v-on:keyup.enter="this.department.show = !this.department.show" readonly>
 
-                    <div class="function__drilldown function__drilldown--haveId">
-                        <div class="function__drilldown--box">
-                            <div class="function__drilldown--item function__drilldown--head">
-                                <div class="function__drilldown--id"><b>Mã</b></div>
-                                <div class="function__drilldown--name"><b>Tên bộ phận sử dụng</b></div>
-                           </div>
-                            <div class="function__drilldown--item function__drilldown--body">
-                                <div class="function__drilldown--id">LTS0001</div>
-                                <div class="function__drilldown--name">Máy vi tính xách tay</div>
-                            </div>
-                            <div class="function__drilldown--item function__drilldown--body">
-                                <div class="function__drilldown--id">LTS0002</div>
-                                <div class="function__drilldown--name">Đồ dùng văn phòng</div>
-                            </div>
-                            <div class="function__drilldown--item function__drilldown--body">
-                                <div class="function__drilldown--id">LTS0003</div>
-                                <div class="function__drilldown--name">Bóng đèn led điện tử</div>
-                            </div>
-                            <div class="function__drilldown--item function__drilldown--body">
-                                <div class="function__drilldown--id">LTS0004</div>
-                                <div class="function__drilldown--name">Máy lọc nước</div>
-                            </div>
-                            <div class="function__drilldown--item function__drilldown--body">
-                                <div class="function__drilldown--id">LTS0005</div>
-                                <div class="function__drilldown--name">Bàn ghế các loại</div>
-                            </div>
-                            <div class="function__drilldown--item function__drilldown--body">
-                                <div class="function__drilldown--id">LTS0006</div>
-                                <div class="function__drilldown--name">Máy điều hoà</div>
-                            </div>
-                            <div class="function__drilldown--item function__drilldown--body">
-                                <div class="function__drilldown--id">LTS0007</div>
-                                <div class="function__drilldown--name">Máy tủ lạnh</div>
-                            </div>
-                            <div class="function__drilldown--item function__drilldown--body">
-                                <div class="function__drilldown--id">LTS0008</div>
-                                <div class="function__drilldown--name">Máy chiếu</div>
-                            </div>
-                            <div class="function__drilldown--item function__drilldown--body">
-                                <div class="function__drilldown--id">LTS0009</div>
-                                <div class="function__drilldown--name">Tivi tinh thể lỏng</div>
-                            </div>
-                        </div>
+                    <div class="drilldown drilldown__normal" v-show="this.department.show">
+                        <ul class="drilldown__box" >
+                            <li 
+                                class="drilldown__item" 
+                                tabindex="0" 
+                                :class="{'drilldown__item--selected': item == this.department.value}"
+                                v-for='item in this.department.list'
+                                @click="selectDepartment(item)" 
+                                v-on:keyup.enter="selectDepartment(item), this.department.show = false"
+                                :key="item"
+                                multiple
+                            >
+                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
+                                <div class="drilldown__name">{{item}}</div>
+                            </li>
+                        </ul>
                     </div>
                 </div>  
                 <!-- BEGIN: Lọc bộ phận sử dụng -->
@@ -1082,38 +1032,47 @@
                 /* Hiển thị lỗi cảnh báo input */
                 htmlError: "",
 
-                showCategories: false,
 
                 /* Danh sách năm */
                 years: [],
 
-                /* Danh sách tài sản */
-                categoriesName: [
-                    'Máy vi tính xách tay', 
-                    'Đồ dùng văn phòng', 
-                    'Đèn điện', 
-                    'Máy lọc nước', 
-                    'Tivi LCD', 
-                    'Bàn ghế', 
-                    'Máy điều hoà', 
-                    'Quạt', 
-                    'Máy tủ lạnh', 
-                    'Máy chiếu'
-                ],
+                /* BEGIN: Data tài sản */
+                category: {
+                    list: [
+                        'Máy vi tính xách tay', 
+                        'Đồ dùng văn phòng', 
+                        'Đèn điện', 
+                        'Máy lọc nước', 
+                        'Tivi LCD', 
+                        'Bàn ghế', 
+                        'Máy điều hoà', 
+                        'Quạt', 
+                        'Máy tủ lạnh', 
+                        'Máy chiếu'
+                    ],
+                    show: false,
+                    value: 'Loại tài sản'
+                },
+                /* END: Data tài sản */
 
-                /* Danh sách bộ phận sử dụng */
-                departmentsName: [
-                    'Phòng hành chính sự nghiệp',
-                    'Phòng kế toán',
-                    'Phòng thư ký',
-                    'Phòng giáo dục',
-                    'Phòng nghiên cứu',
-                    'Phòng customize',
-                    'Phòng nhân sự - điều hành',
-                    'Phòng tài chính doanh nghiệp',
-                    'Phòng quản trị kinh doanh',
-                    'Phòng giải pháp bán lẻ'
-                ],
+                /* BEGIN: Data bộ phận sử dụng */
+                department: {
+                    show: false,
+                    value: 'Bộ phận sử dụng',
+                    list: [
+                        'Phòng hành chính sự nghiệp',
+                        'Phòng kế toán',
+                        'Phòng thư ký',
+                        'Phòng giáo dục',
+                        'Phòng nghiên cứu',
+                        'Phòng customize',
+                        'Phòng nhân sự - điều hành',
+                        'Phòng doanh nghiệp',
+                        'Phòng quản trị kinh doanh',
+                        'Phòng giải pháp bán lẻ'
+                    ]
+                },
+                /* END: Data bộ phận sử dụng */
 
                 checkTenTaiSan: {
                     hasError: false
@@ -1131,7 +1090,17 @@
             }
         },
         methods: {
+            /* BEGIN: Tài sản */
+            selectCategory(option) {
+                this.category.value = option;
+            },
+            /* END: Tài sản */
 
+            /* BEGIN: Bộ phận sử dụng */
+            selectDepartment(option) {
+                this.department.value = option;
+            }, 
+            /* END: Bộ phận sử dụng */
             /* Focus vào một element
                 @param {}
                 @returns void

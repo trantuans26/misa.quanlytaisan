@@ -111,7 +111,11 @@
     opacity: 1;
     background-color: #1aa4c8;
     cursor: pointer;
-    
+}
+
+.sidebar__item--actived {
+    opacity: 1;
+    background-color: #1aa4c8;
 }
 
 .sidebar--minimize .sidebar__item:hover,

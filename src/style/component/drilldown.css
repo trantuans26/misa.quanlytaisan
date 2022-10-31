@@ -7,7 +7,6 @@
     cursor: pointer;
     z-index: 2;
     outline: none;
-    display: none;
 }
 
 .drilldown--open {
@@ -48,20 +47,24 @@
     outline: none;
 }
 
+.drilldown__item--selected .drilldown__check i {
+    display: block;
+}
+
 .drilldown__item:hover,
 .drilldown__item:focus {
     background-color: rgb(199, 224, 245);
 }
 
-.drilldown__item:focus > .drilldown__check i,
+/* .drilldown__item:focus > .drilldown__check i,
 .drilldown__item:hover > .drilldown__check i {
     display: block;
-}
+} */
 
 .drilldown__check {
     width: 36px;
     text-align: center;
-    margin-right: 8px;
+    margin-right: 6px;
 }
 
 .drilldown__check i {
