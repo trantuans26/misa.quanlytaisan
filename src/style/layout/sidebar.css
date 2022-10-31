@@ -10,18 +10,6 @@
 }
 
 .display {
-    display: flex !important;
-}
-
-.hide {
-    display: none !important;
-}
-
-.sidebar--maximum {
-    display: none;
-}
-
-.sidebar--minimize {
     display: flex;
 }
 

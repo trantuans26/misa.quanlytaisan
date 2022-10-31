@@ -1,7 +1,7 @@
 <template>
     <div id="sidebar">
         <!-- BEGIN: Sidebar ở trạng thái thu nhỏ -->
-       <div class="sidebar sidebar--minimize" :class="{ display: isDisplay, hide: isHide }">
+       <div class="sidebar sidebar--minimize" :class="{display: !isDisplay}">
             <div class="sidebar__top">
                 <div class="icon icon--logo sidebar__logo"></div>
             
@@ -45,13 +45,13 @@
             </div>
 
             <div class="sidebar__bottom" >
-                <i class="icon icon--zoomout" @click="zoomMax()"></i>
+                <i class="icon icon--zoomout" @click="zoom()"></i>
             </div>
         </div>
         <!-- END: Sidebar ở trạng thái thu nhỏ -->
 
         <!-- BEGIN:  Sidebar ở trạng thái mở rộng -->
-        <div class="sidebar sidebar--maximum" :class="{ display: isHide, hide: isDisplay }">
+        <div class="sidebar sidebar--maximum" :class="{display: isDisplay}">
             <div class="sidebar__top">
                 <div class="sidebar__logo">
                     <i class="icon icon--logo"></i>
@@ -110,7 +110,7 @@
             </div>
 
             <div class="sidebar__bottom" >
-                <i class="icon icon--zoomin" @click="zoomMin()"></i>
+                <i class="icon icon--zoomin" @click="zoom()"></i>
             </div> 
         </div>
         <!-- END Sidebar ở trạng thái mở rộng -->
@@ -123,8 +123,7 @@
         data() {
             return {
                 isActive: false,
-                isDisplay: false,
-                isHide: true,
+                isDisplay: true,
             }
         },
         methods: {
@@ -134,19 +133,8 @@
             Author: Tuan 
             Date: 23/10/2022 
             */
-            zoomMax() {
-                this.isDisplay = false;
-                this.isHide = true;
-            },
-            /* Thu nhỏ sidebar
-            @param {}
-            @returns void
-            Author: Tuan 
-            Date: 23/10/2022 
-            */
-            zoomMin() {
-                this.isDisplay = true;
-                this.isHide = false;
+            zoom() {
+                this.isDisplay = !this.isDisplay;
             },
             /* Click sidebar__item
             @param {}
@@ -155,7 +143,7 @@
             Date: 23/10/2022 
             */
             actived() {
-                this.isFocus = true;
+                this.isActive = true;
             }
         }
     }

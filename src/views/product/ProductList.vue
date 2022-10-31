@@ -1032,11 +1032,10 @@
                 /* Hiển thị lỗi cảnh báo input */
                 htmlError: "",
 
-
                 /* Danh sách năm */
                 years: [],
 
-                /* BEGIN: Data tài sản */
+                /* BEGIN: Data loại tài sản */
                 category: {
                     list: [
                         'Máy vi tính xách tay', 
@@ -1053,14 +1052,13 @@
                     show: false,
                     value: 'Loại tài sản'
                 },
-                /* END: Data tài sản */
+                /* END: Data loại tài sản */
 
                 /* BEGIN: Data bộ phận sử dụng */
                 department: {
                     show: false,
                     value: 'Bộ phận sử dụng',
                     list: [
-                        'Phòng hành chính sự nghiệp',
                         'Phòng kế toán',
                         'Phòng thư ký',
                         'Phòng giáo dục',
@@ -1084,9 +1082,6 @@
                     hasError: false
                 },
                 isCheckAll: false,
-                langsdata: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
-                languages: [],
-                selectedlang: ""
             }
         },
         methods: {
