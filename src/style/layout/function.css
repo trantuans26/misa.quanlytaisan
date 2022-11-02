@@ -1,9 +1,10 @@
 .function {
     height: var(--function-height);
-    margin: 14px 20px 14px 20px;
+    margin: 14px 0 14px 0;
     display: flex;
     justify-content: space-between;
     font-size: 14px;
+    width: 100%;
 }
 
 .function__list {

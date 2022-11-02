@@ -98,596 +98,142 @@
 
         <!-- BEGIN: Content/Table -->  
         <div class="table">
-            <table class="table__list">
-                <!-- BEGIN: Table/Header -->
-                <thead class="table__header">
-                    <tr class="table__row table__row--head">
-                        <th class="table__col table__col--check">
+            <div class="table__header table__item">
+                <table>
+                    <thead>
+                        <th class="table__col--left table__col--check">
                             <input type="checkbox" v-model='isCheckAll'>
 <!--                             <i class="icon icon-checkbox"></i> -->
                         </th>
-                        <th class="table__col table__col--center" data-title="Số thứ tự">STT</th>
-                        <th class="table__col table__col--left">Mã tài sản</th>
-                        <th class="table__col table__col--left">Tên tài sản</th>
-                        <th class="table__col table__col--left">Loại tàn sản</th>
-                        <th class="table__col table__col--left">Bộ phận sử dụng</th>
-                        <th class="table__col table__col--right">Số lượng</th>
-                        <th class="table__col table__col--right">Nguyên giá</th>
-                        <th class="table__col table__col--right" data-title="Hao mòn/khấu hao luỹ kế">HM/KH luỹ kế</th>
-                        <th class="table__col table__col--right">Giá trị còn lại</th>
-                        <th class="table__col table__col--center">Chức năng</th>
-                    </tr>
-                </thead>
-                <!-- END: Table/Header -->
+                        <th class="table__col--center table__col--serial" data-title="Số thứ tự">STT</th>
+                        <th class="table__col--left table__col--assetcode">Mã tài sản </th>
+                        <th class="table__col--left table__col--assetname">Tên tài sản </th>
+                        <th class="table__col--left table__col--category">Loại tàn sản </th>
+                        <th class="table__col--left table__col--department">Bộ phận sử dụng  </th>
+                        <th class="table__col--right table__col--quantity">Số lượng  </th>
+                        <th class="table__col--right table__col--price">Nguyên giá </th>
+                        <th class="table__col--right tabel__col--depreciation" data-title="Hao mòn/khấu hao luỹ kế">HM/KH luỹ kế</th>
+                        <th class="table__col--right table__col--residual">Giá trị còn lại </th>
+                        <th class="table__col--center table__col--function">Chức năng</th>
+                    </thead>
+                </table>
+            </div>
 
-                <!-- BEGIN: Table/Body -->
-                <tbody class="table__body">
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-open-modal" data-title="Sửa tài sản" @click="openModal()">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Nhân bản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr class="table__row table__row--body">
-                        <td class="table__col table__col--check">
-                            <input type="checkbox" v-model='isCheckAll'>
-                        </td>
-                        <td class="table__col table__col--center">1</td>
-                        <td class="table__col table__col--left">TOIBT2131232</td>
-                        <td class="table__col table__col--left">Lenovo IdeaPad L340</td>
-                        <td class="table__col table__col--left">Máy vi tính xách tay</td>
-                        <td class="table__col table__col--left">Phòng Hành Chính Sự Nghiệp</td>
-                        <td class="table__col table__col--right">1</td>
-                        <td class="table__col table__col--right">15.000.000</td>
-                        <td class="table__col table__col--right">900.000</td>
-                        <td class="table__col table__col--right">14.100.000</td>
-                        <td class="table__col table__col--function  table__col--center">
-                            <div class="table__function">
-                                <div class="table__icon js-buy-ticket" data-title="Sửa tài sản">
-                                    <i class="icon icon--edit"></i>
-                                </div>
-                                <div class="table__icon" data-title="Chi tiết tài sản">
-                                    <i class="icon icon--detail"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    
-
-               
-                
-                </tbody>
-                <!-- END: Table/Body -->
-                
-                <!-- BEGIN: Table/Footer -->
-                <tbody class="table__footer">
-                    <tr class=".table__row table__row--paging">
-                        <td class="table__col" colspan="4">
-                            <div class="table__pagination">
-                                <div class="table__sum">Tổng số: <b>200 bản ghi</b></div>
-                                <div class="table__size" data-title="Số bản ghi trong một dòng">
-                                    20
-                                    <i class="icon icon--dropdown"></i>
-                                </div>
-                                <div class="pagination__list">
-                                    <div class="pagination__item pagination__item--icon">
-                                        <i class="icon icon--pagingleft"></i>
+            <div class="table__content">
+                <table>
+                    <tbody>
+                        <tr class="table__row">
+                            <td class="table__col--left table__col--check">
+                               <input type="checkbox" v-model='isCheckAll'>
+                            </td>
+                            <td class="table__col--center table__col--serial">1</td>
+                            <td class="table__col--left table__col--assetcode">37H7WN72/2022</td>
+                            <td class="table__col--left table__col--assetname">Lenovo IdeaPad L340</td>
+                            <td class="table__col--left table__col--category">Máy vi tính xách tay</td>
+                            <td class="table__col--left table__col--department">Phòng Hành Chính Sự Nghiệp</td>
+                            <td class="table__col--right table__col--quantity">1</td>
+                            <td class="table__col--right table__col--price">15.000.000</td>
+                            <td class="table__col--right tabel__col--depreciation">900.000</td>
+                            <td class="table__col--right table__col--residual">14.100.000</td>
+                            <td class="table__col--function table__col--center">
+                                <div class="table__function">
+                                    <div class="table__icon js-open-modal" data-title="Sửa tài sản" @click="openModal()">
+                                        <i class="icon icon--edit"></i>
                                     </div>
-                                    <div class="pagination__item pagination__item--value">
-                                        <div class="pagination__subitem">
-                                            <p class=""><b>1</b></p>
-                                        </div>
-                                        <div class="pagination__subitem">
-                                            <p class="">2</p>
-                                        </div>
-                                        <div class="pagination__subitem">
-                                            <p class="">...</p>
-                                        </div>
-                                        <div class="pagination__subitem">
-                                            <p class="">10</p>
-                                        </div>
-                                    </div>
-                                    <div class="pagination__item pagination__item--icon">
-                                        <i class="icon icon--pagingright"></i>
+                                    <div class="table__icon" data-title="Nhân bản">
+                                        <i class="icon icon--detail"></i>
                                     </div>
                                 </div>
-                            </div>     
-                        </td>
-                        <th class="table__col table__col--left">
+                            </td>
+                        </tr> 
+                        <tr class="table__row">
+                            <td class="table__col--left table__col--check">
+                               <input type="checkbox" v-model='isCheckAll'>
+                            </td>
+                            <td class="table__col--center table__col--serial">1</td>
+                            <td class="table__col--left table__col--assetcode">37H7WN72/2022</td>
+                            <td class="table__col--left table__col--assetname">Lenovo IdeaPad L340</td>
+                            <td class="table__col--left table__col--category">Máy vi tính xách tay</td>
+                            <td class="table__col--left table__col--department">Phòng Hành Chính Sự Nghiệp</td>
+                            <td class="table__col--right table__col--quantity">1</td>
+                            <td class="table__col--right table__col--price">15.000.000</td>
+                            <td class="table__col--right tabel__col--depreciation">900.000</td>
+                            <td class="table__col--right table__col--residual">14.100.000</td>
+                            <td class="table__col--function table__col--center">
+                                <div class="table__function">
+                                    <div class="table__icon js-open-modal" data-title="Sửa tài sản" @click="openModal()">
+                                        <i class="icon icon--edit"></i>
+                                    </div>
+                                    <div class="table__icon" data-title="Nhân bản">
+                                        <i class="icon icon--detail"></i>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr> 
+                    </tbody>
+                </table>
+            </div>
 
-                        </th>
-                        <th class="table__col table__col--left">
+            <div class="table__footer">
+                <table>
+                    <tfoot>
+                        <tr class="table__row--paging">
+                            <td class="" colspan="4">
+                                <div class="table__pagination">
+                                    <div class="table__sum">Tổng số: <b>200 bản ghi</b></div>
+                                    <div class="table__size" data-title="Số bản ghi trong một dòng">
+                                        20
+                                        <i class="icon icon--dropdown"></i>
+                                    </div>
+                                    <div class="pagination__list">
+                                        <div class="pagination__item pagination__item--icon">
+                                            <i class="icon icon--pagingleft"></i>
+                                        </div>
+                                        <div class="pagination__item pagination__item--value">
+                                            <div class="pagination__subitem">
+                                                <p class=""><b>1</b></p>
+                                            </div>
+                                            <div class="pagination__subitem">
+                                                <p class="">2</p>
+                                            </div>
+                                            <div class="pagination__subitem">
+                                                <p class="">...</p>
+                                            </div>
+                                            <div class="pagination__subitem">
+                                                <p class="">10</p>
+                                            </div>
+                                        </div>
+                                        <div class="pagination__item pagination__item--icon">
+                                            <i class="icon icon--pagingright"></i>
+                                        </div>
+                                    </div>
+                                </div>     
+                            </td>
+                            <td class=" table__col--left">
 
-                        </th>
-                        <th class="table__col table__col--right">
-                            13
-                        </th>
-                        <th class="table__col table__col--right">
-                            15.000.000
-                        </th>
-                        <th class="table__col table__col--right">
-                            900.000
-                        </th>
-                        <th class="table__col table__col--right">
-                            226.400.000
-                        </th>
-                        <th class="table__col table-col--center">
-                            
-                        </th>
-                    </tr> 
-                </tbody>
-                <!-- END: Table/Footer -->
-            </table>
+                            </td>
+                            <td class=" table__col--left">
+
+                            </td>
+                            <td class=" table__col--right">
+                                13
+                            </td>
+                            <td class=" table__col--right">
+                                15.000.000
+                            </td>
+                            <td class=" table__col--right">
+                                900.000
+                            </td>
+                            <td class=" table__col--right">
+                                226.400.000
+                            </td>
+                            <td class=" table-col--center table__col--function">
+                                
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
         <!-- END: Content/Table -->
     </div>
@@ -983,22 +529,38 @@
 </template>
 
 <script>
-/* import DropdownDatepicker from './src/dropdown-datepicker.vue'; */
-
     export default {
         name: "ProductList",
         component: {
-/*             DropdownDatepicker, */
         },
         /* GD1: beforeCreated (setup) */
         setup() {
-            console.log("beforeCreated");
-/*             let nameProduct = this.getName.name;
-            console.log(nameProduct); */
+
         },
         data() {
             return {
                 /* Dữ liệu form modal */
+                assets: [
+                    { 
+                        "fixedAssetId": "1", "fixedAssetCode": "37H7WN72/2022", "fixedAssetName": "Laptop Lenovo IdeaPad L340",
+                        "organizationId": "1", "organizationCode": "1", "organizationName": "1", 
+                        "departmentId": "1", "departmentCode": "1", "departmentName": "Phòng nhân sự - điều hành", 
+                        "categoryId": "1", "categoryCode": "1", "categoryName": "Phòng nhân sự - điều hành", 
+                        "purchaseDate": new Date().toISOString().substring(0,10),
+                        "cost": "15.000.000",
+                        "quantity": "1",
+                        "depreciationRate": "1,1%",
+                        "trackedYear": new Date().getFullYear(),
+                        "lifeTime": 2,
+                        "productionYear": "1",
+                        "active": 1,
+                        "createdBy": "Tuan",
+                        "createdDate": new Date().toISOString().substring(0,10),
+                        "modifiedBy": "Tuan",
+                        "modifiedDate": new Date().toISOString().substring(0,10),
+                    }
+                ],
+
                 taiSan: {
                     maTaiSan: 'TS00001',
                     tenTaiSan: '',
@@ -1084,13 +646,31 @@
         },
         methods: {
             /* BEGIN: Tài sản */
+            /* Lọc loại tài sản
+                @param {option} giá trị đc chọn trong vòng lặp for
+                @returns void
+                Author: Tuan 
+                Date: 30/10/2022 
+            */
             selectCategory(option) {
+                if(this.category.value == option) {
+                    this.category.value = 'Loại tài sản'
+                }
                 this.category.value = option;
             },
             /* END: Tài sản */
 
             /* BEGIN: Bộ phận sử dụng */
+            /* Lọc bộ phận sử dụng
+                @param {option} giá trị đc chọn trong vòng lặp for
+                @returns void
+                Author: Tuan 
+                Date: 30/10/2022 
+            */
             selectDepartment(option) {
+                if(this.department.value == option) {
+                    this.department.value = 'Loại bộ phận sử dụng'
+                }
                 this.department.value = option;
             }, 
             /* END: Bộ phận sử dụng */

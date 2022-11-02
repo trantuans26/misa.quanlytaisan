@@ -1,128 +1,113 @@
 .table {
-    margin: 0 20px 0 20px;
-    border-radius: 3.5px;
-    border: 1px solid #afafaf;
+    width: 100%;
     font-size: 13px;
     background-color: #ffffff;
-    height: var(--table-height);
-    overflow: auto;   
-    box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
-}
-
-.table__list {
-    width: 100%;
+    height: var(--table-height); 
+    border: 1px solid #afafaf;
     border-collapse: collapse;
-    border: none;   
-    height: 100vh;
-    
+    border-radius: 3.5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.table__row {
-    border-bottom: 1.3px solid #f1f1f1;
-}
-
-/* Loại bỏ thanh scroll */
-.table::-webkit-scrollbar {
-    display: none;
-}
-
-.table__col {
-
-}
-
-/* Table/Checkbox */
-.table__col--check {
-    padding: 0 8px 0 16px;
-    width: 14px;
-    height: 14px;   
-}
-
-.table__col--check input {
-    margin: 0;
-    padding: 0;
-}
-
-.table__col--left {
-    text-align: left;
-}
-    
-.table__col--right {
-    text-align: right;
-
-}
-
-.table__col--center {
-    text-align: center;
-}
-/* End: Table/Checkbox */
-
-/* Table/Header */
+/* BEGIN: Header */
 .table__header {
-
-}
-
-.table__row--head {
     background-color: #f5f5f5;
     height: 38px;
     line-height: 38px;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-}
-
-.table__row th {
     font-weight: 700;
-    
-}
-/* End: Table/Header */
-
-
-
-/* Table/Body */
-.table__body {
-
+    position: sticky;
+    z-index: 1;
+    padding: 0 16px 0;  
+    border-radius: 3.5px 3.5px 0 0;
+    border-bottom: 2px solid #f1f1f1;
 }
 
-.table__row--body {
-    height: 40px;
-    line-height: 40px;  
+.table__header table {
+    width: 100%;
 }
 
-.table__row--body td {  
+.table__header table thead {
+    display: flex;
+    align-items: center;
+}
+/* END: Header */
 
+/* BEGIN: Content */
+.table__content {
+    flex: 1;
+    overflow-y: auto;
 }
 
-.table__row--body:hover {
+.table__content::-webkit-scrollbar {
+    width: 5px;
+}
+
+.table__content::-webkit-scrollbar-thumb {
+    background-color: rgb(205, 211, 214, 0.7);
+    background-clip: padding-box;
+    box-sizing: border-box;
+    border-right: 2.4px solid rgba(0, 0, 0, 0);
+}
+
+.table__content table {
+    width: 100%;
+}
+
+.table__content table tbody tr {
+    display: flex;
+    align-items: center;
+    height: 40px;    
+    border-bottom: 2px solid #f1f1f1;
+    padding: 0 11px 0 16px;  
+    scroll-snap-align: start;
+}
+
+.table__row:hover {
     background-color: rgba(26, 164, 200, .2);
 }
 
-.table__row--body:hover .table__icon {
+.table__row:hover .table__icon {
     display: block;
 }
 
-/* Table/Function */
+/* row function */
 .table__function {
-    box-sizing: border-box;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
 }
 
 .table__icon {
     margin: 0 6px 0;
     display: none;
 }
-/* End: Table/Body */
+/* row function */
 
-/* Table/Footer */
+/* END: Content */
+
+/* BEGIN: Footer */
 .table__footer {
-
+    border-top: 2px solid #f1f1f1;
+    height: 40px;
+    line-height: 40px;
+    z-index: 1; 
+    position: sticky;
+    padding: 0 16px 0;  
 }
 
-.table__sum {
+.table__footer table {
+    width: 100%;
 }
 
-/* Số bản ghi hiển thị */
+.table__footer table thead {
+/*     display: flex;
+    align-items: center; */
+}
+
 .table__size {
     margin: 0 40px 0;
     background-color: #ffffff;
@@ -135,23 +120,11 @@
     justify-content: space-around;
 }
 
-.table__row--paging {
-    margin: 0;
-    position: sticky;
-    bottom: 0;
-    background-color: #ffffff;
-    border-top: 1.3px solid #f1f1f1;
-}
-
-.table__row--paging th,
-.table__row--paging td {
-    position: sticky;
-    height: 40px;
-    line-height: 40px;
-}
-
-.table__row--paging > .table__col--right {
-    font-weight: 700;
+.table__pagination {
+    display: flex;
+    font-size: 11px;
+    align-items: center;
+    margin-left: 16px;
 }
 
 .pagination__list {
@@ -161,13 +134,6 @@
 
 .pagination__item {
     display: flex;
-}
-
-.table__pagination {
-    display: flex;
-    font-size: 11px;
-    align-items: center;
-    margin-left: 16px;
 }
 
 .pagination__item--icon,
@@ -181,6 +147,7 @@
 
 .pagination__subitem {
     margin: 0 5px 0;
+    cursor: pointer;
 }
 
 .pagination__subitem:hover {
@@ -194,7 +161,79 @@
 
 }
 
-.pagination__item--paging {
+.table__row--paging > .table__col--right {
+    font-weight: 700;
 }
 
-/* End: Table/Footer */
+/* END: Footer */
+
+
+
+
+.table__col {
+}
+
+.table__col--left {
+    text-align: left;
+}
+    
+.table__col--right {
+    text-align: right;  
+}
+
+.table__col--center {
+    text-align: center;
+}
+
+.table__col--check {
+    width: 2.6%;
+    display: flex;
+    align-items: center;
+}
+
+.table__col--check input {
+    margin: 0;
+    padding: 0;
+}
+
+.table__col--serial {
+    margin-right: 1.95%;
+    width: 2%;
+}
+
+.table__col--assetcode {
+    width: 13.8%;
+}
+
+.table__col--assetname {
+    flex: 1;
+}
+
+.table__col--category {
+    width: 12.8%;
+}
+
+.table__col--department {
+    width: 13.8%;
+}
+
+.table__col--quantity {
+    width: 5%;
+}
+
+.table__col--price {
+    width: 8.8%;
+}
+
+.tabel__col--depreciation {
+    width: 9%;
+}
+
+.table__col--residual {
+    width: 8.8%;
+}
+
+.table__col--function {
+    margin-left: 1.5%;
+    width: 5%;
+}
