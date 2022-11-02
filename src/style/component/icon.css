@@ -183,6 +183,13 @@
 	top: 25%;
 
 }
+
+.icon--success {
+    background-image: url(../../assets/icons/qlts-icon-2.svg);
+	background-position: -464px -292px;
+	width: 32px;
+	height: 32px;
+}
 /* BEGIN: ICON:HOVER */
 
 /* END: ICON:HOVER */

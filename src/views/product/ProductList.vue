@@ -102,7 +102,7 @@
                 <table>
                     <thead>
                         <th class="table__col--left table__col--check">
-                            <input type="checkbox" v-model='selectAll'>
+                            <input type="checkbox" v-model='selectAll' @change="selectedAll()">
 <!--                             <i class="icon icon-checkbox"></i> -->
                         </th>
                         <th class="table__col--center table__col--serial" data-title="Số thứ tự">STT</th>
@@ -126,9 +126,9 @@
                             class="table__row" 
                             v-for="(asset,index) in this.assets"
                             :key="asset"
-                        >
+                            :class="{'table__row--checked': asset.checked}">
                             <td class="table__col--left table__col--check">
-                               <input type="checkbox" v-model='selected' :value="asset.fixedAssetId" number>
+                               <input type="checkbox" v-model='selected' :value="asset.fixedAssetId" @change="asset.checked = !asset.checked">
                             </td>
                             <td class="table__col--center table__col--serial">{{index + 1}}</td>
                             <td class="table__col--left table__col--assetcode">{{asset.fixedAssetCode}}</td>
@@ -136,12 +136,26 @@
                             <td class="table__col--left table__col--category">{{asset.categoryName}}</td>
                             <td class="table__col--left table__col--department">{{asset.departmentName}}</td>
                             <td class="table__col--right table__col--quantity">{{asset.quantity}}</td>
-                            <td class="table__col--right table__col--cost">{{asset.cost}}</td>
-                            <td class="table__col--right tabel__col--depreciation">{{(asset.depreciationRate * asset.cost)}}</td>
-                            <td class="table__col--right table__col--residual">{{ asset.cost - (asset.depreciationRate * asset.cost)}}</td>
+                            <td class="table__col--right table__col--cost">{{this.formatPriceNoFixed(asset.cost)}}</td>
+                            <td class="table__col--right tabel__col--depreciation">{{this.formatPriceNoFixed(asset.depreciationRate * asset.cost)}}</td>
+                            <td class="table__col--right table__col--residual">{{this.formatPriceNoFixed(asset.cost - (asset.depreciationRate * asset.cost))}}</td>
                             <td class="table__col--function table__col--center">
                                 <div class="table__function">
-                                    <div class="table__icon js-open-modal" data-title="Sửa tài sản" @click="openModal()">
+                                    <div 
+                                        class="table__icon js-open-modal" 
+                                        data-title="Sửa tài sản" 
+                                        @click= "
+                                            openModal(),
+                                            editAsset (
+                                                asset.fixedAssetCode, asset.fixedAssetName, 
+                                                asset.departmentCode, asset.departmentName, 
+                                                asset.categoryCode, asset.categoryName,
+                                                asset.quantity, this.formatPriceNoFixed(asset.cost), asset.lifeTime,
+                                                this.formatPriceFixed(asset.depreciationRate), this.formatPriceNoFixed(asset.depreciationRate * asset.cost), asset.trackedYear,
+                                                asset.purchaseDate
+                                            )
+                                        "
+                                    >
                                         <i class="icon icon--edit"></i>
                                     </div>
                                     <div class="table__icon" data-title="Nhân bản">
@@ -403,7 +417,7 @@
                             Số lượng <em>*</em>
                         </label>
                         <div class="modal__input--icon">
-                            <input v-model.trim="taiSan.soLuong" class="input input--haveicon input--textright" type="text">
+                            <input v-model.trim="taiSan.soLuong" class="input input--haveicon input--textright input__spin--hide" v-on:keypress="NumbersOnly" type="text">
                             <i class="icon icon--multidrop"></i>
                         </div>
                     </div>
@@ -412,14 +426,14 @@
                         <label for="enter-nguyengia" class="modal__label">
                             Nguyên giá <em>*</em>
                         </label>
-                        <input v-model.trim="taiSan.nguyenGia" class="input input--textright" type="text">
+                        <input v-model.trim="taiSan.nguyenGia" class="input input--textright input__spin--hide" v-on:keypress="NumbersOnly" type="text">
                     </div>
     
                     <div class="modal__item">
                         <label for="enter-sonamsudung" class="modal__label">
                             Số năm sử dụng <em>*</em>
                         </label>
-                        <input v-model.trim="taiSan.soNamSD" class="input input--textright" type="text">
+                        <input v-model.trim="taiSan.soNamSD" class="input input--textright input__spin--hide" v-on:keypress="NumbersOnly" type="text">
                     </div>
                 </div>
 
@@ -429,7 +443,7 @@
                             Tỷ lệ hao mòn (%) <em>*</em>
                         </label>
                         <div class="modal__input--icon">
-                            <input v-model.trim="taiSan.tyLeHM" class="input input--haveicon input--textright" type="text">
+                            <input v-model.trim="taiSan.tyLeHM" class="input input--haveicon input--textright input__spin--hide" v-on:keypress="NumbersOnly" type="text">
                             <i class="icon icon--multidrop"></i>
                         </div>
 
@@ -439,7 +453,7 @@
                         <label for="enter-giatrihaomonnam" class="modal__label">
                             Giá trị hao mòn năm <em>*</em>
                         </label>
-                        <input v-model.trim="taiSan.giaTriHMNam" class="input input--textright" type="text">
+                        <input v-model.trim="taiSan.giaTriHMNam" class="input input--textright input__spin--hide" v-on:keypress="NumbersOnly" type="text">
                     </div>
      
                     <div class="modal__item">
@@ -488,7 +502,8 @@
         </form>
 
         <!-- BEGIN: Success toast modal -->
-        <div id="toast__box" v-html="htmlToast"></div>
+        <div id="toast__box" v-html="htmlToast">
+        </div>
         <!-- END: Success toast modal -->
 
         <!-- BEGIN: Alert close modal -->
@@ -661,7 +676,7 @@
                 Date: 23/10/2022 
             */
             addHTMLToast() {
-                this.htmlToast = "<div class='toast__item toast__item-success'><div class='toast__icon'><i class='fa-sharp fa-solid fa-circle-check'></i></div><div class='toast__text'>Lưu dữ liệu thành công</div></div>"
+                this.htmlToast = " <div class='toast__item'><div class='toast__icon'><i class='icon icon--success'></i></div><div class='toast__text'>Lưu dữ liệu thành công</div></div>"
             },
 
             /* Hiển thị thông báo thêm dữ liệu thành công
@@ -720,6 +735,78 @@
                 }
 
             },
+
+            /* Dữ liệu kiểu số dấu chấm trước 3 số 0
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 31/10/2022 
+            */
+            formatPriceNoFixed(value) {
+                let val = (value/1).toFixed(0).replace('.', ',')
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            },
+            /* Dữ liệu kiểu số dấu chấm trước 3 số 0 và có 2 số thập ph
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 31/10/2022 
+            */
+            formatPriceFixed(value) {
+                let val = (value/1).toFixed(2).replace('.', ',')
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            },
+
+            /* Sửa tài sản
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 31/10/2022 
+            */
+            editAsset (
+                fixedAssetCode, fixedAssetName, 
+                departmentCode, departmentName, 
+                categoryCode, categoryName,
+                quantity, cost, lifeTime,
+                depreciationRate, depreciation, trackedYear,
+                purchaseDate
+            ) {
+                this.taiSan.maTaiSan = fixedAssetCode;
+                this.taiSan.tenTaiSan = fixedAssetName;
+                this.taiSan.maBPSD = departmentCode;
+                this.taiSan.tenBPSD = departmentName;
+                this.taiSan.maLoaiTS = categoryCode;
+                this.taiSan.tenLoaiTS = categoryName;
+                this.taiSan.soLuong = quantity;
+                this.taiSan.nguyenGia = cost;
+                this.taiSan.soNamSD = lifeTime;
+                this.taiSan.tyLeHM = depreciationRate;
+                this.taiSan.giaTriHMNam = depreciation;
+                this.taiSan.namTheoDoi = trackedYear;
+                this.taiSan.ngayBatDauSD = purchaseDate;
+                this.taiSan.ngayMua = purchaseDate;
+            },
+
+            /* Chọn all checkbox
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 31/10/2022 
+            */
+            selectedAll() {
+                this.assets.forEach(function (asset) {
+                    asset.checked = !asset.checked;
+                });
+            },
+            NumbersOnly(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                    evt.preventDefault();
+                } else {
+                    return true;
+                }
+            },
         },
 
         data() {
@@ -744,6 +831,7 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
                     },
                     { 
                         fixedAssetId: "00249", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -762,6 +850,7 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
                     },
                     { 
                         fixedAssetId: "01253", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -780,6 +869,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "03129", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -798,6 +889,7 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
                     },
                     { 
                         fixedAssetId: "03470", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -816,6 +908,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "04309", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -834,6 +928,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "05134", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -852,6 +948,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "05242", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -870,6 +968,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "06442", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -888,6 +988,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "06604", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -906,6 +1008,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "08272", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -924,6 +1028,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "08452", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -942,6 +1048,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "09328", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -960,6 +1068,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "11583", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -978,6 +1088,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "13804", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -996,6 +1108,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "14056", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -1014,6 +1128,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "20367", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -1032,6 +1148,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "20454", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -1050,6 +1168,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "21742", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -1068,6 +1188,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "21916", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -1086,6 +1208,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                     { 
                         fixedAssetId: "22326", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
@@ -1104,6 +1228,8 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
                     },
                 ],
                 /* END: Dữ liệu table */
@@ -1190,7 +1316,6 @@
                 checkMaLoaiTS: {
                     hasError: false
                 },
-                isCheckAll: false,
             }
         },
 
@@ -1216,6 +1341,7 @@
                     var selected = [];
 
                     if (value) {
+                        
                         this.assets.forEach(function (asset) {
                             selected.push(asset.fixedAssetId);
                         });

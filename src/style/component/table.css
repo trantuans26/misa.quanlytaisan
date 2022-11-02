@@ -70,6 +70,10 @@
     background-color: rgba(26, 164, 200, .2);
 }
 
+.table__row--checked {
+    background-color: rgba(26, 164, 200, .2);
+}
+
 .table__row:hover .table__icon {
     display: block;
 }
