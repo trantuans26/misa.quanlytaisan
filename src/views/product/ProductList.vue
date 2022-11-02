@@ -111,7 +111,7 @@
                         <th class="table__col--left table__col--category">Loại tàn sản </th>
                         <th class="table__col--left table__col--department">Bộ phận sử dụng  </th>
                         <th class="table__col--right table__col--quantity">Số lượng  </th>
-                        <th class="table__col--right table__col--price">Nguyên giá </th>
+                        <th class="table__col--right table__col--cost">Nguyên giá </th>
                         <th class="table__col--right tabel__col--depreciation" data-title="Hao mòn/khấu hao luỹ kế">HM/KH luỹ kế</th>
                         <th class="table__col--right table__col--residual">Giá trị còn lại </th>
                         <th class="table__col--center table__col--function">Chức năng</th>
@@ -122,43 +122,23 @@
             <div class="table__content">
                 <table>
                     <tbody>
-                        <tr class="table__row">
+                        <tr 
+                            class="table__row" 
+                            v-for="asset in this.assets"
+                            :key="asset"
+                        >
                             <td class="table__col--left table__col--check">
                                <input type="checkbox" v-model='isCheckAll'>
                             </td>
                             <td class="table__col--center table__col--serial">1</td>
-                            <td class="table__col--left table__col--assetcode">37H7WN72/2022</td>
-                            <td class="table__col--left table__col--assetname">Lenovo IdeaPad L340</td>
-                            <td class="table__col--left table__col--category">Máy vi tính xách tay</td>
-                            <td class="table__col--left table__col--department">Phòng Hành Chính Sự Nghiệp</td>
-                            <td class="table__col--right table__col--quantity">1</td>
-                            <td class="table__col--right table__col--price">15.000.000</td>
-                            <td class="table__col--right tabel__col--depreciation">900.000</td>
-                            <td class="table__col--right table__col--residual">14.100.000</td>
-                            <td class="table__col--function table__col--center">
-                                <div class="table__function">
-                                    <div class="table__icon js-open-modal" data-title="Sửa tài sản" @click="openModal()">
-                                        <i class="icon icon--edit"></i>
-                                    </div>
-                                    <div class="table__icon" data-title="Nhân bản">
-                                        <i class="icon icon--detail"></i>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr> 
-                        <tr class="table__row">
-                            <td class="table__col--left table__col--check">
-                               <input type="checkbox" v-model='isCheckAll'>
-                            </td>
-                            <td class="table__col--center table__col--serial">1</td>
-                            <td class="table__col--left table__col--assetcode">37H7WN72/2022</td>
-                            <td class="table__col--left table__col--assetname">Lenovo IdeaPad L340</td>
-                            <td class="table__col--left table__col--category">Máy vi tính xách tay</td>
-                            <td class="table__col--left table__col--department">Phòng Hành Chính Sự Nghiệp</td>
-                            <td class="table__col--right table__col--quantity">1</td>
-                            <td class="table__col--right table__col--price">15.000.000</td>
-                            <td class="table__col--right tabel__col--depreciation">900.000</td>
-                            <td class="table__col--right table__col--residual">14.100.000</td>
+                            <td class="table__col--left table__col--assetcode">{{asset.fixedAssetCode}}</td>
+                            <td class="table__col--left table__col--assetname">{{asset.fixedAssetName}}</td>
+                            <td class="table__col--left table__col--category">{{asset.categoryName}}</td>
+                            <td class="table__col--left table__col--department">{{asset.departmentName}}</td>
+                            <td class="table__col--right table__col--quantity">{{asset.quantity}}</td>
+                            <td class="table__col--right table__col--cost">{{asset.cost}}</td>
+                            <td class="table__col--right tabel__col--depreciation">{{(asset.depreciationRate * asset.cost)}}</td>
+                            <td class="table__col--right table__col--residual">{{ asset.cost - (asset.depreciationRate * asset.cost)}}</td>
                             <td class="table__col--function table__col--center">
                                 <div class="table__function">
                                     <div class="table__icon js-open-modal" data-title="Sửa tài sản" @click="openModal()">
@@ -178,7 +158,7 @@
                 <table>
                     <tfoot>
                         <tr class="table__row--paging">
-                            <td class="" colspan="4">
+                            <td class="table__col--assetname" colspan="4">
                                 <div class="table__pagination">
                                     <div class="table__sum">Tổng số: <b>200 bản ghi</b></div>
                                     <div class="table__size" data-title="Số bản ghi trong một dòng">
@@ -209,25 +189,25 @@
                                     </div>
                                 </div>     
                             </td>
-                            <td class=" table__col--left">
+                            <td class="table__col--lef table__col--categoryt">
 
                             </td>
-                            <td class=" table__col--left">
+                            <td class="table__col--left table__col--department">
 
                             </td>
-                            <td class=" table__col--right">
+                            <td class="table__col--right table__col--quantity">
                                 13
                             </td>
-                            <td class=" table__col--right">
+                            <td class="table__col--right table__col--cost">
                                 15.000.000
                             </td>
-                            <td class=" table__col--right">
+                            <td class="table__col--right tabel__col--depreciation">
                                 900.000
                             </td>
-                            <td class=" table__col--right">
+                            <td class="table__col--right table__col--residual">
                                 226.400.000
                             </td>
-                            <td class=" table-col--center table__col--function">
+                            <td class="table-col--center table__col--function">
                                 
                             </td>
                         </tr>
@@ -542,23 +522,383 @@
                 /* Dữ liệu form modal */
                 assets: [
                     { 
-                        "fixedAssetId": "1", "fixedAssetCode": "37H7WN72/2022", "fixedAssetName": "Laptop Lenovo IdeaPad L340",
-                        "organizationId": "1", "organizationCode": "1", "organizationName": "1", 
-                        "departmentId": "1", "departmentCode": "1", "departmentName": "Phòng nhân sự - điều hành", 
-                        "categoryId": "1", "categoryCode": "1", "categoryName": "Phòng nhân sự - điều hành", 
-                        "purchaseDate": new Date().toISOString().substring(0,10),
-                        "cost": "15.000.000",
-                        "quantity": "1",
-                        "depreciationRate": "1,1%",
-                        "trackedYear": new Date().getFullYear(),
-                        "lifeTime": 2,
-                        "productionYear": "1",
-                        "active": 1,
-                        "createdBy": "Tuan",
-                        "createdDate": new Date().toISOString().substring(0,10),
-                        "modifiedBy": "Tuan",
-                        "modifiedDate": new Date().toISOString().substring(0,10),
-                    }
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
+                    { 
+                        fixedAssetId: "1", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: "1",
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                    },
                 ],
 
                 taiSan: {

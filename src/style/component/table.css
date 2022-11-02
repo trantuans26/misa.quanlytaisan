@@ -93,19 +93,24 @@
 .table__footer {
     border-top: 2px solid #f1f1f1;
     height: 40px;
-    line-height: 40px;
     z-index: 1; 
     position: sticky;
     padding: 0 16px 0;  
+    display: flex;
+    align-items: center;
 }
 
 .table__footer table {
     width: 100%;
 }
 
-.table__footer table thead {
-/*     display: flex;
-    align-items: center; */
+.table__footer table tfoot {
+    
+}
+
+.table__footer table tfoot tr {
+    display: flex;
+    align-items: center;
 }
 
 .table__size {
@@ -124,7 +129,6 @@
     display: flex;
     font-size: 11px;
     align-items: center;
-    margin-left: 16px;
 }
 
 .pagination__list {
@@ -221,7 +225,7 @@
     width: 5%;
 }
 
-.table__col--price {
+.table__col--cost {
     width: 8.8%;
 }
 
