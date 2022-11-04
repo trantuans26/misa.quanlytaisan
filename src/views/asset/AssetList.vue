@@ -19,7 +19,7 @@
                         <i class="icon icon--filter"></i>
                     </div>
 
-                    <input class="input input--filter" type="text" :value="this.category.value" tabindex="0" v-on:keyup.enter="this.category.show = !this.category.show" readonly>
+                    <input class="input input--filter" type="text" :value="this.category.filter" tabindex="0" v-on:keyup.enter="this.category.show = !this.category.show" readonly>
 
                     <div class="function__icon--dropdown"> 
                         <i class="icon icon--dropdown"></i>
@@ -30,14 +30,14 @@
                             <li 
                                 class="drilldown__item" 
                                 tabindex="0" 
-                                :class="{'drilldown__item--selected': item == this.category.value}"
+                                :class="{'drilldown__item--selected': item.name == this.category.filter}"
                                 v-for='item in this.category.list'
-                                @click="selectCategory(item)"
-                                v-on:keyup.enter="selectCategory(item), this.category.show = false "
-                                :key="item"
+                                @click="selectCategory(item.name)"
+                                v-on:keyup.enter="selectCategory(item.name), this.category.show = false "
+                                :key="item.name"
                             >
                                 <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                                <div class="drilldown__name">{{item}}</div>
+                                <div class="drilldown__name">{{item.name}}</div>
                             </li>
                         </ul>
                     </div>
@@ -54,21 +54,21 @@
                         <i class="icon icon--dropdown"></i>
                     </div>
                     
-                    <input class="input input--filter" type="text" :value="this.department.value" tabindex="0" v-on:keyup.enter="this.department.show = !this.department.show" readonly>
+                    <input class="input input--filter" type="text" :value="this.department.filter" tabindex="0" v-on:keyup.enter="this.department.show = !this.department.show" readonly>
 
                     <div class="drilldown drilldown__normal" v-show="this.department.show">
                         <ul class="drilldown__box" >
                             <li 
                                 class="drilldown__item" 
                                 tabindex="0" 
-                                :class="{'drilldown__item--selected': item == this.department.value}"
+                                :class="{'drilldown__item--selected': item.name == this.department.filter}"
                                 v-for='item in this.department.list'
-                                @click="selectDepartment(item)" 
-                                v-on:keyup.enter="selectDepartment(item), this.department.show = false"
-                                :key="item"
+                                @click="selectDepartment(item.name)" 
+                                v-on:keyup.enter="selectDepartment(item.name), this.department.show = false"
+                                :key="item.name"
                             >
                                 <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                                <div class="drilldown__name">{{item}}</div>
+                                <div class="drilldown__name">{{item.name}}</div>
                             </li>
                         </ul>
                     </div>
@@ -126,9 +126,10 @@
                             class="table__row" 
                             v-for="(asset,index) in this.assets"
                             :key="asset"
-                            :class="{'table__row--checked': asset.checked}">
+                            :class="{'table__row--checked': asset.checked}"
+                        >
                             <td class="table__col--left table__col--check">
-                               <input type="checkbox" v-model='selected' :value="asset.fixedAssetId" @change="asset.checked = !asset.checked">
+                               <input type="checkbox" v-model='selected' :value="asset.fixedAssetId" @click="asset.checked = !asset.checked" :checked="asset.checked">
                             </td>
                             <td class="table__col--center table__col--serial">{{index + 1}}</td>
                             <td class="table__col--left table__col--assetcode">{{asset.fixedAssetCode}}</td>
@@ -210,16 +211,16 @@
 
                             </td>
                             <td class="table__col--right table__col--quantity">
-                                13
+                                {{sumQuantity()}}
                             </td>
                             <td class="table__col--right table__col--cost">
-                                15.000.000
+                                {{formatPriceNoFixed(sumCost())}}
                             </td>
                             <td class="table__col--right tabel__col--depreciation">
-                                900.000
+                                {{formatPriceNoFixed(sumDepreciation())}}
                             </td>
                             <td class="table__col--right table__col--residual">
-                                226.400.000
+                                {{formatPriceNoFixed(sumCost() - sumDepreciation())}}
                             </td>
                             <td class="table-col--center table__col--function">
                                 
@@ -265,7 +266,7 @@
                             v-bind:class="{'input--error': this.checkTenTaiSan.hasError}" 
                             class="input" type="text"  
                             placeholder="Nhập tên tài sản">
-                        <p class="input__text--error" v-if="this.checkTenTaiSan.hasError">Lỗi cú pháp</p>
+                        <p class="input__text--error" v-if="this.checkTenTaiSan.hasError">Tên tài sản không hợp lệ</p>
                     </div>
                 </div>
                 
@@ -328,7 +329,7 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="input__text--error" v-if="this.checkMaBPSD.hasError">Lỗi cú pháp</p>
+                        <p class="input__text--error" v-if="this.checkMaBPSD.hasError">Mã bộ phận sử dụng không hợp lệ</p>
                      
 
                     </div>
@@ -400,7 +401,7 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="input__text--error" v-if="this.checkMaLoaiTS.hasError">Lỗi cú pháp</p>
+                        <p class="input__text--error" v-if="this.checkMaLoaiTS.hasError">Mã loại tài sản không hợp lệ</p>
                     </div>
     
                     <div class="modal__item modal__item--fill">
@@ -538,13 +539,14 @@
                 @param {option} giá trị đc chọn trong vòng lặp for
                 @returns void
                 Author: Tuan 
-                Date: 30/10/2022 
+                Modified Date: 4/11/2022 
             */
             selectCategory(option) {
-                if(this.category.value == option) {
-                    this.category.value = 'Loại tài sản'
+                if(option == this.category.filter) {
+                    this.category.filter = 'Loại tài sản'
+                } else {
+                    this.category.filter = option;
                 }
-                this.category.value = option;
             },
             /* END: Tài sản */
 
@@ -553,13 +555,14 @@
                 @param {option} giá trị đc chọn trong vòng lặp for
                 @returns void
                 Author: Tuan 
-                Date: 30/10/2022 
+                Modified Date: 4/11/2022 
             */
             selectDepartment(option) {
-                if(this.department.value == option) {
-                    this.department.value = 'Loại bộ phận sử dụng'
+                if(this.department.filter == option) {
+                    this.department.filter = 'Loại bộ phận sử dụng'
+                } else {
+                    this.department.filter = option;
                 }
-                this.department.value = option;
             }, 
             /* END: Bộ phận sử dụng */
 
@@ -746,6 +749,7 @@
                 let val = (value/1).toFixed(0).replace('.', ',')
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
+
             /* Dữ liệu kiểu số dấu chấm trước 3 số 0 và có 2 số thập ph
                 @param {}
                 @returns void
@@ -798,7 +802,14 @@
                     asset.checked = !asset.checked;
                 });
             },
-            NumbersOnly(evt) {
+
+            /* Input type="text" chỉ viết số
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 31/10/2022 
+            */  
+            numbersOnly(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
                 if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
@@ -807,21 +818,65 @@
                     return true;
                 }
             },
+
+            /* Tổng số lượng
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 31/10/2022 
+            */ 
+            sumQuantity() {
+                let sumQuantity = 0;
+                this.assets.forEach(function (asset) {
+                    sumQuantity +=  parseInt(asset.quantity);
+                });
+                return sumQuantity;
+
+            },
+
+            /* Tổng nguyên giá
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 31/10/2022 
+            */
+            sumCost() {
+                let sumCost = 0;
+                this.assets.forEach(function (asset) {
+                    sumCost += parseInt(asset.cost);
+                });
+                return sumCost;
+            },
+
+            /* Tổng hao mòn
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 31/10/2022 
+            */
+            sumDepreciation() {
+                let sumDepreciation = 0;
+                /* Check null vs undefined */
+                this.assets.forEach(function (asset) {
+                    sumDepreciation += (parseFloat(asset.cost) * parseFloat(asset.depreciationRate));
+                });
+                return sumDepreciation;
+            }
         },
 
         data() {
             return {
-                /* BEGIN: Dữ liệu table */
+                /* BEGIN: Dữ liệu table */ 
                 selected: [],
                 assets: [
                     { 
-                        fixedAssetId: "00071", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "00071", fixedAssetCode: "TS0399953", fixedAssetName: "Duy Phương Đặng 2005",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nghiên cứu", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Tivi LCD", 
                         purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: "1",
+                        cost: 31429572,
+                        quantity: 19,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -834,32 +889,13 @@
                         checked: false,
                     },
                     { 
-                        fixedAssetId: "00249", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "01253", fixedAssetCode: "TS1552121", fixedAssetName: "Bảo Ngân Đỗ 1970",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
                         departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
                         categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
                         purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: "1",
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
-                    },
-                    { 
-                        fixedAssetId: "01253", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: "1",
+                        cost: 51763253,
+                        quantity: 32,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -873,13 +909,13 @@
 
                     },
                     { 
-                        fixedAssetId: "03129", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "03129", fixedAssetCode: "TS1984925", fixedAssetName: "Long Hằng Phan 1951",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng doanh nghiệp", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy chiếu", 
                         purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: "1",
+                        cost: 27604747,
+                        quantity: 69,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -892,33 +928,13 @@
                         checked: false,
                     },
                     { 
-                        fixedAssetId: "03470", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "03470", fixedAssetCode: "TS0886710", fixedAssetName: "Hiếu Thu Đoàn 1964",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nghiên cứu", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Đồ dùng văn phòng", 
                         purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: "1",
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
-
-                    },
-                    { 
-                        fixedAssetId: "04309", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: "1",
+                        cost: 58454961,
+                        quantity: 42,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -932,13 +948,13 @@
 
                     },
                     { 
-                        fixedAssetId: "05134", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "04309", fixedAssetCode: "TS1637806", fixedAssetName: "Quang Quỳnh Ngô 1967",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng Customize", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy chiếu", 
                         purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: "1",
+                        cost: 36978136,
+                        quantity: 40,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -952,13 +968,13 @@
 
                     },
                     { 
-                        fixedAssetId: "05242", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "05134", fixedAssetCode: "TS0532603", fixedAssetName: "Dũng Kim Anh Lê 1956",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng giải pháp bán lẻ", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Tivi LCD", 
                         purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: "1",
+                        cost: 81174763,
+                        quantity: 61,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -972,13 +988,13 @@
 
                     },
                     { 
-                        fixedAssetId: "06442", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "05242", fixedAssetCode: "TS0937281", fixedAssetName: "Chiến Ngân Phan 1999",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng kế toán", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Đồ dùng văn phòng", 
                         purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: "1",
+                        cost: 1612075,
+                        quantity: 54,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -992,13 +1008,13 @@
 
                     },
                     { 
-                        fixedAssetId: "06604", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "06442", fixedAssetCode: "TS1503628", fixedAssetName: "Linh Thảo Phan 2029",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng Tổng giám đốc", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy tủ lạnh", 
                         purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: "1",
+                        cost: 92596697,
+                        quantity: 85,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -1012,13 +1028,13 @@
 
                     },
                     { 
-                        fixedAssetId: "08272", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "06604", fixedAssetCode: "TS1704254", fixedAssetName: "Tài Yến Đinh 1980",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng kế toán", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy điều hoà", 
                         purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: "1",
+                        cost: 1612075,
+                        quantity: 14,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -1032,13 +1048,13 @@
 
                     },
                     { 
-                        fixedAssetId: "08452", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "08272", fixedAssetCode: "TS0795735", fixedAssetName: "Thịnh Mây Đỗ 1950",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng thư ký", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Tivi LCD", 
                         purchaseDate: new Date().toISOString().substring(0,10),
                         cost: 15000000,
-                        quantity: "1",
+                        quantity: 65,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -1052,13 +1068,13 @@
 
                     },
                     { 
-                        fixedAssetId: "09328", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "08452", fixedAssetCode: "TS1006468", fixedAssetName: "Thế Anh Huệ Nguyễn 2010",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
                         departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy tủ lạnh", 
                         purchaseDate: new Date().toISOString().substring(0,10),
                         cost: 15000000,
-                        quantity: "1",
+                        quantity: 50,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -1072,13 +1088,13 @@
 
                     },
                     { 
-                        fixedAssetId: "11583", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "09328", fixedAssetCode: "TS1709912", fixedAssetName: "Vũ Mây Dương 2018",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng Tổng giám đốc", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy lọc nước", 
                         purchaseDate: new Date().toISOString().substring(0,10),
                         cost: 15000000,
-                        quantity: "1",
+                        quantity: 91,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -1092,13 +1108,13 @@
 
                     },
                     { 
-                        fixedAssetId: "13804", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "11583", fixedAssetCode: "TS0844758", fixedAssetName: "Linh Vy Phan 2025",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng kế toán", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy chiếu", 
                         purchaseDate: new Date().toISOString().substring(0,10),
                         cost: 15000000,
-                        quantity: "1",
+                        quantity: 3,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -1112,13 +1128,13 @@
 
                     },
                     { 
-                        fixedAssetId: "14056", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "13804", fixedAssetCode: "TS0713914", fixedAssetName: "Chiến Hằng Đỗ 1978",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng kế toán", 
                         categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
                         purchaseDate: new Date().toISOString().substring(0,10),
                         cost: 15000000,
-                        quantity: "1",
+                        quantity: 62,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -1132,13 +1148,13 @@
 
                     },
                     { 
-                        fixedAssetId: "20367", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "14056", fixedAssetCode: "TS1343179", fixedAssetName: "Thế Anh Ngọc Bùi 1987",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
                         departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
                         categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
                         purchaseDate: new Date().toISOString().substring(0,10),
                         cost: 15000000,
-                        quantity: "1",
+                        quantity: 11,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -1152,13 +1168,13 @@
 
                     },
                     { 
-                        fixedAssetId: "20454", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "20367", fixedAssetCode: "TS1592707", fixedAssetName: "Linh Thu Trần 2018",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
                         departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Đèn điện", 
                         purchaseDate: new Date().toISOString().substring(0,10),
                         cost: 15000000,
-                        quantity: "1",
+                        quantity: 65,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -1172,13 +1188,13 @@
 
                     },
                     { 
-                        fixedAssetId: "21742", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "20454", fixedAssetCode: "TS1728950", fixedAssetName: "Long Thảo Lê 1978",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng Customize", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Tivi LCD", 
                         purchaseDate: new Date().toISOString().substring(0,10),
                         cost: 15000000,
-                        quantity: "1",
+                        quantity: 95,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -1192,13 +1208,13 @@
 
                     },
                     { 
-                        fixedAssetId: "21916", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "21742", fixedAssetCode: "TS1785004", fixedAssetName: "Hùng Yến Hoàng 1977",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng giáo dục", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy tủ lạnh", 
                         purchaseDate: new Date().toISOString().substring(0,10),
                         cost: 15000000,
-                        quantity: "1",
+                        quantity: 17,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -1212,13 +1228,33 @@
 
                     },
                     { 
-                        fixedAssetId: "22326", fixedAssetCode: "37H7WN72/2022", fixedAssetName: "Laptop Lenovo IdeaPad L340",
+                        fixedAssetId: "21916", fixedAssetCode: "TS1711473", fixedAssetName: "Linh Oanh Trần 2011",
                         organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng giám đốc", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Bàn ghế", 
                         purchaseDate: new Date().toISOString().substring(0,10),
                         cost: 15000000,
-                        quantity: "1",
+                        quantity: 76,
+                        depreciationRate: 0.1,
+                        trackedYear: new Date().getFullYear(),
+                        lifeTime: 2,
+                        productionYear: "1",
+                        active: 1,
+                        createdBy: "Tuan",
+                        createdDate: new Date().toISOString().substring(0,10),
+                        modifiedBy: "Tuan",
+                        modifiedDate: new Date().toISOString().substring(0,10),
+                        checked: false,
+
+                    },
+                    { 
+                        fixedAssetId: "22326", fixedAssetCode: "TS0562646", fixedAssetName: "Dũng Mây Bùi 1997",
+                        organizationId: "1", organizationCode: "1", organizationName: "1", 
+                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
+                        categoryId: "1", categoryCode: "1", categoryName: "Máy lọc nước", 
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        cost: 15000000,
+                        quantity: 33,
                         depreciationRate: 0.1,
                         trackedYear: new Date().getFullYear(),
                         lifeTime: 2,
@@ -1273,36 +1309,101 @@
                 /* BEGIN: Data loại tài sản */
                 category: {
                     list: [
-                        'Máy vi tính xách tay', 
-                        'Đồ dùng văn phòng', 
-                        'Đèn điện', 
-                        'Máy lọc nước', 
-                        'Tivi LCD', 
-                        'Bàn ghế', 
-                        'Máy điều hoà', 
-                        'Quạt', 
-                        'Máy tủ lạnh', 
-                        'Máy chiếu'
+                        {
+                            code: 'LTS0001',
+                            name:  'Máy vi tính xách tay',
+                        },
+                        {
+                            code: 'LTS0014',
+                            name: 'Đồ dùng văn phòng', 
+                        },
+                        {
+                            code: 'LTS0013',
+                            name:  'Đèn điện',
+                        },
+                        {
+                            code: 'LTS0011',
+                            name:  'Máy lọc nước', 
+                        },
+                        {
+                            code: 'LTS0012',
+                            name:  'Tivi LCD', 
+                        },
+                        {
+                            code: 'LTS0004',
+                            name:  'Bàn ghế', 
+                        },
+                        {
+                            code: 'LTS0007',
+                            name:  'Máy điều hoà', 
+                        },
+                        {
+                            code: 'LTS0002',
+                            name:  'Quạt', 
+                        },
+                        {
+                            code: 'LTS0010',
+                            name:  'Máy tủ lạnh', 
+                        },
+                        {
+                            code: 'LTS0005',
+                            name:  'Máy chiếu'
+                        },      
                     ],
                     show: false,
-                    value: 'Loại tài sản'
+                    filter: 'Loại tài sản'
                 },
                 /* END: Data loại tài sản */
 
                 /* BEGIN: Data bộ phận sử dụng */
                 department: {
                     show: false,
-                    value: 'Bộ phận sử dụng',
+                    filter: 'Bộ phận sử dụng',
                     list: [
-                        'Phòng kế toán',
-                        'Phòng thư ký',
-                        'Phòng giáo dục',
-                        'Phòng nghiên cứu',
-                        'Phòng customize',
-                        'Phòng nhân sự - điều hành',
-                        'Phòng doanh nghiệp',
-                        'Phòng quản trị kinh doanh',
-                        'Phòng giải pháp bán lẻ'
+                        {
+                            code: "D0001",
+                            name: 'Phòng kế toán',
+
+                        },
+                        {
+                            code: "D0002",
+                            name: 'Phòng thư ký',
+
+                        },
+                        {
+                            code: "D0003",
+                            name: 'Phòng giáo dục',
+
+                        },
+                        {
+                            code: "D0004",
+                            name: 'Phòng nghiên cứu',
+
+                        },
+                        {
+                            code: "D0005",
+                            name: 'Phòng customize',
+
+                        },
+                        {
+                            code: "D0006",
+                            name: 'Phòng nhân sự - điều hành',
+
+                        },
+                        {
+                            code: "D0007",
+                            name: 'Phòng doanh nghiệp',
+
+                        },
+                        {
+                            code: "D0008",
+                            name: 'Phòng quản trị kinh doanh',
+
+                        },                       
+                        {
+                            code: "D0009",
+                            name: 'Phòng giải pháp bán lẻ'
+                        },
                     ]
                 },
                 /* END: Data bộ phận sử dụng */

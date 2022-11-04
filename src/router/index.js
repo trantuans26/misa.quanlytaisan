@@ -2,7 +2,7 @@
 // These can be imported from other files
 import { createRouter, createWebHistory } from 'vue-router'
 
-import ProductList from '@/views/product/ProductList.vue';
+import AssetList from '@/views/asset/AssetList.vue';
 
 import ReportList from '@/views/report/ReportList.vue';
 
@@ -10,7 +10,7 @@ import ReportList from '@/views/report/ReportList.vue';
 // Each route should map to a component.
 // We'll talk about nested routes later.
 const routes = [
-  { path: '/product', name: 'ProductList', component: ProductList },
+  { path: '/asset', name: 'AssetList', component: AssetList },
   { path: '/report', name: 'ReportList', component: ReportList},
 ]
 

@@ -66,7 +66,7 @@
                         </router-link>
                     </li>
                     <li class="sidebar__item" @click="actived()" :class="{'sideba__item--actived': isActive}">
-                        <router-link to="/product">
+                        <router-link to="/asset">
                             <i class="icon icon--taisan"></i>
                             <p>Tài sản</p>
                             <i class="icon icon--angle-down"></i>
