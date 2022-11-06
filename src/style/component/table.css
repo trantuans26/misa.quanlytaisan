@@ -40,6 +40,7 @@
 .table__content {
     flex: 1;
     overflow-y: auto;
+    
 }
 
 .table__content::-webkit-scrollbar {
@@ -71,7 +72,7 @@
 }
 
 .table__row--checked {
-    background-color: rgba(26, 164, 200, .2);
+      background-color: rgba(26, 164, 200, .2);
 }
 
 .table__row:hover .table__icon {

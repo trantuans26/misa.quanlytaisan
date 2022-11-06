@@ -5,49 +5,53 @@
 	cursor: pointer;
 }
 
+.icon--empty {
+	background-position: 0px 0px;
+}
+
 .icon--logo {
 	background-position: -20px -680px;
     width: 36px;
 	height: 36px;
 }
 
-.icon--trangchu {
+.icon--total {
     background-position: -21px -153px;
 	width: 22px;
 	height: 22px;
 }
 
-.icon--taisan {
+.icon--asset {
     background-position: -65px -153px;
 	width: 22px;
 	height: 23px;
 }
 
-.icon--hdtb {
+.icon--infrastructure {
     background-position: -110px -153px;
 	width: 21px;
 	height: 23px;
 }
 
-.icon--ccdc {
+.icon--tool {
     background-position: -153px -153px;
 	width: 22px;
 	height: 22px;
 }
 
-.icon--danhmuc {
+.icon--category {
     background-position: -197px -155px;
     width: 22px;
 	height: 18px;
 }
 
-.icon--tracuu {
+.icon--searchShadow {
     background-position: -241px -153px;
 	width: 22px;
 	height: 22px;
 }
 
-.icon--baocao {
+.icon--report {
     background-position: -329px -153px;
 	width: 22px;
 	height: 22px;

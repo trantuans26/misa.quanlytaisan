@@ -1,5 +1,5 @@
 <template>
-    <div class="content" >
+    <div class="content">
         <!-- BEGIN: Content/Function -->
         <div class="function">
             <div class="function__list">
@@ -14,7 +14,10 @@
                 <!-- END: Tìm kiếm tài sản -->
 
                 <!-- BEGIN: Lọc loại tài sản -->
-                <div class="function__item function__item--maright function__item--loaitaisan" @click="this.category.show = !this.category.show">
+                <div 
+                    class="function__item function__item--maright function__item--loaitaisan" 
+                    @click="this.category.show = !this.category.show"            
+                >
                     <div class="function__icon"> 
                         <i class="icon icon--filter"></i>
                     </div>
@@ -534,6 +537,13 @@
 
         },
         methods: {
+            togglePicker() {
+                let formerValue = this.pickerVisible;
+                this.pickerVisible = formerValue === true ? false : true;
+            },
+            removePicker() {
+                this.pickerVisible = false;
+            },
             /* BEGIN: Tài sản */
             /* Lọc loại tài sản
                 @param {option} giá trị đc chọn trong vòng lặp for
@@ -866,6 +876,7 @@
 
         data() {
             return {
+                pickerVisible: false,
                 /* BEGIN: Dữ liệu table */ 
                 selected: [],
                 assets: [

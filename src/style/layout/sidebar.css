@@ -1,4 +1,3 @@
-
 .sidebar {
     background-color: #1c3048;
     box-shadow: inset 0 3px 6px rgba(0, 0, 0, .16);
@@ -58,7 +57,7 @@
     height: auto;
     display: flex;
     flex-direction: column;
-    margin-top: 11px;
+    margin-top: 11px;    
 }
 
 .sidebar__item {
@@ -69,15 +68,21 @@
     margin: 0 11px 0;
     position: relative;
 }
+
 .sidebar__item  a {
     display: flex;
     align-items: center;
 }
 
+.sidebar__item p {
+    color: white;
+    margin-right: 32px;
+}
 
 .sidebar--minimize .sidebar__item {
     justify-content: center;
 }
+
 .sidebar--minimize .sidebar__item i {
     margin: 0 10px 0;
 }
@@ -92,85 +97,67 @@
     right: 0;
 }
 
-.sidebar__item:hover,
-.sidebar__item:checked,
-.sidebar__item:active,
-.sidebar__item:focus-within { 
+/* BEGIN: Hover */
+.sidebar__item:hover { 
     opacity: 1;
     background-color: #1aa4c8;
     cursor: pointer;
 }
 
-.sidebar__item--actived {
-    opacity: 1;
-    background-color: #1aa4c8;
-}
-
-.sidebar--minimize .sidebar__item:hover,
-.sidebar--minimize .sidebar__item:checked,
-.sidebar--minimize .sidebar__item:active,
-.sidebar--minimize .sidebar__item:focus-within {
+.sidebar--minimize .sidebar__item {
     border-radius: 6px;
 }
 
-.sidebar--maximum .sidebar__item:hover,
-.sidebar--maximum .sidebar__item:checked,
-.sidebar--maximum .sidebar__item:active,
-.sidebar--maximum .sidebar__item:focus-within {
+.sidebar--maximum .sidebar__item {
     border-radius: 3px;
 }
 
-.sidebar__item p {
-    color: white;
-    margin-right: 32px;
+/* END: Hover */
+
+.sidebar__list.total .total,
+.sidebar__list.asset .asset,
+.sidebar__list.infrastructure .infrastructure,
+.sidebar__list.tool .tool,
+.sidebar__list.category .category,
+.sidebar__list.searchShadow .searchShadow,
+.sidebar__list.report .report {
+    opacity: 1;
+    background-color: #1aa4c8;
+    cursor: pointer;
 }
 
-.sidebar__item:hover a > .icon--trangchu,
-.sidebar__item:checked a > .icon--trangchu,
-.sidebar__item:active a > .icon--trangchu,
-.sidebar__item:focus-within a > .icon--trangchu{
+.sidebar__item:hover a > .icon--total,
+.sidebar__list.total .icon--total {
     background-position: -22px -198px;
 }
 
-.sidebar__item:hover a > .icon--taisan,
-.sidebar__item:checked a > .icon--taisan,
-.sidebar__item:active a > .icon--taisan,
-.sidebar__item:focus-within a > .icon--taisan {
+.sidebar__item:hover a > .icon--asset,
+.sidebar__list.asset .icon--asset {
     background-position: -65px -197px;
 }
 
-.sidebar__item:hover a > .icon--hdtb,
-.sidebar__item:checked a > .icon--hdtb,
-.sidebar__item:active a > .icon--hdtb,
-.sidebar__item:focus-within a > .icon--hdtb {
+.sidebar__item:hover a > .icon--infrastructure,
+.sidebar__list.infrastructure .icon--infrastructure {
     background-position: -110px -197px;
 }
 
-.sidebar__item:hover a > .icon--ccdc,
-.sidebar__item:checked a > .icon--ccdc,
-.sidebar__item:active a > .icon--ccdc,
-.sidebar__item:focus-within a > .icon--ccdc {
+.sidebar__item:hover a > .icon--tool,
+.sidebar__list.tool .icon--tool {
     background-position: -153px -197px;
 }
 
-.sidebar__item:hover a > .icon--danhmuc,
-.sidebar__item:checked a > .icon--danhmuc,
-.sidebar__item:active a > .icon--danhmuc,
-.sidebar__item:focus-within a > .icon--danhmuc {
+.sidebar__item:hover a > .icon--category
+.sidebar__list.category .icon--category {
     background-position: -198px -200px; 
 }
 
-.sidebar__item:hover a > .icon--tracuu,
-.sidebar__item:checked a > .icon--tracuu,
-.sidebar__item:active a > .icon--tracuu,
-.sidebar__item:focus-within a > .icon--tracuu {
+.sidebar__item:hover a > .icon--searchShadow,
+.sidebar__list.searchShadow .icon--searchShadow {
     background-position: -240px -196px;
 }
 
-.sidebar__item:hover a > .icon--baocao,
-.sidebar__item:checked a > .icon--baocao,
-.sidebar__item:active a > .icon--baocao,
-.sidebar__item:focus-within a > .icon--baocao {
+.sidebar__item:hover a > .icon--report,
+.sidebar__list.report .icon--report {
     background-position: -330px -198px;
 }
 
