@@ -50,6 +50,7 @@
                         @click="makeActive(item.style)"
                         :key="item"
                         :class="item.style"
+                        :data-title="item.tooltip"
                     >
                         <router-link :to="item.route">
                             <i class="icon" :class="item.icon"></i>
@@ -82,49 +83,56 @@
                             title: 'Tổng quan',
                             subicon: 'icon--empty'  ,
                             style: 'total',
-                            route: '/total'
+                            route: '/total',
+                            tooltip: null
                         },
                         {
                             icon: 'icon--asset',
                             title: 'Tài sản',
                             subicon: 'icon--angle-down',
                             style: 'asset',
-                            route: '/asset'
+                            route: '/asset',
+                            tooltip: null
                         },
                         {
                             icon: 'icon--infrastructure',
                             title: 'Tài sản HT-ĐB',
                             subicon: 'icon--angle-down',
                             style: 'infrastructure',
-                            route: '/infrastructure'
+                            route: '/infrastructure',
+                            tooltip: 'Tài sản Hạ Tầng-Đường Bộ'
                         },
                         {
                             icon: 'icon--tool',
                             title: 'Công cụ dụng cụ',
                             subicon: 'icon--angle-down',
                             style: 'tool',
-                            route: '/tool'
+                            route: '/tool',
+                            tooltip: null
                         },
                         {
                             icon: 'icon--category',
                             title: 'Danh mục',
                             subicon: 'icon--empty',
                             style: 'category',
-                            route: '/category'
+                            route: '/category',
+                            tooltip: null
                         },
                         {
                             icon: 'icon--searchShadow',
                             title: 'Tra cứu',
                             subicon: 'icon--angle-down',
                             style: 'searchShadow',
-                            route: '/search'
+                            route: '/search',
+                            tooltip: null
                         },
                         {
                             icon: 'icon--report',
                             title: 'Báo cáo',
                             subicon: 'icon--angle-down',
                             style: 'report',
-                            route: '/report'
+                            route: '/report',
+                            tooltip: null
                         },
                     ],
                 },

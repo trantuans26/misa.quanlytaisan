@@ -80,5 +80,11 @@
     color: white;
 }
 
+.btn__tabRollback {
+    outline: none;
+    background-color: #f5f5f5;
+    border: none;
+}
+
 /* END: BUTTON FUNCTION */
 

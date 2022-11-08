@@ -15,6 +15,13 @@
 
 .drilldown__normal {
     width: 100%; 
+    font-size: 13px;
+}
+
+.drilldown--modal {
+    left: 0;
+    width: 120%; 
+    font-size: 14px;
 }
 
 .drilldown::before {
@@ -22,6 +29,16 @@
     position: absolute;
     width: 100px;
     right: 0%;
+    background-color: none;
+    height: 60px;
+    top: -20px;
+}
+
+.drilldown--modal::before {
+    content: "";
+    position: absolute;
+    width: 100px;
+    right: 10%;
     background-color: none;
     height: 60px;
     top: -20px;
@@ -47,12 +64,24 @@
     outline: none;
 }
 
+.drilldown__item--header,
+.drilldown__item--header:hover {
+    background-color: rgb(150, 198, 238) !important;
+}
+
+.drilldown__item--modal {
+    padding: 12px;
+}
+
+.drilldown__item--selected {
+    background-color: rgb(199, 224, 245);
+}
+
 .drilldown__item--selected .drilldown__check i {
     display: block;
 }
 
-.drilldown__item:hover,
-.drilldown__item:focus {
+.drilldown__item:hover {
     background-color: rgb(199, 224, 245);
 }
 
@@ -72,11 +101,12 @@
     display: none;
 }
 
-.drilldown__name {
-    font-size: 13px;
-}
-
-
 .drilldown--year .drilldown__check {
     margin-right: 11px;
+}
+
+.drilldown__id {
+    margin-right: 32px;
+    width: 52px;
+    text-align: center;
 }

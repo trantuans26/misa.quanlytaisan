@@ -1,8 +1,8 @@
 .input {
     font-size: 13px;
     background-color: #ffffff;
-    border-radius: 2.5px;
-    border: 1px solid #afafaf;
+    border-radius: 3.5px;
+    border: 1.5px solid #afafaf;
     width: 280px;
     height: 36px;
     overflow: hidden;
@@ -10,6 +10,7 @@
     padding-right: 14px;
     box-sizing: border-box;
     outline: none;
+    border-collapse: collapse;
 }
 
 .input::placeholder {
@@ -24,7 +25,7 @@
 
 .input:hover,
 .input:focus {
-    border: 2px solid #1aa4c8;
+    border: 1.5px solid #1aa4c8;
 }
 
 .input--disable {
@@ -40,10 +41,7 @@
 .input--search {
     width: 180px;
     padding-left: 38px;
-}
 
-.input--search:active {
-    border: 2px solid #1aa4c8;
 }
 
 .input--search::placeholder {
@@ -51,6 +49,19 @@
     font-style: Roboto Italic;
 }
 /* End: Search input */
+
+.input--filter,
+.input--search {
+    border-radius: 2.5px;
+    border: 1.5px solid #afafaf;
+}
+
+.input--filter:hover,
+.input--filter:focus,
+.input--search:hover,
+.input--search:focus {
+    border: 1.5px solid #1aa4c8;
+}
 
 .input--filter {
     width: 219px;
@@ -100,3 +111,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     -webkit-appearance:inherit;
     margin-left: 8px;
 } */
+
+.input--modal {
+    font-size: 14px;
+}

@@ -129,16 +129,22 @@
 .sidebar__item:hover a > .icon--total,
 .sidebar__list.total .icon--total {
     background-position: -22px -198px;
+    width: 20px;
+	height: 21px;
 }
 
 .sidebar__item:hover a > .icon--asset,
 .sidebar__list.asset .icon--asset {
     background-position: -65px -197px;
+    width: 22px;
+	height: 23px;
 }
 
 .sidebar__item:hover a > .icon--infrastructure,
 .sidebar__list.infrastructure .icon--infrastructure {
     background-position: -110px -197px;
+    width: 21px;
+	height: 22px;
 }
 
 .sidebar__item:hover a > .icon--tool,
@@ -149,16 +155,22 @@
 .sidebar__item:hover a > .icon--category
 .sidebar__list.category .icon--category {
     background-position: -198px -200px; 
+    width: 20px;
+	height: 17px;
 }
 
 .sidebar__item:hover a > .icon--searchShadow,
 .sidebar__list.searchShadow .icon--searchShadow {
     background-position: -240px -196px;
+    width: 23px;
+	height: 23px;
 }
 
 .sidebar__item:hover a > .icon--report,
 .sidebar__list.report .icon--report {
     background-position: -330px -198px;
+    width: 20px;
+	height: 20px;
 }
 
 .sidebar [data-title]:after {
