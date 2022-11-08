@@ -34,13 +34,14 @@
     color: black;
     padding: 8px;
     opacity: 0.8;
-    margin: 14px 16px 14px;
+    margin: 6px 8px 6px;
 }
 
 .modal__close:hover {
     color: #ffffff;
     opacity: 1;
     cursor: pointer;
+    
 }
 
 .modal__header {

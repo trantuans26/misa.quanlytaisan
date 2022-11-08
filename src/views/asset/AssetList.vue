@@ -255,14 +255,14 @@
             <div class="modal__section modal__body">
                 <div class="modal__line">
                     <div class="modal__item">
-                        <label for="enter-fixedAssetCode" class="modal__label">
+                        <label class="modal__label">
                             Mã tài sản <em>*</em>
                         </label>
                         <input ref="focusMe" v-model.trim="assetModal.fixedAssetCode" class="input input--modal" type="text" placeholder="Nhập mã tài sản" style="">
                     </div>
     
                     <div class="modal__item modal__item--fill">
-                        <label for="enter-fixedAssetName" class="modal__label">
+                        <label class="modal__label">
                             Tên tài sản <em>*</em>
                         </label>
                         <input
@@ -276,7 +276,7 @@
                 
                 <div class="modal__line">
                     <div class="modal__item">
-                        <label for="enter-mabophansudung" class="modal__label">
+                        <label class="modal__label">
                             Mã bộ phận sử dụng <em>*</em>
                         </label>
                         <div class="modal__input--icon">
@@ -339,10 +339,10 @@
                     </div>
     
                     <div class="modal__item modal__item--fill">
-                        <label for="enter-tenbophansudung" class="modal__label">
+                        <label class="modal__label">
                             Tên bộ phận sử dụng
                         </label>
-                        <input v-model.trim="assetModal.tenBPSD" class="input input--disable input--modal" type="text" tabindex="-1">
+                        <input v-model.trim="assetModal.departmentName" class="input input--disable input--modal" type="text" tabindex="-1">
                     </div>
                 </div>
 
@@ -350,12 +350,12 @@
                     <div class="modal__item"
                        @click="this.category.show = !this.category.show"
                     >
-                        <label for="enter-maloaitaisan" class="modal__label">
+                        <label class="modal__label">
                             Mã loại tài sản <em>*</em>
                         </label>
                         <div class="modal__input--icon">
                             <input 
-                                v-model.trim="this.assetModal.maLoaiTS"  
+                                v-model.trim="this.assetModal.categoryCode"  
                                 v-bind:class="{'input--error': this.checkMaLoaiTS.hasError}" 
                                 class="input input--haveicon input--modal" 
                                 type="text"  
@@ -371,7 +371,7 @@
                                         <div class="drilldown__name"><b>Tên loại tài sản</b></div>
                                     </li>
                                     <li class="drilldown__item drilldown__item--modal" 
-                                        :class="{'drilldown__item--selected': item.code == this.assetModal.maLoaiTS}"
+                                        :class="{'drilldown__item--selected': item.code == this.assetModal.categoryCode}"
                                         v-for='item in this.category.list'
                                         @click="selectValueCategory(item)"
                                         :key="item"
@@ -386,60 +386,60 @@
                     </div>
     
                     <div class="modal__item modal__item--fill">
-                        <label for="enter-tenloaitaisan" class="modal__label">
+                        <label class="modal__label">
                             Tên loại tài sản 
                         </label>
-                        <input v-model.trim="assetModal.tenLoaiTS" class="input input--disable input--modal" type="text" tabindex="-1">
+                        <input v-model.trim="assetModal.categoryName" class="input input--disable input--modal" type="text" tabindex="-1">
                     </div>
                 </div>
 
                 <div class="modal__line">
                     <div class="modal__item">
-                        <label for="enter-soluong" class="modal__label">
+                        <label class="modal__label">
                             Số lượng <em>*</em>
                         </label>
                         <div class="modal__input--icon">
-                            <input v-model.trim="assetModal.soLuong" class="input input--haveicon input--textright input__spin--hide input--modal" v-on:keypress="NumbersOnly" type="text">
+                            <input v-model.trim="assetModal.quantity" class="input input--haveicon input--textright input__spin--hide input--modal" v-on:keypress="NumbersOnly" type="text">
                             <i class="icon icon--multidrop"></i>
                         </div>
                     </div>
     
                     <div class="modal__item">
-                        <label for="enter-nguyengia" class="modal__label">
+                        <label class="modal__label">
                             Nguyên giá <em>*</em>
                         </label>
-                        <input v-model.trim="assetModal.nguyenGia" class="input input--textright input__spin--hide input--modal" v-on:keypress="NumbersOnly" type="text">
+                        <input v-model.trim="assetModal.cost" class="input input--textright input__spin--hide input--modal" v-on:keypress="NumbersOnly" type="text">
                     </div>
     
                     <div class="modal__item">
-                        <label for="enter-sonamsudung" class="modal__label">
+                        <label class="modal__label">
                             Số năm sử dụng <em>*</em>
                         </label>
-                        <input v-model.trim="assetModal.soNamSD" class="input input--textright input__spin--hide input--modal" v-on:keypress="NumbersOnly" type="text">
+                        <input v-model.trim="assetModal.purchaseDate" class="input input--textright input__spin--hide input--modal" v-on:keypress="NumbersOnly" type="text">
                     </div>
                 </div>
 
                 <div class="modal__line">
                     <div class="modal__item">
-                        <label for="enter-tylehaomon" class="modal__label">
+                        <label class="modal__label">
                             Tỷ lệ hao mòn (%) <em>*</em>
                         </label>
                         <div class="modal__input--icon">
-                            <input v-model.trim="assetModal.tyLeHM" class="input input--haveicon input--textright input__spin--hide input--modal" v-on:keypress="NumbersOnly" type="text">
+                            <input v-model.trim="assetModal.depreciationRate" class="input input--haveicon input--textright input__spin--hide input--modal" v-on:keypress="NumbersOnly" type="text">
                             <i class="icon icon--multidrop"></i>
                         </div>
 
                     </div>
     
                     <div class="modal__item">
-                        <label for="enter-giatrihaomonnam" class="modal__label">
+                        <label class="modal__label">
                             Giá trị hao mòn năm <em>*</em>
                         </label>
-                        <input v-model.trim="assetModal.giaTriHMNam" class="input input--textright input__spin--hide input--modal" v-on:keypress="NumbersOnly" type="text">
+                        <input v-model.trim="assetModal.depreciation" class="input input--textright input__spin--hide input--modal" v-on:keypress="NumbersOnly" type="text">
                     </div>
      
                     <div class="modal__item">
-                        <label for="enter-namtheodoi" class="modal__label">
+                        <label class="modal__label">
                             Năm theo dõi 
                         </label>
                         <input v-model.trim="assetModal.namTheoDoi" class="input input--disable input--textright input--modal" type="text" tabindex="-1">
@@ -448,7 +448,7 @@
 
                 <div class="modal__line">
                     <div class="modal__item">
-                        <label for="enter-ngaymua" class="modal__label">
+                        <label class="modal__label">
                             Ngày mua <em>*</em>
                         </label>
                         <div class="modal__input--icon">
@@ -462,7 +462,7 @@
                     </div>
     
                     <div class="modal__item">
-                        <label for="enter-ngaybatdausudung" class="modal__label">
+                        <label class="modal__label">
                             Ngày bắt đầu sử dụng <em>*</em>
                         </label>
                         <div class="modal__input--icon">
@@ -544,12 +544,12 @@
                 Modified Date: 4/11/2022 
             */
             selectValueCategory(option) {
-                if(option.code == this.assetModal.maLoaiTS) {
-                    this.assetModal.maLoaiTS = null
-                    this.assetModal.tenLoaiTS = null
+                if(option.code == this.assetModal.categoryCode) {
+                    this.assetModal.categoryCode = null
+                    this.assetModal.categoryName = null
                 } else {
-                    this.assetModal.maLoaiTS = option.code;
-                    this.assetModal.tenLoaiTS = option.name;     
+                    this.assetModal.categoryCode = option.code;
+                    this.assetModal.categoryName = option.name;     
                 }
             },
             /* END: Tài sản */
@@ -642,14 +642,14 @@
                     fixedAssetCode: 'TS00001',
                     fixedAssetName: '',
                     departmentCode: '',
-                    tenBPSD: '',
-                    maLoaiTS: '',
-                    tenLoaiTS: '',
-                    soLuong: 0,
-                    nguyenGia: 0,
-                    soNamSD: 0,
-                    tyLeHM: 0,
-                    giaTriHMNam: 0,
+                    departmentName: '',
+                    categoryCode: '',
+                    categoryName: '',
+                    quantity: 0,
+                    cost: 0,
+                    purchaseDate: 0,
+                    depreciationRate: 0,
+                    depreciation: 0,
                     namTheoDoi: new Date().getFullYear(),
                     ngayMua: new Date().toISOString().substring(0,10),
                     ngayBatDauSD: new Date().toISOString().substring(0,10)
@@ -704,13 +704,13 @@
                 Date: 23/10/2022 
             */
             onSubmit() {
-                if(this.assetModal.fixedAssetName.trim() != "" && this.assetModal.departmentCode.trim() != "" && this.assetModal.maLoaiTS.trim() != "") {
+                if(this.assetModal.fixedAssetName.trim() != "" && this.assetModal.departmentCode.trim() != "" && this.assetModal.categoryCode.trim() != "") {
                     this.checkfixedAssetName.hasError = false;
                     this.checkdepartmentCode.hasError = false;
                     this.checkMaLoaiTS.hasError = false;
                     this.showSuccessToast();
                     console.log(this.assetModal);
-                } else if (this.assetModal.fixedAssetName.trim() == "" && this.assetModal.departmentCode.trim() == "" && this.assetModal.maLoaiTS.trim() == "") {
+                } else if (this.assetModal.fixedAssetName.trim() == "" && this.assetModal.departmentCode.trim() == "" && this.assetModal.categoryCode.trim() == "") {
                     this.checkfixedAssetName.hasError = true;
                     this.checkdepartmentCode.hasError = true;
                     this.checkMaLoaiTS.hasError = true;
@@ -718,12 +718,12 @@
                     this.checkdepartmentCode.hasError = true;
                     this.checkfixedAssetName.hasError = true;
                     this.checkMaLoaiTS.hasError = false; 
-                } else if (this.assetModal.fixedAssetName.trim() == "" && this.assetModal.maLoaiTS.trim() == "") {
+                } else if (this.assetModal.fixedAssetName.trim() == "" && this.assetModal.categoryCode.trim() == "") {
                     this.checkdepartmentCode.hasError = false;
                     this.checkfixedAssetName.hasError = true;
                     this.checkMaLoaiTS.hasError = true;
                 }
-                else if (this.assetModal.departmentCode.trim() == "" && this.assetModal.maLoaiTS.trim() == "") {
+                else if (this.assetModal.departmentCode.trim() == "" && this.assetModal.categoryCode.trim() == "") {
                     this.checkMaLoaiTS.hasError = true;
                     this.checkdepartmentCode.hasError = true;
                     this.checkfixedAssetName.hasError = false;
@@ -735,7 +735,7 @@
                     this.checkdepartmentCode.hasError = true;
                     this.checkMaLoaiTS.hasError = false;
                     this.checkfixedAssetName.hasError = false;
-                } else if(this.assetModal.maLoaiTS.trim() == "") {
+                } else if(this.assetModal.categoryCode.trim() == "") {
                     this.checkMaLoaiTS.hasError = true;
                     this.checkdepartmentCode.hasError = false;
                     this.checkfixedAssetName.hasError = false;
@@ -782,14 +782,14 @@
                 this.assetModal.fixedAssetCode = fixedAssetCode;
                 this.assetModal.fixedAssetName = fixedAssetName;
                 this.assetModal.departmentCode = departmentCode;
-                this.assetModal.tenBPSD = departmentName;
-                this.assetModal.maLoaiTS = categoryCode;
-                this.assetModal.tenLoaiTS = categoryName;
-                this.assetModal.soLuong = quantity;
-                this.assetModal.nguyenGia = cost;
-                this.assetModal.soNamSD = lifeTime;
-                this.assetModal.tyLeHM = depreciationRate;
-                this.assetModal.giaTriHMNam = depreciation;
+                this.assetModal.departmentName = departmentName;
+                this.assetModal.categoryCode = categoryCode;
+                this.assetModal.categoryName = categoryName;
+                this.assetModal.quantity = quantity;
+                this.assetModal.cost = cost;
+                this.assetModal.purchaseDate = lifeTime;
+                this.assetModal.depreciationRate = depreciationRate;
+                this.assetModal.depreciation = depreciation;
                 this.assetModal.namTheoDoi = trackedYear;
                 this.assetModal.ngayBatDauSD = purchaseDate;
                 this.assetModal.ngayMua = purchaseDate;
@@ -1280,14 +1280,14 @@
                     fixedAssetCode: 'TS00001',
                     fixedAssetName: '',
                     departmentCode: '',
-                    tenBPSD: '',
-                    maLoaiTS: '',
-                    tenLoaiTS: '',
-                    soLuong: 0,
-                    nguyenGia: 0,
-                    soNamSD: 0,
-                    tyLeHM: 0,
-                    giaTriHMNam: 0,
+                    departmentName: '',
+                    categoryCode: '',
+                    categoryName: '',
+                    quantity: 0,
+                    cost: 0,
+                    purchaseDate: 0,
+                    depreciationRate: 0,
+                    depreciation: 0,
                     namTheoDoi: new Date().getFullYear(),
                     ngayMua: new Date().toISOString().substring(0,10),
                     ngayBatDauSD: new Date().toISOString().substring(0,10),
