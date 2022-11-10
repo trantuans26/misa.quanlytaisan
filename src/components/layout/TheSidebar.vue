@@ -83,7 +83,7 @@
                             title: 'Tổng quan',
                             subicon: 'icon--empty'  ,
                             style: 'total',
-                            route: '/total',
+                            route: '/loading',
                             tooltip: null
                         },
                         {

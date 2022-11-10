@@ -172,10 +172,9 @@
 }
 
 .icon--alert {
-	background-position: -416px -66px;
-	width: 24px;
-	height: 20px;
-	transform: scale(1.5,1.5);
+	background: url(../../assets/icons/qlts-icon-2.svg) no-repeat -470px -28px;
+	width: 36px;
+	height: 32px;
 }
 
 .icon--checkbox {

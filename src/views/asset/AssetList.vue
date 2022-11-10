@@ -15,21 +15,29 @@
 
                 <!-- BEGIN: Lọc loại tài sản -->
                 <div 
-                    class="function__item function__item--maright function__item--loaitaisan" 
-                    @click="this.category.show = !this.category.show"    
-                            
+                    class="function__item function__item--maright function__item--loaitaisan"        
+                    @click="this.category.show = !this.category.show"
+                    @mousedown="hideDrillDownBlur()"
                 >
                     <div class="function__icon"> 
                         <i class="icon icon--filter"></i>
                     </div>
 
-                    <input class="input input--filter" type="text" :value="this.category.filter" tabindex="0" v-on:keyup.enter="this.category.show = !this.category.show" readonly>
+                    <input 
+                        class="input input--filter" 
+                        type="text" 
+                        :value="this.category.filter"  
+                        v-on:keyup.enter="this.category.show = !this.category.show" 
+                        readonly
+                    >
 
                     <div class="function__icon--dropdown"> 
                         <i class="icon icon--dropdown"></i>
                     </div>
 
-                    <div class="drilldown drilldown__normal" v-show="this.category.show">
+                    <div class="drilldown drilldown__normal" 
+                        v-show="this.category.show" 
+                    >
                         <ul class="drilldown__box" >
                             <li 
                                 class="drilldown__item" 
@@ -92,7 +100,7 @@
                 <!-- END: Xuất bảng tài sản -->
 
                 <!-- BEGIN: Xoá tài sản -->
-                <button class="btn btn__del function__item--maleft" data-title="Xoá tài sản">
+                <button class="btn btn__del function__item--maleft" data-title="Xoá tài sản" @click="showAlertDelete()">
                     <i class="icon icon--del"></i>
                 </button>    
                 <!-- END: Xoá tài sản -->
@@ -235,10 +243,24 @@
             </div>
         </div>
         <!-- END: Content/Table -->
+
+        <!-- BEGIN: Alert delete -->
+        <div class="alert__box alert__box--open">
+            <div class="alert__content">
+                <div class="alert__body">
+                    <i class="icon icon--alert"></i>
+                    <div class="alert__title">Chưa có tài sản nào được chọn!</div>
+                </div>
+                <div class="alert__footer">
+                    <button class="btn btn__save alert__button--space" @click="acceptAlert()">Không</button>
+                </div>
+            </div>
+        </div>        
+        <!-- END: Alert delete -->
     </div>
 
     <div class="modal" :class="{open: displayModal}">
-        <form class="modal__main" @submit.prevent="onSubmit()">
+        <form class="modal__main"  @submit.prevent="onSubmit()">
             <!-- BEGIN: Close modal -->
             <div class="modal__section modal__close" @click="closeModal()">
                 <i class="icon icon--close"></i>
@@ -275,7 +297,10 @@
                 </div>
                 
                 <div class="modal__line">
-                    <div class="modal__item">
+                    <div 
+                        class="modal__item"
+                        @click="this.department.show = !this.department.show"
+                    >
                         <label class="modal__label">
                             Mã bộ phận sử dụng <em>*</em>
                         </label>
@@ -288,49 +313,26 @@
                             
                             >
                             <i class="icon icon--dropdown"></i>
-                            <div class="modal__dropdown">
-                                <div class="function__drilldown--box">
-                                    <div class="function__drilldown--item function__drilldown--head">
-                                        <div class="function__drilldown--id"><b>Mã</b></div>
-                                        <div class="function__drilldown--name"><b>Tên bộ phận sử dụng</b></div>
-                                </div>
-                                    <div class="function__drilldown--item function__drilldown--body">
-                                        <div class="function__drilldown--id">P0001</div>
-                                        <div class="function__drilldown--name">Phòng hành chính sự nghiệp</div>
-                                    </div>
-                                    <div class="function__drilldown--item function__drilldown--body">
-                                        <div class="function__drilldown--id">P0002</div>
-                                        <div class="function__drilldown--name">Phòng kế toán</div>
-                                    </div>
-                                    <div class="function__drilldown--item function__drilldown--body">
-                                        <div class="function__drilldown--id">P0003</div>
-                                        <div class="function__drilldown--name">Bóng thư ký</div>
-                                    </div>
-                                    <div class="function__drilldown--item function__drilldown--body">
-                                        <div class="function__drilldown--id">P0004</div>
-                                        <div class="function__drilldown--name">Máy lọc nước</div>
-                                    </div>
-                                    <div class="function__drilldown--item function__drilldown--body">
-                                        <div class="function__drilldown--id">P0005</div>
-                                        <div class="function__drilldown--name">Bàn ghế các loại</div>
-                                    </div>
-                                    <div class="function__drilldown--item function__drilldown--body">
-                                        <div class="function__drilldown--id">P0006</div>
-                                        <div class="function__drilldown--name">Máy điều hoà</div>
-                                    </div>
-                                    <div class="function__drilldown--item function__drilldown--body">
-                                        <div class="function__drilldown--id">P0007</div>
-                                        <div class="function__drilldown--name">Máy tủ lạnh</div>
-                                    </div>
-                                    <div class="function__drilldown--item function__drilldown--body">
-                                        <div class="function__drilldown--id">P0008</div>
-                                        <div class="function__drilldown--name">Máy chiếu</div>
-                                    </div>
-                                    <div class="function__drilldown--item function__drilldown--body">
-                                        <div class="function__drilldown--id">P0009</div>
-                                        <div class="function__drilldown--name">Tivi tinh thể lỏng</div>
-                                    </div>
-                                </div>
+                            <div class="drilldown drilldown--modal" 
+                                v-show="this.department.show"
+                            >
+                                <ul class="drilldown__box" >
+                                    <li class="drilldown__item drilldown__item--modal drilldown__item--header">
+                                        <div class="drilldown__id"><b>Mã</b></div>
+                                        <div class="drilldown__name"><b>Tên bộ phận sử dụng</b></div>
+                                    </li>
+                                    <li class="drilldown__item drilldown__item--modal" 
+                                        :class="{'drilldown__item--selected': item.code == this.assetModal.departmentCode}"
+                                        v-for='item in this.department.list'
+                                        tabindex="0"
+                                        @click="selectValueDepartment(item)"
+                                        :key="item"
+                                        v-on:keyup.enter="selectValueDepartment(item), this.department.show = false"
+                                    >
+                                        <div class="drilldown__id">{{item.code}}</div>
+                                        <div class="drilldown__name">{{item.name}}</div>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                         <p class="input__text--error" v-if="this.checkdepartmentCode.hasError">Mã bộ phận sử dụng không hợp lệ</p>
@@ -477,7 +479,7 @@
             <!-- BEGIN: Footer modal -->
             <footer class="modal__section modal__footer">
                 <button type="submit" class="btn btn__save btn__save--space">Lưu</button>
-                <button type="cancel" @click="closeModal()" class="btn btn__cancel" >Hủy</button> 
+                <div tabindex="0" type="cancel" @click="closeModal()" class="btn btn__cancel" >Hủy</div> 
                 <button v-on:focus="tabRollback()" class="btn__tabRollback"></button>
             </footer>
             <!-- END: Footer modal -->
@@ -492,7 +494,7 @@
         <div class="alert__box" :class="{'alert__box--open': displayAlert}">
             <div class="alert__content">
                 <div class="alert__body">
-                    <i class="icon icon-alert"></i>
+                    <i class="icon icon--alert"></i>
                     <div class="alert__title">Bạn có muốn huỷ bỏ khai báo tài sản này?</div>
                 </div>
                 <div class="alert__footer">
@@ -502,10 +504,14 @@
             </div>
         </div>
         <!-- END: Alert close modal -->
+
     </div>
+
+
 </template>
 
 <script>
+
     export default {
         name: "ProductList",
         component: {
@@ -513,6 +519,8 @@
         /* GD1: beforeCreated (setup) */
         setup() {
 
+        },
+        directives: {
         },
         methods: {
             togglePicker() {
@@ -522,7 +530,7 @@
             removePicker() {
                 this.pickerVisible = false;
             },
-            /* BEGIN: Tài sản */
+            //#region Tài sản
             /* Lọc loại tài sản
                 @param {option} giá trị đc chọn trong vòng lặp for
                 @returns void
@@ -552,9 +560,9 @@
                     this.assetModal.categoryName = option.name;     
                 }
             },
-            /* END: Tài sản */
+            //#endregion
 
-            /* BEGIN: Bộ phận sử dụng */
+            //#region Bộ phận sử dụng
             /* Lọc bộ phận sử dụng
                 @param {option} giá trị đc chọn trong vòng lặp for
                 @returns void
@@ -562,13 +570,29 @@
                 Modified Date: 4/11/2022 
             */
             selectDepartment(option) {
-                if(this.department.filter == option) {
+                if(option == this.department.filter) {
                     this.department.filter = 'Loại bộ phận sử dụng'
                 } else {
                     this.department.filter = option;
                 }
-            }, 
-            /* END: Bộ phận sử dụng */
+            },
+
+            /* Đưa phòng ban vào input modal
+                @param {option} giá trị đc chọn trong vòng lặp for
+                @returns void
+                Author: Tuan 
+                Modified Date: 4/11/2022 
+            */
+            selectValueDepartment(option) {
+                if(option.code == this.assetModal.departmentCode) {
+                    this.assetModal.departmentCode = null
+                    this.assetModal.departmentName = null
+                } else {
+                    this.assetModal.departmentCode = option.code;
+                    this.assetModal.departmentName = option.name;     
+                }
+            },           
+            //#endregion
 
             /* Focus vào một element
                 @param {}
@@ -865,7 +889,17 @@
                     sumDepreciation += (parseFloat(asset.cost) * parseFloat(asset.depreciationRate));
                 });
                 return sumDepreciation;
-            }
+            },
+
+            /* Ẩn dropdown khi blur
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 31/10/2022 
+            */
+            hideDrillDownBlur() {
+
+            },
         },
 
         data() {
