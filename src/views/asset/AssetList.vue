@@ -3,7 +3,6 @@
         <!-- BEGIN: Content/Function -->
         <div class="function">
             <div class="function__list">
-                <!-- BEGIN: Tìm kiếm tài sản -->
                 <div class="function__item function__item--maright  function__item--search">
                     <div class="function__icon"> 
                         <i class="icon icon--search"></i>
@@ -11,7 +10,6 @@
                     
                     <input class="input input--search" type="text" placeholder="Tìm kiếm tài sản">
                 </div>
-                <!-- END: Tìm kiếm tài sản -->
 
                 <!-- BEGIN: Lọc loại tài sản -->
                 <div 
@@ -89,21 +87,15 @@
             </div>
 
             <div class="function__list">
-                <!-- BEGIN: Thêm tài sản -->
                 <button class="btn btn__add function__item--maleft" @click="openModal()">+ Thêm tài sản</button>
-                <!-- END: Thêm tài sản -->
 
-                <!-- BEGIN: Xuất bảng tài sản -->
                 <button class="btn btn__excel function__item--maleft" data-title="Xuất bảng tài sản">
                     <i class="icon icon--excel"></i>
                 </button>    
-                <!-- END: Xuất bảng tài sản -->
 
-                <!-- BEGIN: Xoá tài sản -->
                 <button class="btn btn__del function__item--maleft" data-title="Xoá tài sản" @click="showAlertDelete()">
                     <i class="icon icon--del"></i>
                 </button>    
-                <!-- END: Xoá tài sản -->
             </div>
         </div>
         <!-- END: Content/Function -->
@@ -245,17 +237,41 @@
         <!-- END: Content/Table -->
 
         <!-- BEGIN: Alert delete -->
-        <div class="alert__box alert__box--open">
+        <div class="alert__box" :class="{'alert__box--open': this.function.delete.empty}">
             <div class="alert__content">
-                <div class="alert__body">
+                <div class="alert__body alert__body--delete">
                     <i class="icon icon--alert"></i>
-                    <div class="alert__title">Chưa có tài sản nào được chọn!</div>
+                    <div class="alert__title">Bạn chưa chọn tài sản để thực hiện xoá.</div>
                 </div>
                 <div class="alert__footer">
-                    <button class="btn btn__save alert__button--space" @click="acceptAlert()">Không</button>
+                    <button class="btn btn__save alert__button--space" @click="toggleAlertDeleteEmpty()">Đóng</button>
                 </div>
             </div>
         </div>        
+
+        <div class="alert__box" :class="{'alert__box--open': this.function.delete.a}">
+            <div class="alert__content">
+                <div class="alert__body alert__body--delete">
+                    <i class="icon icon--alert"></i>
+                    <div class="alert__title alert__title--delete">Bạn có muốn xoá tài sản <b>Mã - Tên tài sản</b>?</div>
+                </div>
+                <div class="alert__footer">
+                    <button class="btn btn__save alert__button--space" @click="toggleAlertDeleteARecord()">Đóng</button>
+                </div>
+            </div>
+        </div>   
+
+        <div class="alert__box" :class="{'alert__box--open': this.function.delete.multi}">
+            <div class="alert__content">
+                <div class="alert__body alert__body--delete">
+                    <i class="icon icon--alert"></i>
+                    <div class="alert__title alert__title--delete"><b>{{this.function.delete.quantity}}</b> tài sản đã được chọn. Bạn có muốn xoá các tài sản này khỏi danh sách?</div>
+                </div>
+                <div class="alert__footer">
+                    <button class="btn btn__save alert__button--space" @click="toggleAlertDeleteRecords()">Đóng</button>
+                </div>
+            </div>
+        </div>  
         <!-- END: Alert delete -->
     </div>
 
@@ -523,13 +539,16 @@
         directives: {
         },
         methods: {
-            togglePicker() {
-                let formerValue = this.pickerVisible;
-                this.pickerVisible = formerValue === true ? false : true;
+            /* Focus vào một element
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 30/10/2022 
+            */
+            focus (value) {
+                this.hasfocus = value;
             },
-            removePicker() {
-                this.pickerVisible = false;
-            },
+
             //#region Tài sản
             /* Lọc loại tài sản
                 @param {option} giá trị đc chọn trong vòng lặp for
@@ -560,7 +579,7 @@
                     this.assetModal.categoryName = option.name;     
                 }
             },
-            //#endregion
+            //#endregion Tài sản
 
             //#region Bộ phận sử dụng
             /* Lọc bộ phận sử dụng
@@ -592,29 +611,9 @@
                     this.assetModal.departmentName = option.name;     
                 }
             },           
-            //#endregion
+            //#endregion Bộ phận sử dụng
 
-            /* Focus vào một element
-                @param {}
-                @returns void
-                Author: Tuan 
-                Date: 30/10/2022 
-            */
-            focus (value) {
-                this.hasfocus = value;
-            },
-            /* Tab rollback về mã tài sản
-                @param {}
-                @returns void
-                Author: Tuan 
-                Date: 23/10/2022 
-            */
-            tabRollback() {
-                setTimeout(() => {
-                   this.$refs.focusMe.focus();
-                }, 1);
-            },
-
+            //#region Modal
             /* Mở modal
                 @param {}
                 @returns void
@@ -789,6 +788,36 @@
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
 
+            /* Tab rollback về mã tài sản
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 23/10/2022 
+            */
+            tabRollback() {
+                setTimeout(() => {
+                   this.$refs.focusMe.focus();
+                }, 1);
+            },
+
+            /* Input type="text" chỉ viết số
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 31/10/2022 
+            */  
+            numbersOnly(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                    evt.preventDefault();
+                } else {
+                    return true;
+                }
+            },
+            //#endregion Modal
+
+            //#region Table 
             /* Sửa tài sản
                 @param {}
                 @returns void
@@ -829,22 +858,6 @@
                 this.assets.forEach(function (asset) {
                     asset.checked = !asset.checked;
                 });
-            },
-
-            /* Input type="text" chỉ viết số
-                @param {}
-                @returns void
-                Author: Tuan 
-                Date: 31/10/2022 
-            */  
-            numbersOnly(evt) {
-                evt = (evt) ? evt : window.event;
-                var charCode = (evt.which) ? evt.which : evt.keyCode;
-                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-                    evt.preventDefault();
-                } else {
-                    return true;
-                }
             },
 
             /* Tổng số lượng
@@ -891,6 +904,69 @@
                 return sumDepreciation;
             },
 
+            /* Toggle xoá rỗng
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 7/11/2022 
+            */
+            toggleAlertDeleteEmpty() {
+                this.function.delete.empty = !this.function.delete.empty;
+            },
+
+            /* Toggle xoá 1
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 7/11/2022 
+            */
+            toggleAlertDeleteARecord() {
+                this.function.delete.a = !this.function.delete.a;
+            },
+
+            /* Toggle xoá nhiều
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 7/11/2022 
+            */
+            toggleAlertDeleteRecords() {
+                this.function.delete.multi = !this.function.delete.multi;
+            },
+
+
+            /* Kiểu số khi xoá nhiều
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 7/11/2022 
+            */
+            numberRecordsDeleted() {
+                if (this.selected.length < 10) {
+                    this.function.delete.quantity = '0' + this.selected.length;
+                } else {
+                    this.function.delete.quantity = this.selected.length;
+                }
+            },
+
+            /* Toggle show alert delete
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 7/11/2022 
+            */
+            showAlertDelete() {
+                if (this.selected.length == 0) {
+                    this.toggleAlertDeleteEmpty();
+                } else if (this.selected.length == 1) {
+                    this.toggleAlertDeleteARecord();
+                } else if (this.selected.length > 1) {
+                    this.toggleAlertDeleteRecords();
+                    this.numberRecordsDeleted();
+                }
+            },
+            //#endregion Table
+
             /* Ẩn dropdown khi blur
                 @param {}
                 @returns void
@@ -905,8 +981,9 @@
         data() {
             return {
                 pickerVisible: false,
-                /* BEGIN: Dữ liệu table */ 
+                //#region Table
                 selected: [],
+
                 assets: [
                     { 
                         fixedAssetId: "00071", fixedAssetCode: "TS0399953", fixedAssetName: "Duy Phương Đặng 2005",
@@ -1307,7 +1384,16 @@
 
                     },
                 ],
-                /* END: Dữ liệu table */
+
+                function: {
+                    delete: {
+                        empty: false,
+                        a: false,
+                        multi: false,
+                        quantity: '',
+                    },
+                },
+                //#endregion Table
 
                 /* BEGIN: Dữ liệu form modal */
                 assetModal: {

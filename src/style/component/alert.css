@@ -21,6 +21,7 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, .16);
     border-radius: 5px;
     width: 422px;
+    animation: modalFadeIn ease 0.3s;
 }
 
 .alert__body {
@@ -30,8 +31,20 @@
     padding: 64px 80px 32px 40px;
 }
 
+.alert__body--delete {
+    align-items:unset;
+    padding: 52px 24px 44px 40px;
+}
+
 .alert__title {
-    margin-left: 24px;
+    padding-left: 24px;
+}
+
+.alert__title--delete {
+    line-height: 20px;
+    margin-top: -4px;
+    width: 300px;
+    height: 36px;
 }
 
 .alert__footer {
