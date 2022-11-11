@@ -51,9 +51,6 @@ Captcha sẽ được thị sau khi người dùng đăng nhập sai n lần. Ng
 Số lần đăng nhập sai được cấu hình tại file confile với khóa là: MaxLoginFail.
 ```
 
-
-# misa.quanlytaisan.vue
-
 ## Project setup
 ```
 npm install

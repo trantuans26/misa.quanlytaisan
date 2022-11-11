@@ -11,9 +11,7 @@
                     <input class="input input--search" type="text" placeholder="Tìm kiếm tài sản">
                 </div>
 
-                <!-- BEGIN: Lọc loại tài sản -->
-                <div 
-                    class="function__item function__item--maright function__item--loaitaisan"        
+                <div class="function__item function__item--maright function__item--filter function__item--category"        
                     @click="this.category.show = !this.category.show"
                     @mousedown="hideDrillDownBlur()"
                 >
@@ -52,10 +50,10 @@
                         </ul>
                     </div>
                 </div>
-                <!-- END: Lọc loại tài sản -->
 
-                <!-- BEGIN: Lọc bộ phận sử dụng -->
-                <div class="function__item function__item--maright function__item--loaitaisan" @click="this.department.show = !this.department.show">
+                <div class="function__item function__item--maright function__item--filter function__item--department" 
+                    @click="this.department.show = !this.department.show"
+                >
                     <div class="function__icon"> 
                         <i class="icon icon--filter"></i>
                     </div>
@@ -83,7 +81,6 @@
                         </ul>
                     </div>
                 </div>  
-                <!-- BEGIN: Lọc bộ phận sử dụng -->
             </div>
 
             <div class="function__list">
@@ -179,7 +176,7 @@
                         <tr class="table__row--paging">
                             <td class="table__col--assetname" colspan="4">
                                 <div class="table__pagination">
-                                    <div class="table__sum">Tổng số: <b>200 bản ghi</b></div>
+                                    <div class="table__sum">Tổng số: <b>{{this.assets.length}} bản ghi</b></div>
                                     <div class="table__size" data-title="Số bản ghi trong một dòng">
                                         20
                                         <i class="icon icon--dropdown"></i>
@@ -253,7 +250,7 @@
             <div class="alert__content">
                 <div class="alert__body alert__body--delete">
                     <i class="icon icon--alert"></i>
-                    <div class="alert__title alert__title--delete">Bạn có muốn xoá tài sản <b>Mã - Tên tài sản</b>?</div>
+                    <div class="alert__title alert__title--delete">Bạn có muốn xoá tài sản <b>{{this.function.delete.fixedAssetCode}} - {{this.function.delete.fixedAssetName}}?</b></div>
                 </div>
                 <div class="alert__footer">
                     <button class="btn btn__save alert__button--space" @click="toggleAlertDeleteARecord()">Đóng</button>
@@ -417,7 +414,14 @@
                             Số lượng <em>*</em>
                         </label>
                         <div class="modal__input--icon">
-                            <input v-model.trim="assetModal.quantity" class="input input--haveicon input--textright input__spin--hide input--modal" v-on:keypress="NumbersOnly" type="text">
+                            <input 
+                                v-model.trim="assetModal.quantity" 
+                                class="input input--haveicon input--textright input__spin--hide input--modal" 
+                                v-on:keypress="this.numbersOnly"
+                                ref="input" 
+                                type="text"
+
+                            >
                             <i class="icon icon--multidrop"></i>
                         </div>
                     </div>
@@ -426,14 +430,27 @@
                         <label class="modal__label">
                             Nguyên giá <em>*</em>
                         </label>
-                        <input v-model.trim="assetModal.cost" class="input input--textright input__spin--hide input--modal" v-on:keypress="NumbersOnly" type="text">
+                        <input 
+                            type="text"  
+                            @keypress="this.numbersOnly"                       
+                            v-model.trim="assetModal.cost"
+                            @change="validateFormInput('cost')" 
+                            class="input input--textright input__spin--hide input--modal" 
+
+                        >
                     </div>
     
                     <div class="modal__item">
                         <label class="modal__label">
                             Số năm sử dụng <em>*</em>
                         </label>
-                        <input v-model.trim="assetModal.purchaseDate" class="input input--textright input__spin--hide input--modal" v-on:keypress="NumbersOnly" type="text">
+                        <input 
+                            v-model.trim="assetModal.purchaseDate" 
+                            class="input input--textright input__spin--hide input--modal" 
+                            v-on:keypress="this.numbersOnly"
+                            ref="input"
+                            type="text"
+                        >
                     </div>
                 </div>
 
@@ -443,7 +460,14 @@
                             Tỷ lệ hao mòn (%) <em>*</em>
                         </label>
                         <div class="modal__input--icon">
-                            <input v-model.trim="assetModal.depreciationRate" class="input input--haveicon input--textright input__spin--hide input--modal" v-on:keypress="NumbersOnly" type="text">
+                            <input 
+                                v-model.trim="assetModal.depreciationRate" 
+                                class="input input--haveicon input--textright input__spin--hide input--modal" 
+                                v-on:keypress="this.numbersOnly"
+                                ref="input" 
+                                type="text"
+                                @change="validateFormInput('depreciationRate')" 
+                            >
                             <i class="icon icon--multidrop"></i>
                         </div>
 
@@ -453,7 +477,14 @@
                         <label class="modal__label">
                             Giá trị hao mòn năm <em>*</em>
                         </label>
-                        <input v-model.trim="assetModal.depreciation" class="input input--textright input__spin--hide input--modal" v-on:keypress="NumbersOnly" type="text">
+                        <input 
+                            v-model.trim="assetModal.depreciation" 
+                            class="input input--textright input__spin--hide input--modal" 
+                            v-on:keypress="this.numbersOnly"
+                            ref="input" 
+                            type="text"
+                            @change="validateFormInput('depreciation')" 
+                        >
                     </div>
      
                     <div class="modal__item">
@@ -815,6 +846,23 @@
                     return true;
                 }
             },
+
+            validateFormInput(value) {
+                if (value == 'cost') {
+                    this.assetModal.cost = this.formatPriceNoFixed(this.assetModal.cost);
+                } else if (value == 'depreciation') {
+                    this.assetModal.depreciation = this.formatPriceNoFixed(this.assetModal.depreciation);
+                } else if (value == 'depreciationRate') {
+                    this.assetModal.depreciationRate = this.formatPriceFixed(this.assetModal.depreciationRate);
+                }
+            },
+
+            setCaretPosition(ctrl, pos) {
+                if (ctrl.setSelectionRange) {
+                    ctrl.focus();
+                    ctrl.setSelectionRange(pos, pos);
+                }
+            },
             //#endregion Modal
 
             //#region Table 
@@ -960,6 +1008,12 @@
                     this.toggleAlertDeleteEmpty();
                 } else if (this.selected.length == 1) {
                     this.toggleAlertDeleteARecord();
+                    for (var i = 0; i < this.assets.length; i++) {
+                        if (this.assets[i].fixedAssetId == this.selected[0]) {
+                            this.function.delete.fixedAssetCode = this.assets[i].fixedAssetCode;
+                            this.function.delete.fixedAssetName = this.assets[i].fixedAssetName;
+                        }
+                    }
                 } else if (this.selected.length > 1) {
                     this.toggleAlertDeleteRecords();
                     this.numberRecordsDeleted();
@@ -1391,6 +1445,8 @@
                         a: false,
                         multi: false,
                         quantity: '',
+                        fixedAssetCode: '',
+                        fixedAssetName: '',
                     },
                 },
                 //#endregion Table
@@ -1580,6 +1636,8 @@
                     this.selected = selected;
                 }
             },
+
+
         },
 
 
