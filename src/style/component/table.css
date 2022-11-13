@@ -40,7 +40,7 @@
 .table__content {
     flex: 1;
     overflow-y: auto;
-    
+    overflow-x: auto;
 }
 
 .table__content::-webkit-scrollbar {
@@ -83,11 +83,11 @@
 .table__function {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: flex-end;
 }
 
 .table__icon {
-    margin: 0 6px 0;
+    margin: 0 8px 0;
     display: none;
 }
 /* row function */
@@ -211,7 +211,7 @@
 }
 
 .table__col--assetcode {
-    width: 13.8%;
+    width: 10%;
 }
 
 .table__col--assetname {
@@ -227,7 +227,7 @@
 }
 
 .table__col--quantity {
-    width: 5%;
+    width: 6%;
 }
 
 .table__col--cost {
@@ -244,5 +244,5 @@
 
 .table__col--function {
     margin-left: 1.5%;
-    width: 5%;
+    width: 6.4%;
 }

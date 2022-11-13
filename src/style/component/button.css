@@ -33,7 +33,6 @@
     box-sizing: border-box;
 }
 
-
 .btn__outline {
     border: 1.6px solid rgb(177, 177, 177);
     background-color: white;  
@@ -85,6 +84,20 @@
     background-color: #f5f5f5;
     border: none;
 }
+
+.btn--disable {
+    background-color: #f5f4f4;
+    border: none !important;
+    pointer-events: none;
+}
+
+.btn--disable .icon--del {
+    background-position: -419px -111px;
+	width: 18px;
+	height: 18px;
+    opacity: 0.4;
+}
+
 
 /* END: BUTTON FUNCTION */
 

@@ -3,7 +3,7 @@
         <!-- BEGIN: Content/Function -->
         <div class="function">
             <div class="function__list">
-                <div class="function__item function__item--maright  function__item--search">
+                <div class="function__item function__item--search function__item--maright">
                     <div class="function__icon"> 
                         <i class="icon icon--search"></i>
                     </div>
@@ -11,9 +11,9 @@
                     <input class="input input--search" type="text" placeholder="Tìm kiếm tài sản">
                 </div>
 
-                <div class="function__item function__item--maright function__item--filter function__item--category"        
-                    @click="this.category.show = !this.category.show"
-                    @mousedown="hideDrillDownBlur()"
+                <div class="function__item function__item--category function__item--filter function__item--maright"        
+                    ref="drilldown"
+                    @click="this.category.showFilter = !this.category.showFilter"
                 >
                     <div class="function__icon"> 
                         <i class="icon icon--filter"></i>
@@ -23,16 +23,19 @@
                         class="input input--filter" 
                         type="text" 
                         :value="this.category.filter"  
-                        v-on:keyup.enter="this.category.show = !this.category.show" 
+                        v-on:change.enter="this.category.showFilter = !this.category.showFilter" 
                         readonly
+                        @blur="hideCategoryFilter()"             
                     >
 
-                    <div class="function__icon--dropdown"> 
+                    <div 
+                        class="function__icon--dropdown"
+                    > 
                         <i class="icon icon--dropdown"></i>
                     </div>
 
                     <div class="drilldown drilldown__normal" 
-                        v-show="this.category.show" 
+                        v-show="this.category.showFilter" 
                     >
                         <ul class="drilldown__box" >
                             <li 
@@ -41,7 +44,7 @@
                                 :class="{'drilldown__item--selected': item.name == this.category.filter}"
                                 v-for='item in this.category.list'
                                 @click="selectCategory(item.name)"
-                                v-on:keyup.enter="selectCategory(item.name), this.category.show = false "
+                                v-on:change.enter="selectCategory(item.name), this.category.showFilter = false "
                                 :key="item.name"
                             >
                                 <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
@@ -52,7 +55,8 @@
                 </div>
 
                 <div class="function__item function__item--maright function__item--filter function__item--department" 
-                    @click="this.department.show = !this.department.show"
+                    @click="this.department.showFilter = !this.department.showFilter"
+                    ref="drilldown"
                 >
                     <div class="function__icon"> 
                         <i class="icon icon--filter"></i>
@@ -62,9 +66,16 @@
                         <i class="icon icon--dropdown"></i>
                     </div>
                     
-                    <input class="input input--filter" type="text" :value="this.department.filter" tabindex="0" v-on:keyup.enter="this.department.show = !this.department.show" readonly>
+                    <input class="input input--filter" 
+                        type="text" 
+                        :value="this.department.filter" 
+                        tabindex="0" 
+                        v-on:change.enter="this.department.showFilter = !this.department.showFilter" 
+                        @blur="hideDepartmentFilter()"  
+                        readonly
+                    >
 
-                    <div class="drilldown drilldown__normal" v-show="this.department.show">
+                    <div class="drilldown drilldown__normal" v-show="this.department.showFilter">
                         <ul class="drilldown__box" >
                             <li 
                                 class="drilldown__item" 
@@ -72,7 +83,7 @@
                                 :class="{'drilldown__item--selected': item.name == this.department.filter}"
                                 v-for='item in this.department.list'
                                 @click="selectDepartment(item.name)" 
-                                v-on:keyup.enter="selectDepartment(item.name), this.department.show = false"
+                                v-on:change.enter="selectDepartment(item.name), this.department.showFilter = false"
                                 :key="item.name"
                             >
                                 <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
@@ -90,7 +101,12 @@
                     <i class="icon icon--excel"></i>
                 </button>    
 
-                <button class="btn btn__del function__item--maleft" data-title="Xoá tài sản" @click="showAlertDelete()">
+                <button
+                    class="btn btn__del function__item--maleft" 
+                    :class="{'btn--disable': this.function.delete.empty}" 
+                    data-title="Xoá tài sản" 
+                    :tabindex="this.function.delete.empty ? -1 : 1"
+                    @click="showAlertDelete()">
                     <i class="icon icon--del"></i>
                 </button>    
             </div>
@@ -115,7 +131,7 @@
                         <th class="table__col--right table__col--cost">Nguyên giá </th>
                         <th class="table__col--right tabel__col--depreciation" data-title="Hao mòn/khấu hao luỹ kế">HM/KH luỹ kế</th>
                         <th class="table__col--right table__col--residual">Giá trị còn lại </th>
-                        <th class="table__col--center table__col--function">Chức năng</th>
+                        <th class="table__col--right table__col--function">Chức năng</th>
                     </thead>
                 </table>
             </div>
@@ -141,7 +157,7 @@
                             <td class="table__col--right table__col--cost">{{this.formatPriceNoFixed(asset.cost)}}</td>
                             <td class="table__col--right tabel__col--depreciation">{{this.formatPriceNoFixed(asset.depreciationRate * asset.cost)}}</td>
                             <td class="table__col--right table__col--residual">{{this.formatPriceNoFixed(asset.cost - (asset.depreciationRate * asset.cost))}}</td>
-                            <td class="table__col--function table__col--center">
+                            <td class="table__col--right table__col--function">
                                 <div class="table__function">
                                     <div 
                                         class="table__icon js-open-modal" 
@@ -223,7 +239,7 @@
                             <td class="table__col--right table__col--residual">
                                 {{formatPriceNoFixed(sumCost() - sumDepreciation())}}
                             </td>
-                            <td class="table-col--center table__col--function">
+                            <td class="table-col--right table__col--function">
                                 
                             </td>
                         </tr>
@@ -234,18 +250,6 @@
         <!-- END: Content/Table -->
 
         <!-- BEGIN: Alert delete -->
-        <div class="alert__box" :class="{'alert__box--open': this.function.delete.empty}">
-            <div class="alert__content">
-                <div class="alert__body alert__body--delete">
-                    <i class="icon icon--alert"></i>
-                    <div class="alert__title">Bạn chưa chọn tài sản để thực hiện xoá.</div>
-                </div>
-                <div class="alert__footer">
-                    <button class="btn btn__save alert__button--space" @click="toggleAlertDeleteEmpty()">Đóng</button>
-                </div>
-            </div>
-        </div>        
-
         <div class="alert__box" :class="{'alert__box--open': this.function.delete.a}">
             <div class="alert__content">
                 <div class="alert__body alert__body--delete">
@@ -309,10 +313,11 @@
                     </div>
                 </div>
                 
+                <!-- Bộ phận sử dụng -->
                 <div class="modal__line">
                     <div 
                         class="modal__item"
-                        @click="this.department.show = !this.department.show"
+                        @click="this.department.showModal = !this.department.showModal"
                     >
                         <label class="modal__label">
                             Mã bộ phận sử dụng <em>*</em>
@@ -323,11 +328,11 @@
                                 v-bind:class="{'input--error': this.checkdepartmentCode.hasError}" 
                                 class="input input--haveicon input--modal" type="text"  
                                 placeholder="Chọn mã bộ phận sử dụng"
-                            
+                                @blur="hideDepartmentModal()"
                             >
                             <i class="icon icon--dropdown"></i>
                             <div class="drilldown drilldown--modal" 
-                                v-show="this.department.show"
+                                v-show="this.department.showModal"
                             >
                                 <ul class="drilldown__box" >
                                     <li class="drilldown__item drilldown__item--modal drilldown__item--header">
@@ -340,7 +345,7 @@
                                         tabindex="0"
                                         @click="selectValueDepartment(item)"
                                         :key="item"
-                                        v-on:keyup.enter="selectValueDepartment(item), this.department.show = false"
+                                        v-on:change.enter="selectValueDepartment(item), this.department.show = false"
                                     >
                                         <div class="drilldown__id">{{item.code}}</div>
                                         <div class="drilldown__name">{{item.name}}</div>
@@ -361,9 +366,10 @@
                     </div>
                 </div>
 
+                <!-- Loại tài sản -->
                 <div class="modal__line">
                     <div class="modal__item"
-                       @click="this.category.show = !this.category.show"
+                       @click="this.category.showModal = !this.category.showModal"
                     >
                         <label class="modal__label">
                             Mã loại tài sản <em>*</em>
@@ -375,10 +381,11 @@
                                 class="input input--haveicon input--modal" 
                                 type="text"  
                                 placeholder="Chọn mã loại tài sản"
+                                @blur="hideCategoryModal()"
                             >
                             <i class="icon icon--dropdown"></i>
                             <div class="drilldown drilldown--modal" 
-                                v-show="this.category.show"
+                                v-show="this.category.showModal"
                             >
                                 <ul class="drilldown__box" >
                                     <li class="drilldown__item drilldown__item--modal drilldown__item--header">
@@ -553,22 +560,48 @@
         <!-- END: Alert close modal -->
 
     </div>
-
-
 </template>
 
 <script>
 
     export default {
-        name: "ProductList",
+        name: "AssetList",
         component: {
         },
         /* GD1: beforeCreated (setup) */
         setup() {
+            
+        },
+        
+        /* Khởi tạo giá trị mặc định khi vào DOM thật */
+        beforeMount() {
+            this.deleteDisable();
+        },
+
+        /* DOM thật */
+        Mounted() {
 
         },
+
+        beforeUpdate() {
+            
+        },
+
+        updated() {
+            this.deleteDisable();
+        },
+
+        beforeUnmount() {
+            
+        },
+
+        unmounted() {
+            
+        },
+
         directives: {
         },
+
         methods: {
             /* Focus vào một element
                 @param {}
@@ -593,6 +626,30 @@
                 } else {
                     this.category.filter = option;
                 }
+            },
+
+            /* Ẩn dropdown khi blur
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 31/10/2022 
+            */
+            hideCategoryFilter() {
+                setTimeout(() => {
+                        this.category.showFilter = false;
+                }, 200);  
+            },
+
+            /* Ẩn dropdown khi blur
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 31/10/2022 
+            */
+            hideCategoryModal() {
+                setTimeout(() => {
+                    this.category.showModal = false;
+                }, 200);  
             },
 
             /* Đưa tài sản vào input modal
@@ -642,6 +699,30 @@
                     this.assetModal.departmentName = option.name;     
                 }
             },           
+
+            /* Ẩn dropdown khi blur
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 31/10/2022 
+            */
+            hideDepartmentFilter() {
+                setTimeout(() => {
+                    this.department.showFilter = false;
+                }, 200);  
+            },
+
+            /* Ẩn dropdown khi blur
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 31/10/2022 
+            */
+            hideDepartmentModal() {
+                setTimeout(() => {
+                    this.department.showModal = false;
+                }, 200);  
+            },
             //#endregion Bộ phận sử dụng
 
             //#region Modal
@@ -856,13 +937,6 @@
                     this.assetModal.depreciationRate = this.formatPriceFixed(this.assetModal.depreciationRate);
                 }
             },
-
-            setCaretPosition(ctrl, pos) {
-                if (ctrl.setSelectionRange) {
-                    ctrl.focus();
-                    ctrl.setSelectionRange(pos, pos);
-                }
-            },
             //#endregion Modal
 
             //#region Table 
@@ -1004,9 +1078,7 @@
                 Date: 7/11/2022 
             */
             showAlertDelete() {
-                if (this.selected.length == 0) {
-                    this.toggleAlertDeleteEmpty();
-                } else if (this.selected.length == 1) {
+                if (this.selected.length == 1) {
                     this.toggleAlertDeleteARecord();
                     for (var i = 0; i < this.assets.length; i++) {
                         if (this.assets[i].fixedAssetId == this.selected[0]) {
@@ -1019,17 +1091,21 @@
                     this.numberRecordsDeleted();
                 }
             },
+
+            doubleClickRow(id) {
+                this.selected.push(id)
+            },
             //#endregion Table
 
-            /* Ẩn dropdown khi blur
-                @param {}
-                @returns void
-                Author: Tuan 
-                Date: 31/10/2022 
-            */
-            hideDrillDownBlur() {
-
+            //#region Chức năng 
+            deleteDisable() {
+                if(this.selected.length == 0) {
+                    this.function.delete.empty = true;
+                } else {
+                    this.function.delete.empty = false;
+                }
             },
+            //#endregion Chức năng
         },
 
         data() {
@@ -1531,7 +1607,8 @@
                             name:  'Máy chiếu'
                         },      
                     ],
-                    show: false,
+                    showFilter: false,
+                    showModal: false,
                     filter: 'Loại tài sản',
                     value: {
                         code: null,
@@ -1542,7 +1619,8 @@
 
                 /* BEGIN: Data bộ phận sử dụng */
                 department: {
-                    show: false,
+                    showFilter: false,
+                    showModal: false,
                     filter: 'Bộ phận sử dụng',
                     list: [
                         {
@@ -1641,14 +1719,7 @@
         },
 
 
-        /* GD2: created (setup) */
-            /* Gọi API thực hiện lấy dữ liệu --> use axios */
-        /* GD3: beforeCreated (setup) */
-        /* GD4: Mounted (setup) */
-        /* GD5: beforeUpdated (setup) */
-        /* GD6: updated (setup) */
-        /* GD7: beforeUnmount (beforeDestroy) */
-        /* GD8: unmounted (destroyed) */
+
 
 
     }

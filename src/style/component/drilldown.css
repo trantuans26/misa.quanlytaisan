@@ -7,6 +7,8 @@
     cursor: pointer;
     z-index: 2;
     outline: none;
+    transform-origin: top center;
+    animation: scaleZ 300ms ease-in-out forwards;
 }
 
 .drilldown--open {
@@ -110,3 +112,4 @@
     width: 52px;
     text-align: center;
 }
+
