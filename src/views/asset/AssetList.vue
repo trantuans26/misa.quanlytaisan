@@ -41,7 +41,7 @@
                             <li 
                                 class="drilldown__item" 
                                 tabindex="0" 
-                                :class="{'drilldown__item--selected': item.name == this.category.filter}"
+                                :class="{'drilldown__item--selectedFixedAssetById': item.name == this.category.filter}"
                                 v-for='item in this.category.list'
                                 @click="selectCategory(item.name)"
                                 v-on:change.enter="selectCategory(item.name), this.category.showFilter = false "
@@ -80,7 +80,7 @@
                             <li 
                                 class="drilldown__item" 
                                 tabindex="0" 
-                                :class="{'drilldown__item--selected': item.name == this.department.filter}"
+                                :class="{'drilldown__item--selectedFixedAssetById': item.name == this.department.filter}"
                                 v-for='item in this.department.list'
                                 @click="selectDepartment(item.name)" 
                                 v-on:change.enter="selectDepartment(item.name), this.department.showFilter = false"
@@ -119,7 +119,7 @@
                 <table>
                     <thead>
                         <th class="table__col--left table__col--check">
-                            <input type="checkbox" v-model='selectAll' @change="selectedAll()">
+                            <input type="checkbox" v-model='selectAll' @change="selectedFixedAssetByIdAll()">
 <!--                             <i class="icon icon-checkbox"></i> -->
                         </th>
                         <th class="table__col--center table__col--serial" data-title="Số thứ tự">STT</th>
@@ -143,10 +143,11 @@
                             class="table__row" 
                             v-for="(asset,index) in this.assets"
                             :key="asset"
-                            :class="{'table__row--checked': asset.checked}"
+                            :class="{'table__row--checked': checkBackground(asset.fixedAssetId)}"
+                            @dblclick="doubleClickRow(asset.fixedAssetId)"
                         >
                             <td class="table__col--left table__col--check">
-                               <input type="checkbox" v-model='selected' :value="asset.fixedAssetId" @click="asset.checked = !asset.checked" :checked="asset.checked">
+                               <input type="checkbox" v-model='selectedFixedAssetById' :value="asset.fixedAssetId">
                             </td>
                             <td class="table__col--center table__col--serial">{{index + 1}}</td>
                             <td class="table__col--left table__col--assetcode">{{asset.fixedAssetCode}}</td>
@@ -340,7 +341,7 @@
                                         <div class="drilldown__name"><b>Tên bộ phận sử dụng</b></div>
                                     </li>
                                     <li class="drilldown__item drilldown__item--modal" 
-                                        :class="{'drilldown__item--selected': item.code == this.assetModal.departmentCode}"
+                                        :class="{'drilldown__item--selectedFixedAssetById': item.code == this.assetModal.departmentCode}"
                                         v-for='item in this.department.list'
                                         tabindex="0"
                                         @click="selectValueDepartment(item)"
@@ -393,7 +394,7 @@
                                         <div class="drilldown__name"><b>Tên loại tài sản</b></div>
                                     </li>
                                     <li class="drilldown__item drilldown__item--modal" 
-                                        :class="{'drilldown__item--selected': item.code == this.assetModal.categoryCode}"
+                                        :class="{'drilldown__item--selectedFixedAssetById': item.code == this.assetModal.categoryCode}"
                                         v-for='item in this.category.list'
                                         @click="selectValueCategory(item)"
                                         :key="item"
@@ -976,7 +977,7 @@
                 Author: Tuan 
                 Date: 31/10/2022 
             */
-            selectedAll() {
+            selectedFixedAssetByIdAll() {
                 this.assets.forEach(function (asset) {
                     asset.checked = !asset.checked;
                 });
@@ -1064,10 +1065,10 @@
                 Date: 7/11/2022 
             */
             numberRecordsDeleted() {
-                if (this.selected.length < 10) {
-                    this.function.delete.quantity = '0' + this.selected.length;
+                if (this.selectedFixedAssetById.length < 10) {
+                    this.function.delete.quantity = '0' + this.selectedFixedAssetById.length;
                 } else {
-                    this.function.delete.quantity = this.selected.length;
+                    this.function.delete.quantity = this.selectedFixedAssetById.length;
                 }
             },
 
@@ -1078,28 +1079,50 @@
                 Date: 7/11/2022 
             */
             showAlertDelete() {
-                if (this.selected.length == 1) {
+                if (this.selectedFixedAssetById.length == 1) {
                     this.toggleAlertDeleteARecord();
                     for (var i = 0; i < this.assets.length; i++) {
-                        if (this.assets[i].fixedAssetId == this.selected[0]) {
+                        if (this.assets[i].fixedAssetId == this.selectedFixedAssetById[0]) {
                             this.function.delete.fixedAssetCode = this.assets[i].fixedAssetCode;
                             this.function.delete.fixedAssetName = this.assets[i].fixedAssetName;
                         }
                     }
-                } else if (this.selected.length > 1) {
+                } else if (this.selectedFixedAssetById.length > 1) {
                     this.toggleAlertDeleteRecords();
                     this.numberRecordsDeleted();
                 }
             },
 
             doubleClickRow(id) {
-                this.selected.push(id)
+                var check = false;
+                for(var i = 0; i < this.selectedFixedAssetById.length; i++) {
+                    if(id == this.selectedFixedAssetById[i]) {
+                        check = true;
+                        break;
+                    }
+                }
+
+                if(check) {
+                    this.selectedFixedAssetById.splice(i);
+                } else {
+                    this.selectedFixedAssetById.push(id);
+                }
+            },
+
+            checkBackground(id) {
+                for(var i = 0; i < this.selectedFixedAssetById.length; i++) {
+                    if(id == this.selectedFixedAssetById[i]) {
+                        return true;
+                    }
+                }
+
+                return false;
             },
             //#endregion Table
 
             //#region Chức năng 
             deleteDisable() {
-                if(this.selected.length == 0) {
+                if(this.selectedFixedAssetById.length == 0) {
                     this.function.delete.empty = true;
                 } else {
                     this.function.delete.empty = false;
@@ -1112,7 +1135,7 @@
             return {
                 pickerVisible: false,
                 //#region Table
-                selected: [],
+                selectedFixedAssetById: [],
 
                 assets: [
                     { 
@@ -1132,7 +1155,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
                     },
                     { 
                         fixedAssetId: "01253", fixedAssetCode: "TS1552121", fixedAssetName: "Bảo Ngân Đỗ 1970",
@@ -1151,8 +1173,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
-
                     },
                     { 
                         fixedAssetId: "03129", fixedAssetCode: "TS1984925", fixedAssetName: "Long Hằng Phan 1951",
@@ -1171,7 +1191,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
                     },
                     { 
                         fixedAssetId: "03470", fixedAssetCode: "TS0886710", fixedAssetName: "Hiếu Thu Đoàn 1964",
@@ -1190,7 +1209,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                     { 
@@ -1210,7 +1228,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                     { 
@@ -1230,7 +1247,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                     { 
@@ -1250,7 +1266,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                     { 
@@ -1270,7 +1285,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                     { 
@@ -1290,7 +1304,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                     { 
@@ -1310,7 +1323,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                     { 
@@ -1330,7 +1342,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                     { 
@@ -1350,7 +1361,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                     { 
@@ -1370,7 +1380,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                     { 
@@ -1390,7 +1399,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                     { 
@@ -1410,7 +1418,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                     { 
@@ -1430,7 +1437,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                     { 
@@ -1450,7 +1456,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                     { 
@@ -1470,7 +1475,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                     { 
@@ -1490,7 +1494,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                     { 
@@ -1510,7 +1513,6 @@
                         createdDate: new Date().toISOString().substring(0,10),
                         modifiedBy: "Tuan",
                         modifiedDate: new Date().toISOString().substring(0,10),
-                        checked: false,
 
                     },
                 ],
@@ -1692,26 +1694,26 @@
             selectAll: {
                 /*
                     @param {}
-                    @returns this.assets ? this.selected.length == this.assets.length : false;
+                    @returns this.assets ? this.selectedFixedAssetById.length == this.assets.length : false;
                 */
                 get: function () {
-                    return this.assets ? this.selected.length == this.assets.length : false;
+                    return this.assets ? this.selectedFixedAssetById.length == this.assets.length : false;
                 },
                 /*
                     @param {fixedAssetId}
                     @returns void
                 */
                 set: function (value) {
-                    var selected = [];
+                    var selectedFixedAssetById = [];
 
                     if (value) {
                         
                         this.assets.forEach(function (asset) {
-                            selected.push(asset.fixedAssetId);
+                            selectedFixedAssetById.push(asset.fixedAssetId);
                         });
                     }
 
-                    this.selected = selected;
+                    this.selectedFixedAssetById = selectedFixedAssetById;
                 }
             },
 
