@@ -219,7 +219,7 @@
 }
 
 .table__col--category {
-    width: 12.8%;
+    width: 12%;
 }
 
 .table__col--department {
@@ -243,6 +243,6 @@
 }
 
 .table__col--function {
-    margin-left: 1.5%;
+    margin-left: 1%;
     width: 6.4%;
 }

@@ -143,21 +143,21 @@
                             class="table__row" 
                             v-for="(asset,index) in this.assets"
                             :key="asset"
-                            :class="{'table__row--checked': checkBackground(asset.fixedAssetId)}"
-                            @dblclick="doubleClickRow(asset.fixedAssetId)"
+                            :class="{'table__row--checked': checkBackground(asset.fixed_asset_id)}"
+                            @dblclick="doubleClickRow(asset.fixed_asset_id)"
                         >
                             <td class="table__col--left table__col--check">
-                               <input type="checkbox" v-model='selectedFixedAssetById' :value="asset.fixedAssetId">
+                               <input type="checkbox" v-model='selectedFixedAssetById' :value="asset.fixed_asset_id">
                             </td>
                             <td class="table__col--center table__col--serial">{{index + 1}}</td>
-                            <td class="table__col--left table__col--assetcode">{{asset.fixedAssetCode}}</td>
-                            <td class="table__col--left table__col--assetname">{{asset.fixedAssetName}}</td>
-                            <td class="table__col--left table__col--category">{{asset.categoryName}}</td>
-                            <td class="table__col--left table__col--department">{{asset.departmentName}}</td>
+                            <td class="table__col--left table__col--assetcode">{{asset.fixed_asset_code}}</td>
+                            <td class="table__col--left table__col--assetname">{{asset.fixed_asset_name}}</td>
+                            <td class="table__col--left table__col--category">{{asset.fixed_asset_category_name}}</td>
+                            <td class="table__col--left table__col--department">{{asset.department_name}}</td>
                             <td class="table__col--right table__col--quantity">{{asset.quantity}}</td>
                             <td class="table__col--right table__col--cost">{{this.formatPriceNoFixed(asset.cost)}}</td>
-                            <td class="table__col--right tabel__col--depreciation">{{this.formatPriceNoFixed(asset.depreciationRate * asset.cost)}}</td>
-                            <td class="table__col--right table__col--residual">{{this.formatPriceNoFixed(asset.cost - (asset.depreciationRate * asset.cost))}}</td>
+                            <td class="table__col--right tabel__col--depreciation">{{this.formatPriceNoFixed(asset.depreciation_rate/100 * asset.cost)}}</td>
+                            <td class="table__col--right table__col--residual">{{this.formatPriceNoFixed(asset.cost - (asset.depreciation_rate/100 * asset.cost))}}</td>
                             <td class="table__col--right table__col--function">
                                 <div class="table__function">
                                     <div 
@@ -166,12 +166,12 @@
                                         @click= "
                                             openModal(),
                                             editAsset (
-                                                asset.fixedAssetCode, asset.fixedAssetName, 
-                                                asset.departmentCode, asset.departmentName, 
-                                                asset.categoryCode, asset.categoryName,
-                                                asset.quantity, this.formatPriceNoFixed(asset.cost), asset.lifeTime,
-                                                this.formatPriceFixed(asset.depreciationRate), this.formatPriceNoFixed(asset.depreciationRate * asset.cost), asset.trackedYear,
-                                                asset.purchaseDate
+                                                asset.fixed_asset_code, asset.fixed_asset_name, 
+                                                asset.department_code, asset.department_name, 
+                                                asset.category_code, asset.category_name,
+                                                asset.quantity, this.formatPriceNoFixed(asset.cost), asset.life_time,
+                                                this.formatPriceFixed(asset.depreciation_rate), this.formatPriceNoFixed(asset.depreciation_rate/100 * asset.cost), asset.tracked_year,
+                                                asset.purchase_date
                                             )
                                         "
                                     >
@@ -469,12 +469,12 @@
                         </label>
                         <div class="modal__input--icon">
                             <input 
-                                v-model.trim="assetModal.depreciationRate" 
+                                v-model.trim="assetModal.depreciation_rate" 
                                 class="input input--haveicon input--textright input__spin--hide input--modal" 
                                 v-on:keypress="this.numbersOnly"
                                 ref="input" 
                                 type="text"
-                                @change="validateFormInput('depreciationRate')" 
+                                @change="validateFormInput('depreciation_rate')" 
                             >
                             <i class="icon icon--multidrop"></i>
                         </div>
@@ -564,14 +564,54 @@
 </template>
 
 <script>
+import axios from "axios";
+/* import Resource from "@/lib/resource"; */
 
     export default {
         name: "AssetList",
         component: {
         },
-        /* GD1: beforeCreated (setup) */
-        setup() {
+
+        beforeCreate() {
             
+        },
+
+        created() {
+            // trước khi load dữ liệu thì hiện trạng thái tải data
+            // gọi api để lấy dữ liệu sử dụng axios
+            axios.get('http://localhost:28533/api/v1/FixedAssets')
+            .then((resource) => {
+                console.log(resource.data);
+                this.assets = resource.data;
+
+            })
+        },
+
+
+        setup() {
+
+
+/*             try {
+
+                // gọi api để lấy dữ liệu sử dụng axios
+                axios
+                .get("https://localhost:44380/api/v1/Assets/export")
+                .then((response) => {
+                    console.log(response);
+                    let url = response.request.responseURL; // đường dẫn tải file
+                    window.open(url);
+                })
+                .catch((response) => {
+                    console.log("response: ", response.response.status);
+                    me.handleException(
+                    response.response.status,
+                    response.response.data.moreInfo,
+                    response.response.data.userMsg
+                    );
+                });
+            } catch (error) {
+                console.log(error);
+            } */
         },
         
         /* Khởi tạo giá trị mặc định khi vào DOM thật */
@@ -992,8 +1032,13 @@
             sumQuantity() {
                 let sumQuantity = 0;
                 this.assets.forEach(function (asset) {
-                    sumQuantity +=  parseInt(asset.quantity);
+                    if (asset.quantity == '' || asset.quantity == null || asset.quantity == undefined) {
+                        sumQuantity = sumQuantity + 0;
+                    } else {
+                        sumQuantity = sumQuantity + (asset.quantity);
+                    }
                 });
+                console.log(sumQuantity);
                 return sumQuantity;
 
             },
@@ -1022,7 +1067,7 @@
                 let sumDepreciation = 0;
                 /* Check null vs undefined */
                 this.assets.forEach(function (asset) {
-                    sumDepreciation += (parseFloat(asset.cost) * parseFloat(asset.depreciationRate));
+                    sumDepreciation += ((asset.cost) * (asset.depreciation_rate / 100));
                 });
                 return sumDepreciation;
             },
@@ -1082,9 +1127,9 @@
                 if (this.selectedFixedAssetById.length == 1) {
                     this.toggleAlertDeleteARecord();
                     for (var i = 0; i < this.assets.length; i++) {
-                        if (this.assets[i].fixedAssetId == this.selectedFixedAssetById[0]) {
-                            this.function.delete.fixedAssetCode = this.assets[i].fixedAssetCode;
-                            this.function.delete.fixedAssetName = this.assets[i].fixedAssetName;
+                        if (this.assets[i].fixed_asset_id == this.selectedFixedAssetById[0]) {
+                            this.function.delete.fixedAssetCode = this.assets[i].fixed_asset_code;
+                            this.function.delete.fixedAssetName = this.assets[i].fixed_asset_name;
                         }
                     }
                 } else if (this.selectedFixedAssetById.length > 1) {
@@ -1093,22 +1138,33 @@
                 }
             },
 
+            /* Double click chọn dòng
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 7/11/2022 
+            */
             doubleClickRow(id) {
                 var check = false;
                 for(var i = 0; i < this.selectedFixedAssetById.length; i++) {
                     if(id == this.selectedFixedAssetById[i]) {
+                        this.selectedFixedAssetById.splice(i,1);
                         check = true;
                         break;
                     }
                 }
 
-                if(check) {
-                    this.selectedFixedAssetById.splice(i);
-                } else {
+                if(!check) {
                     this.selectedFixedAssetById.push(id);
                 }
             },
 
+            /* Binding css cho dòng được chọn
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 7/11/2022 
+            */
             checkBackground(id) {
                 for(var i = 0; i < this.selectedFixedAssetById.length; i++) {
                     if(id == this.selectedFixedAssetById[i]) {
@@ -1121,6 +1177,12 @@
             //#endregion Table
 
             //#region Chức năng 
+            /* Đổi màu delete button khi không có bản ghi
+                @param {}
+                @returns void
+                Author: Tuan 
+                Date: 7/11/2022 
+            */
             deleteDisable() {
                 if(this.selectedFixedAssetById.length == 0) {
                     this.function.delete.empty = true;
@@ -1137,385 +1199,7 @@
                 //#region Table
                 selectedFixedAssetById: [],
 
-                assets: [
-                    { 
-                        fixedAssetId: "00071", fixedAssetCode: "TS0399953", fixedAssetName: "Duy Phương Đặng 2005",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nghiên cứu", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Tivi LCD", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 31429572,
-                        quantity: 19,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-                    },
-                    { 
-                        fixedAssetId: "01253", fixedAssetCode: "TS1552121", fixedAssetName: "Bảo Ngân Đỗ 1970",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 51763253,
-                        quantity: 32,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-                    },
-                    { 
-                        fixedAssetId: "03129", fixedAssetCode: "TS1984925", fixedAssetName: "Long Hằng Phan 1951",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng doanh nghiệp", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy chiếu", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 27604747,
-                        quantity: 69,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-                    },
-                    { 
-                        fixedAssetId: "03470", fixedAssetCode: "TS0886710", fixedAssetName: "Hiếu Thu Đoàn 1964",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nghiên cứu", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Đồ dùng văn phòng", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 58454961,
-                        quantity: 42,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                    { 
-                        fixedAssetId: "04309", fixedAssetCode: "TS1637806", fixedAssetName: "Quang Quỳnh Ngô 1967",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng Customize", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy chiếu", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 36978136,
-                        quantity: 40,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                    { 
-                        fixedAssetId: "05134", fixedAssetCode: "TS0532603", fixedAssetName: "Dũng Kim Anh Lê 1956",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng giải pháp bán lẻ", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Tivi LCD", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 81174763,
-                        quantity: 61,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                    { 
-                        fixedAssetId: "05242", fixedAssetCode: "TS0937281", fixedAssetName: "Chiến Ngân Phan 1999",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng kế toán", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Đồ dùng văn phòng", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 1612075,
-                        quantity: 54,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                    { 
-                        fixedAssetId: "06442", fixedAssetCode: "TS1503628", fixedAssetName: "Linh Thảo Phan 2029",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng Tổng giám đốc", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy tủ lạnh", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 92596697,
-                        quantity: 85,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                    { 
-                        fixedAssetId: "06604", fixedAssetCode: "TS1704254", fixedAssetName: "Tài Yến Đinh 1980",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng kế toán", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy điều hoà", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 1612075,
-                        quantity: 14,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                    { 
-                        fixedAssetId: "08272", fixedAssetCode: "TS0795735", fixedAssetName: "Thịnh Mây Đỗ 1950",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng thư ký", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Tivi LCD", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: 65,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                    { 
-                        fixedAssetId: "08452", fixedAssetCode: "TS1006468", fixedAssetName: "Thế Anh Huệ Nguyễn 2010",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy tủ lạnh", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: 50,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                    { 
-                        fixedAssetId: "09328", fixedAssetCode: "TS1709912", fixedAssetName: "Vũ Mây Dương 2018",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng Tổng giám đốc", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy lọc nước", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: 91,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                    { 
-                        fixedAssetId: "11583", fixedAssetCode: "TS0844758", fixedAssetName: "Linh Vy Phan 2025",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng kế toán", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy chiếu", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: 3,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                    { 
-                        fixedAssetId: "13804", fixedAssetCode: "TS0713914", fixedAssetName: "Chiến Hằng Đỗ 1978",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng kế toán", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: 62,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                    { 
-                        fixedAssetId: "14056", fixedAssetCode: "TS1343179", fixedAssetName: "Thế Anh Ngọc Bùi 1987",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy vi tính xách tay", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: 11,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                    { 
-                        fixedAssetId: "20367", fixedAssetCode: "TS1592707", fixedAssetName: "Linh Thu Trần 2018",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Đèn điện", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: 65,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                    { 
-                        fixedAssetId: "20454", fixedAssetCode: "TS1728950", fixedAssetName: "Long Thảo Lê 1978",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng Customize", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Tivi LCD", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: 95,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                    { 
-                        fixedAssetId: "21742", fixedAssetCode: "TS1785004", fixedAssetName: "Hùng Yến Hoàng 1977",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng giáo dục", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy tủ lạnh", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: 17,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                    { 
-                        fixedAssetId: "21916", fixedAssetCode: "TS1711473", fixedAssetName: "Linh Oanh Trần 2011",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng giám đốc", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Bàn ghế", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: 76,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                    { 
-                        fixedAssetId: "22326", fixedAssetCode: "TS0562646", fixedAssetName: "Dũng Mây Bùi 1997",
-                        organizationId: "1", organizationCode: "1", organizationName: "1", 
-                        departmentId: "1", departmentCode: "1", departmentName: "Phòng nhân sự - điều hành", 
-                        categoryId: "1", categoryCode: "1", categoryName: "Máy lọc nước", 
-                        purchaseDate: new Date().toISOString().substring(0,10),
-                        cost: 15000000,
-                        quantity: 33,
-                        depreciationRate: 0.1,
-                        trackedYear: new Date().getFullYear(),
-                        lifeTime: 2,
-                        productionYear: "1",
-                        active: 1,
-                        createdBy: "Tuan",
-                        createdDate: new Date().toISOString().substring(0,10),
-                        modifiedBy: "Tuan",
-                        modifiedDate: new Date().toISOString().substring(0,10),
-
-                    },
-                ],
+                assets: [],
 
                 function: {
                     delete: {
@@ -1540,7 +1224,7 @@
                     quantity: 0,
                     cost: 0,
                     purchaseDate: 0,
-                    depreciationRate: 0,
+                    depreciation_rate: 0,
                     depreciation: 0,
                     namTheoDoi: new Date().getFullYear(),
                     ngayMua: new Date().toISOString().substring(0,10),
@@ -1700,7 +1384,7 @@
                     return this.assets ? this.selectedFixedAssetById.length == this.assets.length : false;
                 },
                 /*
-                    @param {fixedAssetId}
+                    @param {fixed_asset_id}
                     @returns void
                 */
                 set: function (value) {
@@ -1709,7 +1393,7 @@
                     if (value) {
                         
                         this.assets.forEach(function (asset) {
-                            selectedFixedAssetById.push(asset.fixedAssetId);
+                            selectedFixedAssetById.push(asset.fixed_asset_id);
                         });
                     }
 
