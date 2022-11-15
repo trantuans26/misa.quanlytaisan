@@ -27,6 +27,7 @@
 }
 
 .drilldown--pagesize {
+    border-radius: 2.625px;
     width: 60px;
     top: -102px;
     animation: popFromBottom 300ms ease-in-out forwards;
