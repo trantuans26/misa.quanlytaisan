@@ -5,7 +5,8 @@
  */
 export default {
     Url:{
-        FixedAsset:"http://localhost:28533/api/v1/FixedAssets",
-        
+        FixedAssets:"http://localhost:28533/api/v1/FixedAssets",
+        Departments:"http://localhost:28533/api/v1/Departments",
+        FixedAssetCategories:"http://localhost:28533/api/v1/FixedAssetCategories",
     },
 }

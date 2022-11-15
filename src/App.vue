@@ -4,15 +4,12 @@
 
     <TheMain/>
   </div>
-
-  <TheModal/>
 </template>
 
 <script>
 /* 1. Import components */
 import TheSidebar from './components/layout/TheSidebar.vue';
 import TheMain from './components/layout/TheMain.vue';
-import TheModal from './components/function/TheModal.vue';
 
 export default {
   name: 'App',
@@ -20,7 +17,6 @@ export default {
     /* 2. Register components */
     TheSidebar,
     TheMain,
-    TheModal,
   },
 }
 </script>

@@ -12,21 +12,21 @@
                     <i class="icon icon--multidrop"></i>
                 </div>
                 <div class="drilldown drilldown__normal drilldown--year" v-show="this.year.show">
-                        <ul class="drilldown__box" >
-                            <li 
-                                class="drilldown__item" 
-                                tabindex="0" 
-                                :class="{'drilldown__item--selected': item == this.year.value}"
-                                v-for='item in this.year.list'
-                                @click="selectYear(item)"
-                                v-on:keyup.enter="selectYear(item), this.year.show = false"
-                                :key="item"
-                            >
-                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                                <div class="drilldown__name">{{item}}</div>
-                            </li>
-                        </ul>
-                    </div>
+                    <ul class="drilldown__box" >
+                        <li 
+                            class="drilldown__item" 
+                            tabindex="0" 
+                            :class="{'drilldown__item--selected': item == this.year.value}"
+                            v-for='item in this.year.list'
+                            @click="selectYear(item)"
+                            v-on:keyup.enter="selectYear(item), this.year.show = false"
+                            :key="item"
+                        >
+                            <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
+                            <div class="drilldown__name">{{item}}</div>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <div class="header__item header__item--icon">
@@ -66,6 +66,12 @@
             }
         },
         methods: {
+            /* Chọn năm hiển thị
+                @param {year}
+                @returns void
+                Author: Tuan 
+                Date: 7/11/2022 
+            */
             selectYear(option) {
                 this.year.value = option;
             },
