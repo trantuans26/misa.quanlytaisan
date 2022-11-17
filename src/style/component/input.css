@@ -100,17 +100,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-top: 4px;
 }
 
-.input__spin--hide::-webkit-outer-spin-button,
-.input__spin--hide::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+.input--quantity {
+    position: relative;
 }
 
-/* .input--number::-webkit-outer-spin-button,
-.input--number::-webkit-inner-spin-button {
-    -webkit-appearance:inherit;
-    margin-left: 8px;
-} */
+.input--quantity::before {
+    content: '';
+    position: absolute;
+    background-color: #ed4337;
+    display: block;
+}
 
 .input--modal {
     font-size: 14px;

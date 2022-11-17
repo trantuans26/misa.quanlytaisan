@@ -145,6 +145,16 @@
     margin-left: 10px;
 }
 
+.modal__input--quantity {
+    position: relative;
+}
+
+.modal__input--quantity::before {
+    position: absolute;
+    content: attr('');
+    width: 100px;
+    height: 200px;
+}
 
 @keyframes modalFadeIn {
     from {

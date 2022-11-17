@@ -4,11 +4,11 @@
         <div class="function">
             <div class="function__list">
                 <div class="function__item function__item--search function__item--maright">
-                    <div class="function__icon"> 
+                    <div class="function__icon" > 
                         <i class="icon icon--search"></i>
                     </div>
                     
-                    <input class="input input--search" type="text" placeholder="Tìm kiếm tài sản">
+                    <input class="input input--search" @change="this.setTotalPageIndex()" @keyup="searchKeyword()" v-model.trim="this.filter.keyword" type="text" placeholder="Tìm kiếm tài sản">
                 </div>
 
                 <div class="function__item function__item--category function__item--filter function__item--maright"        
@@ -41,14 +41,14 @@
                             <li 
                                 class="drilldown__item" 
                                 tabindex="0" 
-                                :class="{'drilldown__item--selected': category.fixed_asset_category_name == this.category.filter}"
-                                v-for='category in this.categories'
-                                @click="selectCategory(category.fixed_asset_category_name)"
-                                v-on:change.enter="selectCategory(category.fixed_asset_category_name), this.category.showFilter = false "
-                                :key="category.fixed_asset_category_name"
+                                :class="{'drilldown__item--selected': item.fixed_asset_category_name == this.category.filter}"
+                                v-for='item in this.categories'
+                                @click="filterCategory(item)"
+                                v-on:change.enter="filterCategory(item), this.category.showFilter = false"
+                                :key="item"
                             >
                                 <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                                <div class="drilldown__name">{{category.fixed_asset_category_name}}</div>
+                                <div class="drilldown__name">{{item.fixed_asset_category_name}}</div>
                             </li>
                         </ul>
                     </div>
@@ -80,14 +80,14 @@
                             <li 
                                 class="drilldown__item" 
                                 tabindex="0" 
-                                :class="{'drilldown__item--selected': department.department_name == this.department.filter}"
-                                v-for='department in this.departments'
-                                @click="selectDepartment(department.department_name)" 
-                                v-on:change.enter="selectDepartment(department.department_name), this.department.showFilter = false"
-                                :key="department.department_name"
+                                :class="{'drilldown__item--selected': item.department_name == this.department.filter}"
+                                v-for='item in this.departments'
+                                @click="filterDepartment(item)" 
+                                v-on:change.enter="filterDepartment(item), this.department.showFilter = false"
+                                :key="item"
                             >
                                 <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                                <div class="drilldown__name">{{department.department_name}}</div>
+                                <div class="drilldown__name">{{item.department_name}}</div>
                             </li>
                         </ul>
                     </div>
@@ -119,7 +119,7 @@
                 <table>
                     <thead>
                         <th class="table__col--left table__col--check">
-                            <input type="checkbox" v-model='selectAll' @change="selectedFixedAssetByIdAll()">
+                            <input type="checkbox" v-model.trim='selectAll'>
                         </th>
                         <th class="table__col--center table__col--serial" data-title="Số thứ tự">STT</th>
                         <th class="table__col--left table__col--assetcode">Mã tài sản </th>
@@ -146,17 +146,17 @@
                             @dblclick="doubleClickRow(asset.fixed_asset_id)"
                         >
                             <td class="table__col--left table__col--check">
-                               <input type="checkbox" v-model='selectedFixedAssetById' :value="asset.fixed_asset_id">
+                               <input type="checkbox" v-model.trim='selectedFixedAssetById' :value="asset.fixed_asset_id">
                             </td>
-                            <td class="table__col--center table__col--serial">{{index + 1}}</td>
+                            <td class="table__col--center table__col--serial">{{((this.filter.pageIndex - 1) * this.filter.pageSize) + (index + 1)}}</td>
                             <td class="table__col--left table__col--assetcode">{{asset.fixed_asset_code}}</td>
                             <td class="table__col--left table__col--assetname">{{asset.fixed_asset_name}}</td>
                             <td class="table__col--left table__col--category">{{asset.fixed_asset_category_name}}</td>
                             <td class="table__col--left table__col--department">{{asset.department_name}}</td>
                             <td class="table__col--right table__col--quantity">{{asset.quantity}}</td>
-                            <td class="table__col--right table__col--cost">{{this.formatPriceNoFixed(asset.cost)}}</td>
-                            <td class="table__col--right tabel__col--depreciation">{{this.formatPriceNoFixed(asset.depreciation_rate/100 * asset.cost)}}</td>
-                            <td class="table__col--right table__col--residual">{{this.formatPriceNoFixed(asset.cost - (asset.depreciation_rate/100 * asset.cost))}}</td>
+                            <td class="table__col--right table__col--cost">{{this.formatNumber(asset.cost)}}</td>
+                            <td class="table__col--right tabel__col--depreciation">{{this.formatNumber(asset.depreciation_rate/100 * asset.cost)}}</td>
+                            <td class="table__col--right table__col--residual">{{this.formatNumber(asset.cost - (asset.depreciation_rate/100 * asset.cost))}}</td>
                             <td class="table__col--right table__col--function">
                                 <div class="table__function">
                                     <div 
@@ -168,8 +168,8 @@
                                                 asset.fixed_asset_code, asset.fixed_asset_name, 
                                                 asset.department_code, asset.department_name, 
                                                 asset.category_code, asset.category_name,
-                                                asset.quantity, this.formatPriceNoFixed(asset.cost), asset.life_time,
-                                                this.formatPriceFixed(asset.depreciation_rate), this.formatPriceNoFixed(asset.depreciation_rate/100 * asset.cost), asset.tracked_year,
+                                                asset.quantity, this.formatNumber(asset.cost), asset.life_time,
+                                                this.formatRate(asset.depreciation_rate), this.formatNumber(asset.depreciation_rate/100 * asset.cost), asset.tracked_year,
                                                 asset.purchase_date
                                             )
                                         "
@@ -206,7 +206,7 @@
                                                     tabindex="0" 
                                                     :class="{'drilldown__item--selected': item == this.filter.pageSize}"
                                                     v-for='item in this.pageSizes'
-                                                    @click="selectPageSize(item)"
+                                                    @click="selectPageSize(item), setTotalPageIndex()"
                                                     :key="item"
                                                 >
                                                 {{item}}
@@ -216,24 +216,20 @@
                                     </div>
 
                                     <div class="pagination__list">
-                                        <div class="pagination__item pagination__item--icon">
+                                        <div class="pagination__item pagination__item--icon" @click="prevPage()">
                                             <i class="icon icon--pagingleft"></i>
                                         </div>
                                         <div class="pagination__item pagination__item--value">
-                                            <div class="pagination__subitem">
-                                                <p class=""><b>1</b></p>
-                                            </div>
-                                            <div class="pagination__subitem">
-                                                <p class="">2</p>
-                                            </div>
-                                            <div class="pagination__subitem">
-                                                <p class="">...</p>
-                                            </div>
-                                            <div class="pagination__subitem">
-                                                <p class="">10</p>
-                                            </div>
+                                            <div class="pagination__subitem pagination__subitem--selected"><b>{{this.filter.pageIndex}}</b></div>
+                                            
+                                            <div class="pagination__subitem" v-show="this.filter.pageSize != 500 && this.assetsFilter.length == 20">...</div>
+
+                                            <div class="pagination__subitem"
+                                                v-show="this.filter.pageSize != 500 && this.assetsFilter.length == 20"
+                                                @click="this.filter.pageIndex = this.filter.totalPage"
+                                            >{{this.filter.totalPage}}</div>
                                         </div>
-                                        <div class="pagination__item pagination__item--icon">
+                                        <div class="pagination__item pagination__item--icon" @click="nextPage()">
                                             <i class="icon icon--pagingright"></i>
                                         </div>
                                     </div>
@@ -249,13 +245,13 @@
                                 {{sumQuantity()}}
                             </td>
                             <td class="table__col--right table__col--cost">
-                                {{formatPriceNoFixed(sumCost())}}
+                                {{formatNumber(sumCost())}}
                             </td>
                             <td class="table__col--right tabel__col--depreciation">
-                                {{formatPriceNoFixed(sumDepreciation())}}
+                                {{formatNumber(sumDepreciation())}}
                             </td>
                             <td class="table__col--right table__col--residual">
-                                {{formatPriceNoFixed(sumCost() - sumDepreciation())}}
+                                {{formatNumber(sumCost() - sumDepreciation())}}
                             </td>
                             <td class="table-col--right table__col--function">
                                 
@@ -414,14 +410,13 @@
                         <label class="modal__label">
                             Số lượng <em>*</em>
                         </label>
-                        <div class="modal__input--icon">
+                        <div class="modal__input--icon modal__input--quantity">
                             <input 
                                 v-model.trim="assetModal.quantity" 
-                                class="input input--haveicon input--textright input__spin--hide input--modal" 
-                                v-on:keypress="this.numbersOnly"
+                                class="input input--quantity input--haveicon input--textright input--modal" 
                                 ref="input" 
                                 type="text"
-
+                                @keypress="this.numbersOnly"                       
                             >
                             <i class="icon icon--multidrop"></i>
                         </div>
@@ -431,13 +426,11 @@
                         <label class="modal__label">
                             Nguyên giá <em>*</em>
                         </label>
-                        <input 
+                        <input class="input input--textright input__spin--hide input--modal" 
                             type="text"  
                             @keypress="this.numbersOnly"                       
                             v-model.trim="assetModal.cost"
                             @change="validateFormInput('cost')" 
-                            class="input input--textright input__spin--hide input--modal" 
-
                         >
                     </div>
     
@@ -636,6 +629,8 @@ export default {
 
     updated() {
         this.deleteDisable();
+        this.loadData();
+        this.setTotalPageIndex();
     },
 
     beforeUnmount() {
@@ -650,6 +645,8 @@ export default {
     },
 
     methods: {
+        //#region Method Table Pagination
+        //#endregion
         /* Load table
             @param {}
             @returns void
@@ -658,12 +655,7 @@ export default {
         */
         loadData() {
             try {
-                axios.get(`${Resource.Url.FixedAssets}/filter?keyword=${this.filter.keyword}
-                    &fixedAssetCategoryId=${this.filter.fixedAssetCategoryId}
-                    &departmentId=${this.filter.departmentId}
-                    &limit=${this.filter.pageSize}
-                    &offset=${this.filter.pageIndex}`
-                )
+                axios.get(`${Resource.Url.FixedAssets}/filter?keyword=${this.filter.keyword}&fixedAssetCategoryId=${this.filter.fixedAssetCategoryId}&departmentId=${this.filter.departmentId}&limit=${this.filter.pageSize}&offset=${this.filter.pageIndex}`)
                 .then((resource) => {
                     console.log(resource.data);
                     this.assetsFilter = resource.data;
@@ -672,6 +664,13 @@ export default {
             } catch (e) {
                 console.log(e);
             }
+
+            axios.get(`${Resource.Url.FixedAssets}/filter?keyword=${this.filter.keyword}&fixedAssetCategoryId=${this.filter.fixedAssetCategoryId}&departmentId=${this.filter.departmentId}&limit=500&offset=1`)
+            .then((res) => {
+                    console.log(res.data);
+                    this.assetsFilterNoLimit = res.data;
+                    console.log(this.assetsFilterNoLimit);
+            })
         },
 
         /* Focus vào một element
@@ -691,11 +690,14 @@ export default {
             Author: Tuan 
             Modified Date: 4/11/2022 
         */
-        selectCategory(option) {
-            if(option == this.category.filter) {
+        filterCategory(category) {
+            this.filter.pageIndex = 1;
+            if(category.fixed_asset_category_name == this.category.filter) {
                 this.category.filter = 'Loại tài sản'
+                this.filter.fixedAssetCategoryId = "";
             } else {
-                this.category.filter = option;
+                this.category.filter = category.fixed_asset_category_name;
+                this.filter.fixedAssetCategoryId = category.fixed_asset_category_id;
             }
         },
 
@@ -747,11 +749,14 @@ export default {
             Author: Tuan 
             Modified Date: 4/11/2022 
         */
-        selectDepartment(option) {
-            if(option == this.department.filter) {
+        filterDepartment(department) {
+            this.filter.pageIndex = 1;
+            if(department.department_name == this.department.filter) {
                 this.department.filter = 'Loại bộ phận sử dụng'
+                this.filter.departmentId = "";
             } else {
-                this.department.filter = option;
+                this.department.filter = department.department_name;
+                this.filter.departmentId = department.department_id;
             }
         },
 
@@ -796,7 +801,8 @@ export default {
         },
         //#endregion Bộ phận sử dụng
 
-        //#region Modal
+        //#region Modal method
+        //#region Modal click events 
         /* Mở modal
             @param {}
             @returns void
@@ -810,7 +816,7 @@ export default {
             }, 200);
         },
 
-        /* Đóng modal
+                /* Đóng modal
             @param {}
             @returns void
             Author: Tuan 
@@ -871,7 +877,9 @@ export default {
         closeAlert() {
             this.displayAlert = false;
         },
+        //#endregion Modal click events 
 
+        //#region Modal processing ui
         /* add html thêm dữ liệu thành công
             @param {}
             @returns void
@@ -937,27 +945,35 @@ export default {
                 this.checkfixedAssetName.hasError = false;
             }
         },
+        //#endregion Modal processing ui
 
-        /* Dữ liệu kiểu số dấu chấm trước 3 số 0
+        //#region Modal validate input
+        /* Định dạng dữ liệu cho giá (200000 => 200.000)
             @param {}
             @returns void
             Author: Tuan 
             Date: 31/10/2022 
         */
-        formatPriceNoFixed(value) {
-            let val = (value/1).toFixed(0).replace('.', ',')
-            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        formatNumber(number) {
+            if (number && !isNaN(number)) {
+                let val = (number/1).toFixed(0).replace('.', ',')
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            } else 
+                return number;
         },
 
-        /* Dữ liệu kiểu số dấu chấm trước 3 số 0 và có 2 số thập ph
+        /* Định dạng dữ liệu cho tỷ lệ hao mòn (6.5 => 6,5)
             @param {}
             @returns void
             Author: Tuan 
             Date: 31/10/2022 
         */
-        formatPriceFixed(value) {
-            let val = (value/1).toFixed(2).replace('.', ',')
-            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        formatRate(number) {
+            if (number && !isNaN(number)) {
+                let val = (number/1).toFixed(2).replace('.', ',')
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            } else 
+                return number;
         },
 
         /* Tab rollback về mã tài sản
@@ -990,18 +1006,47 @@ export default {
 
         validateFormInput(value) {
             if (value == 'cost') {
-                this.assetModal.cost = this.formatPriceNoFixed(this.assetModal.cost);
+                this.assetModal.cost = this.formatNumber(this.assetModal.cost);
             } else if (value == 'depreciation') {
-                this.assetModal.depreciation = this.formatPriceNoFixed(this.assetModal.depreciation);
+                this.assetModal.depreciation = this.formatNumber(this.assetModal.depreciation);
             } else if (value == 'depreciationRate') {
-                this.assetModal.depreciationRate = this.formatPriceFixed(this.assetModal.depreciationRate);
+                this.assetModal.depreciationRate = this.formatRate(this.assetModal.depreciationRate);
             }
         },
+
+        /**
+         * Hàm nhập số tiền vào ô thì tự format số 
+         */
+         showValueCost() {
+            let cost = this.assetModal.cost;
+            if (cost != 0) {
+                let tmpCost = cost.replace(/[^0-9]/g, '');
+                let showCost = this.formartNumber(tmpCost);
+                this.assetModal.cost = showCost;
+            }
+        },
+        /**
+         * Hàm formart số  
+         */
+        formartNumber(number) {
+            if (number && !isNaN(number)) {
+                return number.toString().replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1.");
+            } else {
+                return number;
+            }
+        },
+        //#endregion Modal validate input
+
+
+
+
+
+
 
 
         //#endregion Modal
 
-        //#region Table 
+        //#region Method Table 
         /* Sửa tài sản
             @param {}
             @returns void
@@ -1030,18 +1075,6 @@ export default {
             this.assetModal.namTheoDoi = trackedYear;
             this.assetModal.ngayBatDauSD = purchaseDate;
             this.assetModal.ngayMua = purchaseDate;
-        },
-
-        /* Chọn all checkbox
-            @param {}
-            @returns void
-            Author: Tuan 
-            Date: 31/10/2022 
-        */
-        selectedFixedAssetByIdAll() {
-            this.assets.forEach(function (asset) {
-                asset.checked = !asset.checked;
-            });
         },
 
         /* Tổng số lượng
@@ -1122,7 +1155,6 @@ export default {
         toggleAlertDeleteRecords() {
             this.function.delete.multi = !this.function.delete.multi;
         },
-
 
         /* Kiểu số khi xoá nhiều
             @param {}
@@ -1208,7 +1240,7 @@ export default {
             } else {
                 this.filter.pageSize = option;
             }
-            this.loadData();
+            this.filter.pageIndex = 1;
         },
 
         /* Toggle chọn kích cỡ trang
@@ -1220,6 +1252,81 @@ export default {
         toggleSelectPageSize() {
             this.showPageSize = !this.showPageSize;
         },       
+
+        /* Search keyword
+            @param {PageSize}
+            @returns void
+            Author: Tuan 
+            Date: 7/11/2022 
+        */
+        searchKeyword() {
+
+        },
+
+        /* Số phân trang
+            @param {PageSize}
+            @returns void
+            Author: Tuan 
+            Date: 7/11/2022 
+        */
+        setPages () {
+			let numberOfPages = Math.ceil(this.assets.length / this.filter.pageSize);
+			for (let index = 1; index <= numberOfPages; index++) {
+				this.pages.push(index);
+			}
+		},
+
+        /* Số phân trang
+            @param {PageSize}
+            @returns void
+            Author: Tuan 
+            Date: 7/11/2022 
+        */
+        paginate () {
+			let page = this.page;
+			let perPage = this.filter.pageSize;
+			let from = (page * perPage) - perPage;
+			let to = (page * perPage);
+			return  this.assets.slice(from, to);
+		},
+
+        /**
+         * Về trang trước
+         * NDDAT (25/09/2022)
+         */
+        prevPage() {
+            if(this.filter.pageIndex > 1){
+                this.filter.pageIndex--;
+            }  
+        },
+
+        /**
+         * Sang trang sau
+         * NDDAT (25/09/2022)
+         */
+        nextPage() {
+            if(this.filter.pageIndex < this.filter.totalPage){
+                this.filter.pageIndex++;
+            }    
+        },
+
+        /**
+         * Tới trang được chọn
+         * NDDAT (25/09/2022)
+         * @param {int} page số trang
+         */
+        toPage(page) {
+            this.page = page
+        },
+
+        setTotalPageIndex() {
+            if(this.assetsFilterNoLimit.length <= this.filter.pageSize || this.filter.pageSize == -1) 
+                this.assetsFilterNoLimit.totalPage = 1;
+            else if(this.assetsFilterNoLimit.length % this.filter.pageSize == 0)
+                this.filter.totalPage = this.assetsFilterNoLimit.length / this.filter.pageSize;
+            else 
+                this.filter.totalPage =  (this.assetsFilterNoLimit.length - (this.assetsFilterNoLimit.length % this.filter.pageSize)) / this.filter.pageSize + 1;
+        },
         //#endregion Table
 
         //#region Chức năng 
@@ -1247,14 +1354,15 @@ export default {
 
             assets: [],
             assetsFilter: [],
-            
+            assetsFilterNoLimit: [],
             //#region Data table filter
             filter: {
                 keyword: "",
                 departmentId: "",
                 fixedAssetCategoryId: "",
-                pageIndex: 1,
-                pageSize: 20,
+                pageIndex: 1, // Trang đang chọn
+                pageSize: 20,  // Số dòng trong 1 trang
+                totalPage: 0, // Tổng số trang
             },
             //#endregion Data table filter
 
@@ -1360,7 +1468,7 @@ export default {
                 @returns this.assets ? this.selectedFixedAssetById.length == this.assets.length : false;
             */
             get: function () {
-                return this.assets ? this.selectedFixedAssetById.length == this.assets.length : false;
+                return this.assetsFilter ? this.selectedFixedAssetById.length == this.assetsFilter.length : false;
             },
             /*
                 @param {fixed_asset_id}
@@ -1371,7 +1479,7 @@ export default {
 
                 if (value) {
                     
-                    this.assets.forEach(function (asset) {
+                    this.assetsFilter.forEach(function (asset) {
                         selectedFixedAssetById.push(asset.fixed_asset_id);
                     });
                 }
@@ -1379,7 +1487,6 @@ export default {
                 this.selectedFixedAssetById = selectedFixedAssetById;
             }
         },
-
 
     },
 
