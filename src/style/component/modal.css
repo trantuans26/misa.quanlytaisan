@@ -149,11 +149,21 @@
     position: relative;
 }
 
-.modal__input--quantity::before {
+.spin {
     position: absolute;
-    content: attr('');
-    width: 100px;
-    height: 200px;
+    right: 5.6%;
+    width: 8px;
+    height: 8px;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.spin--up {
+    top: 21%;
+}
+
+.spin--down {
+    bottom: 21%;
 }
 
 @keyframes modalFadeIn {

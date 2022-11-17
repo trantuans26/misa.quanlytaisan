@@ -13,6 +13,11 @@
     justify-content: space-between;
 }
 
+td::selection,
+th::selection {
+    background-color: rgba(0,0,0,0);
+}
+
 /* BEGIN: Header */
 .table__header {
     background-color: #f5f5f5;
@@ -246,7 +251,7 @@
 }
 
 .table__col--department {
-    width: 13.8%;
+    width: 12.2%;
 }
 
 .table__col--quantity {

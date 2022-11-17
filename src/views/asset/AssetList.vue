@@ -1,14 +1,19 @@
 <template>
     <div class="content">
-        <!-- BEGIN: Content/Function -->
+        <!-- BEGIN: Function -->
         <div class="function">
             <div class="function__list">
                 <div class="function__item function__item--search function__item--maright">
-                    <div class="function__icon" > 
+                    <div class="function__icon" @click="searchKeyword()"> 
                         <i class="icon icon--search"></i>
                     </div>
                     
-                    <input class="input input--search" @change="this.setTotalPageIndex()" @keyup="searchKeyword()" v-model.trim="this.filter.keyword" type="text" placeholder="Tìm kiếm tài sản">
+                    <input class="input input--search" 
+                        v-on:keyup.enter="searchKeyword()"
+                        v-model.trim="this.filter.keyword" 
+                        type="text" 
+                        placeholder="Tìm kiếm tài sản"
+                    >
                 </div>
 
                 <div class="function__item function__item--category function__item--filter function__item--maright"        
@@ -111,9 +116,9 @@
                 </button>    
             </div>
         </div>
-        <!-- END: Content/Function -->
+        <!-- END: Function -->
 
-        <!-- BEGIN: Content/Table -->  
+        <!-- BEGIN: Table -->  
         <div class="table">
             <div class="table__header table__item">
                 <table>
@@ -140,13 +145,24 @@
                     <tbody>
                         <tr 
                             class="table__row" 
-                            v-for="(asset,index) in this.assetsFilter"
+                            v-for="(asset,index) in this.assets"
                             :key="asset"
                             :class="{'table__row--checked': checkBackground(asset.fixed_asset_id)}"
-                            @dblclick="doubleClickRow(asset.fixed_asset_id)"
+                            @click="doubleClickRow(asset.fixed_asset_id)"
+                            @dblclick= "
+                                            openModal(),
+                                            editAsset (
+                                                asset.fixed_asset_code, asset.fixed_asset_name, 
+                                                asset.department_code, asset.department_name, 
+                                                asset.fixed_asset_category_code, asset.fixed_asset_category_name,
+                                                asset.quantity, this.formatCostType(asset.cost), asset.life_time,
+                                                this.formatRateType(asset.depreciation_rate), this.formatCostType(asset.depreciation_rate/100 * asset.cost), asset.tracked_year,
+                                                formatDate(asset.purchase_date)
+                                            )
+                                        "
                         >
                             <td class="table__col--left table__col--check">
-                               <input type="checkbox" v-model.trim='selectedFixedAssetById' :value="asset.fixed_asset_id">
+                               <input type="checkbox" v-model='selectedFixedAssetByIds' :value="asset.fixed_asset_id">
                             </td>
                             <td class="table__col--center table__col--serial">{{((this.filter.pageIndex - 1) * this.filter.pageSize) + (index + 1)}}</td>
                             <td class="table__col--left table__col--assetcode">{{asset.fixed_asset_code}}</td>
@@ -154,9 +170,9 @@
                             <td class="table__col--left table__col--category">{{asset.fixed_asset_category_name}}</td>
                             <td class="table__col--left table__col--department">{{asset.department_name}}</td>
                             <td class="table__col--right table__col--quantity">{{asset.quantity}}</td>
-                            <td class="table__col--right table__col--cost">{{this.formatNumber(asset.cost)}}</td>
-                            <td class="table__col--right tabel__col--depreciation">{{this.formatNumber(asset.depreciation_rate/100 * asset.cost)}}</td>
-                            <td class="table__col--right table__col--residual">{{this.formatNumber(asset.cost - (asset.depreciation_rate/100 * asset.cost))}}</td>
+                            <td class="table__col--right table__col--cost">{{this.formatCostType(asset.cost)}}</td>
+                            <td class="table__col--right tabel__col--depreciation">{{this.formatCostType(asset.depreciation_rate/100 * asset.cost)}}</td>
+                            <td class="table__col--right table__col--residual">{{this.formatCostType(asset.cost - (asset.depreciation_rate/100 * asset.cost))}}</td>
                             <td class="table__col--right table__col--function">
                                 <div class="table__function">
                                     <div 
@@ -167,10 +183,10 @@
                                             editAsset (
                                                 asset.fixed_asset_code, asset.fixed_asset_name, 
                                                 asset.department_code, asset.department_name, 
-                                                asset.category_code, asset.category_name,
-                                                asset.quantity, this.formatNumber(asset.cost), asset.life_time,
-                                                this.formatRate(asset.depreciation_rate), this.formatNumber(asset.depreciation_rate/100 * asset.cost), asset.tracked_year,
-                                                asset.purchase_date
+                                                asset.fixed_asset_category_code, asset.fixed_asset_category_name,
+                                                asset.quantity, this.formatCostType(asset.cost), asset.life_time,
+                                                this.formatRateType(asset.depreciation_rate), this.formatCostType(asset.depreciation_rate/100 * asset.cost), asset.tracked_year,
+                                                formatDate(asset.purchase_date)
                                             )
                                         "
                                     >
@@ -192,7 +208,7 @@
                         <tr class="table__row--paging">
                             <td class="table__col--assetname" colspan="4">
                                 <div class="table__pagination">
-                                    <div class="table__sum">Tổng số: <b>{{this.assets.length}} bản ghi</b></div>
+                                    <div class="table__sum">Tổng số: <b>{{this.totalAllAssets}} bản ghi</b></div>
                                     <div class="table__size" @click="toggleSelectPageSize()">
                                         <div class="table__subsize--selected">
                                             {{this.filter.pageSize}}
@@ -206,7 +222,7 @@
                                                     tabindex="0" 
                                                     :class="{'drilldown__item--selected': item == this.filter.pageSize}"
                                                     v-for='item in this.pageSizes'
-                                                    @click="selectPageSize(item), setTotalPageIndex()"
+                                                    @click="selectPageSize(item)"
                                                     :key="item"
                                                 >
                                                 {{item}}
@@ -222,11 +238,13 @@
                                         <div class="pagination__item pagination__item--value">
                                             <div class="pagination__subitem pagination__subitem--selected"><b>{{this.filter.pageIndex}}</b></div>
                                             
-                                            <div class="pagination__subitem" v-show="this.filter.pageSize != 500 && this.assetsFilter.length == 20">...</div>
+                                            <div class="pagination__subitem"
+                                                v-show="this.filter.totalPage > 2"
+                                            >...</div>
 
                                             <div class="pagination__subitem"
-                                                v-show="this.filter.pageSize != 500 && this.assetsFilter.length == 20"
-                                                @click="this.filter.pageIndex = this.filter.totalPage"
+                                                v-show="this.filter.totalPage != 1"
+                                                @click="this.filter.pageIndex = this.filter.totalPage, this.loadAPI()"
                                             >{{this.filter.totalPage}}</div>
                                         </div>
                                         <div class="pagination__item pagination__item--icon" @click="nextPage()">
@@ -242,16 +260,16 @@
 
                             </td>
                             <td class="table__col--right table__col--quantity">
-                                {{sumQuantity()}}
+                                {{formatCostType(sumQuantity())}}
                             </td>
                             <td class="table__col--right table__col--cost">
-                                {{formatNumber(sumCost())}}
+                                {{formatCostType(sumCost())}}
                             </td>
                             <td class="table__col--right tabel__col--depreciation">
-                                {{formatNumber(sumDepreciation())}}
+                                {{formatCostType(sumDepreciation())}}
                             </td>
                             <td class="table__col--right table__col--residual">
-                                {{formatNumber(sumCost() - sumDepreciation())}}
+                                {{formatCostType(sumCost() - sumDepreciation())}}
                             </td>
                             <td class="table-col--right table__col--function">
                                 
@@ -261,11 +279,12 @@
                 </table>
             </div>
         </div>
-        <!-- END: Content/Table -->
+        <!-- END: Table -->
 
         <TheDelete/>
     </div>
 
+    <!-- BEGIN: Modal -->
     <div class="modal" :class="{'modal--open': displayModal}">
         <form class="modal__main"  @submit.prevent="onSubmit()">
             <!-- BEGIN: Close modal -->
@@ -419,6 +438,8 @@
                                 @keypress="this.numbersOnly"                       
                             >
                             <i class="icon icon--multidrop"></i>
+                            <span class="spin spin--up" @mousedown="this.increaseQuantity()"></span>
+                            <span class="spin spin--down" @mousedown="this.decreaseQuantity()"></span>
                         </div>
                     </div>
     
@@ -430,7 +451,7 @@
                             type="text"  
                             @keypress="this.numbersOnly"                       
                             v-model.trim="assetModal.cost"
-                            @change="validateFormInput('cost')" 
+                            @keyup="validateCostType()" 
                         >
                     </div>
     
@@ -455,14 +476,15 @@
                         </label>
                         <div class="modal__input--icon">
                             <input 
-                                v-model.trim="assetModal.depreciation_rate" 
+                                v-model.trim="assetModal.depreciationRate" 
                                 class="input input--haveicon input--textright input__spin--hide input--modal" 
-                                v-on:keypress="this.numbersOnly"
-                                ref="input" 
+                                @keypress="this.numbersOnly"
                                 type="text"
-                                @change="validateFormInput('depreciation_rate')" 
+                                @change="validateRateType()" 
                             >
                             <i class="icon icon--multidrop"></i>
+                            <span class="spin spin--up" @mousedown="this.increaseDepreciationRate()"></span>
+                            <span class="spin spin--down" @mousedown="this.decreaseDepreciationRate()"></span>
                         </div>
 
                     </div>
@@ -473,11 +495,9 @@
                         </label>
                         <input 
                             v-model.trim="assetModal.depreciation" 
-                            class="input input--textright input__spin--hide input--modal" 
-                            v-on:keypress="this.numbersOnly"
+                            class="input input--textright input--disable input--modal" 
                             ref="input" 
                             type="text"
-                            @change="validateFormInput('depreciation')" 
                         >
                     </div>
      
@@ -485,7 +505,7 @@
                         <label class="modal__label">
                             Năm theo dõi 
                         </label>
-                        <input v-model.trim="assetModal.namTheoDoi" class="input input--disable input--textright input--modal" type="text" tabindex="-1">
+                        <input v-model.trim="assetModal.trackedYear" class="input input--disable input--textright input--modal" type="text" tabindex="-1">
                     </div>
                 </div>
 
@@ -498,7 +518,7 @@
                             <input 
                                 type="date" 
                                 class="input input--modal" 
-                                v-model.trim="assetModal.ngayMua"
+                                v-model.trim="assetModal.purchaseDate"
                             >
                             <i class="icon icon--date"></i>
                         </div>
@@ -509,7 +529,7 @@
                             Ngày bắt đầu sử dụng <em>*</em>
                         </label>
                         <div class="modal__input--icon">
-                            <input type="date" class="input input--modal" v-model.trim="assetModal.ngayBatDauSD">
+                            <input type="date" class="input input--modal" v-model.trim="assetModal.productionYear">
                             <i class="icon icon--date"></i>
                         </div>
                     </div>
@@ -547,75 +567,58 @@
         <!-- END: Alert close modal -->
 
     </div>
+    <!-- END: Modal -->
+
+    <TheLoading v-show="isDisplayLoading" />
 </template>
 
 <script>
 import axios from "axios";
 import Resource from "@/lib/resource";
 import TheDelete from "@/components/function/TheDelete.vue";
+import moment from 'moment'
+import TheLoading from "@/components/base/loading/TheLoading.vue";
 
 export default {
     name: "AssetList",
     components: {
         TheDelete,
+        TheLoading,
     },
 
+    // Chưa truy cập vào data
     beforeCreate() {
-        
     },
 
+    // Truy cập vào data nhưng chưa vào DOM
     created() {
-        // trước khi load dữ liệu thì hiện trạng thái tải data
-        // gọi api để lấy dữ liệu sử dụng axios
-        axios.get(`${Resource.Url.FixedAssets}`)
-        .then((resource) => {
-            console.log(resource.data);
-            this.assets = resource.data;
-        })
+        try {
+            this.isDisplayLoading = true; // Hiển thị loading data
 
-        this.loadData();
-
-        axios.get(`${Resource.Url.FixedAssetCategories}`)
-        .then((resource) => {
-            this.categories = resource.data;
-        })
-
-        axios.get(`${Resource.Url.Departments}`)
-        .then((resource) => {
-            this.departments = resource.data;
-        })
-    },
-
-
-    setup() {
-
-
-/*             try {
-
-            // gọi api để lấy dữ liệu sử dụng axios
-            axios
-            .get("https://localhost:44380/api/v1/Assets/export")
-            .then((response) => {
-                console.log(response);
-                let url = response.request.responseURL; // đường dẫn tải file
-                window.open(url);
+            axios.get(`${Resource.Url.FixedAssetCategories}`)
+            .then((resource) => {
+                this.categories = resource.data;
             })
-            .catch((response) => {
-                console.log("response: ", response.response.status);
-                me.handleException(
-                response.response.status,
-                response.response.data.moreInfo,
-                response.response.data.userMsg
-                );
+            .catch((error) => {
+                console.log(error);
             });
+
+            axios.get(`${Resource.Url.Departments}`)
+            .then((resource) => {
+                this.departments = resource.data;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
+            this.loadAPI(); 
         } catch (error) {
             console.log(error);
-        } */
+        }
     },
     
     /* Khởi tạo giá trị mặc định khi vào DOM thật */
     beforeMount() {
-        this.deleteDisable();
     },
 
     /* DOM thật */
@@ -624,13 +627,10 @@ export default {
     },
 
     beforeUpdate() {
-        
     },
 
     updated() {
         this.deleteDisable();
-        this.loadData();
-        this.setTotalPageIndex();
     },
 
     beforeUnmount() {
@@ -638,7 +638,7 @@ export default {
     },
 
     unmounted() {
-        
+        console.log('unmounted');
     },
 
     directives: {
@@ -647,40 +647,50 @@ export default {
     methods: {
         //#region Method Table Pagination
         //#endregion
-        /* Load table
+        /* Tải dữ liệu API
             @param {}
             @returns void
             Author: Tuan 
             Date: 30/10/2022 
         */
-        loadData() {
+        loadAPI() {
+            let me = this;
+
             try {
-                axios.get(`${Resource.Url.FixedAssets}/filter?keyword=${this.filter.keyword}&fixedAssetCategoryId=${this.filter.fixedAssetCategoryId}&departmentId=${this.filter.departmentId}&limit=${this.filter.pageSize}&offset=${this.filter.pageIndex}`)
+                // Sử dụng axios get all data
+                axios
+                .get(`${Resource.Url.FixedAssets}`)
                 .then((resource) => {
-                    console.log(resource.data);
-                    this.assetsFilter = resource.data;
-                    console.log(this.assetsFilter);
+                    me.totalAllAssets = resource.data.length; // Lấy tổng số bản ghi
+
+                    setTimeout(() => me.isDisplayLoading = false, 500); // Ẩn loading data
                 })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+                // Lấy dữ liệu filter 
+                axios
+                .get(`${Resource.Url.FixedAssets}/filter?keyword=${this.filter.keyword}&fixedAssetCategoryId=${this.filter.fixedAssetCategoryId}&departmentId=${this.filter.departmentId}&limit=500&offset=1`)
+                .then((resource) => {
+                    me.updateTotalPageIndex(resource.data.length);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+                // Lấy dữ liệu filter and paging
+                axios
+                .get(`${Resource.Url.FixedAssets}/filter?keyword=${this.filter.keyword}&fixedAssetCategoryId=${this.filter.fixedAssetCategoryId}&departmentId=${this.filter.departmentId}&limit=${this.filter.pageSize}&offset=${this.filter.pageIndex}`)
+                .then((resource) => {
+                    me.assets = resource.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
             } catch (e) {
                 console.log(e);
             }
-
-            axios.get(`${Resource.Url.FixedAssets}/filter?keyword=${this.filter.keyword}&fixedAssetCategoryId=${this.filter.fixedAssetCategoryId}&departmentId=${this.filter.departmentId}&limit=500&offset=1`)
-            .then((res) => {
-                    console.log(res.data);
-                    this.assetsFilterNoLimit = res.data;
-                    console.log(this.assetsFilterNoLimit);
-            })
-        },
-
-        /* Focus vào một element
-            @param {}
-            @returns void
-            Author: Tuan 
-            Date: 30/10/2022 
-        */
-        focus (value) {
-            this.hasfocus = value;
         },
 
         //#region Tài sản
@@ -699,6 +709,7 @@ export default {
                 this.category.filter = category.fixed_asset_category_name;
                 this.filter.fixedAssetCategoryId = category.fixed_asset_category_id;
             }
+            this.loadAPI();
         },
 
         /* Ẩn dropdown khi blur
@@ -758,6 +769,7 @@ export default {
                 this.department.filter = department.department_name;
                 this.filter.departmentId = department.department_id;
             }
+            this.loadAPI();
         },
 
         /* Đưa phòng ban vào input modal
@@ -801,7 +813,7 @@ export default {
         },
         //#endregion Bộ phận sử dụng
 
-        //#region Modal method
+        //#region method Modal 
         //#region Modal click events 
         /* Mở modal
             @param {}
@@ -811,12 +823,13 @@ export default {
         */
         openModal() {
             this.displayModal = true;
+            this.assetModal.fixedAssetCode += parseInt(Math.random()*112345);
             setTimeout(() => {
                 this.$refs.focusMe.focus();
             }, 200);
         },
 
-                /* Đóng modal
+        /* Đóng modal
             @param {}
             @returns void
             Author: Tuan 
@@ -851,7 +864,7 @@ export default {
             this.checkDepartmentCode.hasError = false,
             this.checkFixedAssetCategoryCode.hasError = false,
             this.assetModal = {
-                fixedAssetCode: 'TS00001',
+                fixedAssetCode: 'TS',
                 fixedAssetName: '',
                 departmentCode: '',
                 departmentName: '',
@@ -859,12 +872,11 @@ export default {
                 categoryName: '',
                 quantity: 0,
                 cost: 0,
-                purchaseDate: 0,
                 depreciationRate: 0,
                 depreciation: 0,
-                namTheoDoi: new Date().getFullYear(),
-                ngayMua: new Date().toISOString().substring(0,10),
-                ngayBatDauSD: new Date().toISOString().substring(0,10)
+                trackedYear: new Date().getFullYear(),
+                purchaseDate: new Date().toISOString().substring(0,10),
+                productionYear: new Date().toISOString().substring(0,10)
             }
         },
 
@@ -947,16 +959,48 @@ export default {
         },
         //#endregion Modal processing ui
 
-        //#region Modal validate input
+        //#region Modal processing data
+        increaseQuantity() {
+            if(this.assetModal.quantity < 100)
+                this.assetModal.quantity++;
+        },
+
+        decreaseQuantity() {
+            if(this.assetModal.quantity > 0)
+                this.assetModal.quantity--;
+        },
+
+        increaseDepreciationRate() {
+            let tmp = this.assetModal.depreciationRate;
+            console.log('Truoc:' + tmp);
+            if(tmp == 0) {
+                tmp += 0.01;
+            } else {
+                tmp = parseFloat(tmp.replace(/\./g,"").replace(',', '.'));
+                if(tmp < 100)
+                    tmp += 0.01;
+            }
+            this.assetModal.depreciationRate = this.formatRateType(tmp);
+        },
+
+        decreaseDepreciationRate() {
+            this.assetModal.depreciationRate = parseFloat(this.assetModal.depreciationRate.replace(/\./g,"").replace(',', '.')); 
+            if(this.assetModal.depreciationRate > 0)
+                this.assetModal.depreciationRate -= 0.01;
+            this.assetModal.depreciationRate = this.formatRateType(this.assetModal.depreciationRate);
+        },
+        //#endregion Modal processing data
+
+        //#region Modal validate data
         /* Định dạng dữ liệu cho giá (200000 => 200.000)
             @param {}
             @returns void
             Author: Tuan 
             Date: 31/10/2022 
         */
-        formatNumber(number) {
+        formatCostType(number) {
+            let val = (number/1).toFixed(0).replace('.', ',')
             if (number && !isNaN(number)) {
-                let val = (number/1).toFixed(0).replace('.', ',')
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             } else 
                 return number;
@@ -968,9 +1012,9 @@ export default {
             Author: Tuan 
             Date: 31/10/2022 
         */
-        formatRate(number) {
+        formatRateType(number) {
+            let val = (number/1).toFixed(2).replace('.', ',')
             if (number && !isNaN(number)) {
-                let val = (number/1).toFixed(2).replace('.', ',')
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             } else 
                 return number;
@@ -1004,25 +1048,21 @@ export default {
             }
         },
 
-        validateFormInput(value) {
-            if (value == 'cost') {
-                this.assetModal.cost = this.formatNumber(this.assetModal.cost);
-            } else if (value == 'depreciation') {
-                this.assetModal.depreciation = this.formatNumber(this.assetModal.depreciation);
-            } else if (value == 'depreciationRate') {
-                this.assetModal.depreciationRate = this.formatRate(this.assetModal.depreciationRate);
-            }
-        },
-
-        /**
-         * Hàm nhập số tiền vào ô thì tự format số 
-         */
-         showValueCost() {
+        validateCostType() {
             let cost = this.assetModal.cost;
             if (cost != 0) {
                 let tmpCost = cost.replace(/[^0-9]/g, '');
-                let showCost = this.formartNumber(tmpCost);
+                let showCost = this.formatCostType(tmpCost);
                 this.assetModal.cost = showCost;
+            }
+        },
+
+        validateRateType() {
+            let rate = this.assetModal.depreciationRate;
+            if (rate != 0) {
+                let tmpRate = parseFloat(rate.replace(',', '.'));
+                let showRate = this.formatRateType(tmpRate);
+                this.assetModal.depreciationRate = showRate;
             }
         },
         /**
@@ -1036,17 +1076,16 @@ export default {
             }
         },
         //#endregion Modal validate input
-
-
-
-
-
-
-
-
-        //#endregion Modal
+        //#endregion method Modal
 
         //#region Method Table 
+        formatDate(value){
+            if (value) {
+                console.log(value);
+                console.log((moment(String(value)).format('YYYYMMDD')));
+                return new Date().toISOString().substring(0,10);
+            }
+        },
         /* Sửa tài sản
             @param {}
             @returns void
@@ -1072,9 +1111,9 @@ export default {
             this.assetModal.purchaseDate = lifeTime;
             this.assetModal.depreciationRate = depreciationRate;
             this.assetModal.depreciation = depreciation;
-            this.assetModal.namTheoDoi = trackedYear;
-            this.assetModal.ngayBatDauSD = purchaseDate;
-            this.assetModal.ngayMua = purchaseDate;
+            this.assetModal.trackedYear = trackedYear;
+            this.assetModal.productionYear = purchaseDate;
+            this.assetModal.purchaseDate = purchaseDate;
         },
 
         /* Tổng số lượng
@@ -1092,9 +1131,7 @@ export default {
                     sumQuantity = sumQuantity + (asset.quantity);
                 }
             });
-            console.log(sumQuantity);
             return sumQuantity;
-
         },
 
         /* Tổng nguyên giá
@@ -1163,10 +1200,10 @@ export default {
             Date: 7/11/2022 
         */
         numberRecordsDeleted() {
-            if (this.selectedFixedAssetById.length < 10) {
-                this.function.delete.quantity = '0' + this.selectedFixedAssetById.length;
+            if (this.selectedFixedAssetByIds.length < 10) {
+                this.function.delete.quantity = '0' + this.selectedFixedAssetByIds.length;
             } else {
-                this.function.delete.quantity = this.selectedFixedAssetById.length;
+                this.function.delete.quantity = this.selectedFixedAssetByIds.length;
             }
         },
 
@@ -1177,15 +1214,15 @@ export default {
             Date: 7/11/2022 
         */
         showAlertDelete() {
-            if (this.selectedFixedAssetById.length == 1) {
+            if (this.selectedFixedAssetByIds.length == 1) {
                 this.toggleAlertDeleteARecord();
                 for (var i = 0; i < this.assets.length; i++) {
-                    if (this.assets[i].fixed_asset_id == this.selectedFixedAssetById[0]) {
+                    if (this.assets[i].fixed_asset_id == this.selectedFixedAssetByIds[0]) {
                         this.function.delete.fixedAssetCode = this.assets[i].fixed_asset_code;
                         this.function.delete.fixedAssetName = this.assets[i].fixed_asset_name;
                     }
                 }
-            } else if (this.selectedFixedAssetById.length > 1) {
+            } else if (this.selectedFixedAssetByIds.length > 1) {
                 this.toggleAlertDeleteRecords();
                 this.numberRecordsDeleted();
             }
@@ -1199,16 +1236,16 @@ export default {
         */
         doubleClickRow(id) {
             var check = false;
-            for(var i = 0; i < this.selectedFixedAssetById.length; i++) {
-                if(id == this.selectedFixedAssetById[i]) {
-                    this.selectedFixedAssetById.splice(i,1);
+            for(var i = 0; i < this.selectedFixedAssetByIds.length; i++) {
+                if(id == this.selectedFixedAssetByIds[i]) {
+                    this.selectedFixedAssetByIds.splice(i,1);
                     check = true;
                     break;
                 }
             }
 
             if(!check) {
-                this.selectedFixedAssetById.push(id);
+                this.selectedFixedAssetByIds.push(id);
             }
         },
 
@@ -1219,8 +1256,8 @@ export default {
             Date: 7/11/2022 
         */
         checkBackground(id) {
-            for(var i = 0; i < this.selectedFixedAssetById.length; i++) {
-                if(id == this.selectedFixedAssetById[i]) {
+            for(var i = 0; i < this.selectedFixedAssetByIds.length; i++) {
+                if(id == this.selectedFixedAssetByIds[i]) {
                     return true;
                 }
             }
@@ -1241,6 +1278,7 @@ export default {
                 this.filter.pageSize = option;
             }
             this.filter.pageIndex = 1;
+            this.loadAPI();
         },
 
         /* Toggle chọn kích cỡ trang
@@ -1260,6 +1298,12 @@ export default {
             Date: 7/11/2022 
         */
         searchKeyword() {
+            try {
+                this.filter.keyword = this.filter.keyword.trim();
+                this.loadAPI();
+            } catch (e) {
+                console.log(e);
+            }
 
         },
 
@@ -1297,6 +1341,7 @@ export default {
         prevPage() {
             if(this.filter.pageIndex > 1){
                 this.filter.pageIndex--;
+                this.loadAPI();
             }  
         },
 
@@ -1307,6 +1352,7 @@ export default {
         nextPage() {
             if(this.filter.pageIndex < this.filter.totalPage){
                 this.filter.pageIndex++;
+                this.loadAPI();
             }    
         },
 
@@ -1319,13 +1365,13 @@ export default {
             this.page = page
         },
 
-        setTotalPageIndex() {
-            if(this.assetsFilterNoLimit.length <= this.filter.pageSize || this.filter.pageSize == -1) 
-                this.assetsFilterNoLimit.totalPage = 1;
-            else if(this.assetsFilterNoLimit.length % this.filter.pageSize == 0)
-                this.filter.totalPage = this.assetsFilterNoLimit.length / this.filter.pageSize;
+        updateTotalPageIndex(filterLength) {
+            if(filterLength <= this.filter.pageSize || this.filter.pageSize == -1) 
+                this.filter.totalPage = 1;
+            else if(filterLength % this.filter.pageSize == 0)
+                this.filter.totalPage = filterLength / this.filter.pageSize;
             else 
-                this.filter.totalPage =  (this.assetsFilterNoLimit.length - (this.assetsFilterNoLimit.length % this.filter.pageSize)) / this.filter.pageSize + 1;
+                this.filter.totalPage =  (filterLength - (filterLength % this.filter.pageSize)) / this.filter.pageSize + 1;
         },
         //#endregion Table
 
@@ -1337,7 +1383,7 @@ export default {
             Date: 7/11/2022 
         */
         deleteDisable() {
-            if(this.selectedFixedAssetById.length == 0) {
+            if(this.selectedFixedAssetByIds.length == 0) {
                 this.function.delete.empty = true;
             } else {
                 this.function.delete.empty = false;
@@ -1348,13 +1394,12 @@ export default {
 
     data() {
         return {
-            pickerVisible: false,
+            isDisplayLoading: false, // Toggle loading khi load dữ liệu
 
             //#region Data Table
-
+            totalAllAssets: 0,
             assets: [],
-            assetsFilter: [],
-            assetsFilterNoLimit: [],
+            assetsNoLimit: [],
             //#region Data table filter
             filter: {
                 keyword: "",
@@ -1368,9 +1413,9 @@ export default {
 
             //#region Data table pagination
             showPageSize: false,
-            pageSizes: [20, 50, 100, 'All'],
+            pageSizes: [20, 50, 100, 200],
             //#endregion table pagination
-            selectedFixedAssetById: [],
+            selectedFixedAssetByIds: [],
 
             categories: [],
 
@@ -1408,8 +1453,9 @@ export default {
             /* END: Data bộ phận sử dụng */
             //#endregion Table
 
-            /* BEGIN: Dữ liệu form modal */
-            assetModal: {
+            //#region Data Modal 
+            titleModal: '',
+            assetModal: { // Dữ liệu form modal
                 fixedAssetCode: 'TS00001',
                 fixedAssetName: '',
                 departmentCode: '',
@@ -1418,31 +1464,22 @@ export default {
                 categoryName: '',
                 quantity: 0,
                 cost: 0,
-                purchaseDate: 0,
-                depreciation_rate: 0,
+                purchaseDate: new Date().toISOString().substring(0,10),
+                depreciationRate: 0,
                 depreciation: 0,
-                namTheoDoi: new Date().getFullYear(),
-                ngayMua: new Date().toISOString().substring(0,10),
-                ngayBatDauSD: new Date().toISOString().substring(0,10),
+                trackedYear: new Date().getFullYear(),
+                productionYear: new Date().toISOString().substring(0,10),
             },
-            /* END: Dữ liệu form modal */
+            //#endregion Data Modal
 
-            hasfocus: false,
+            
+            displayModal: false, /* Hiển thị modal */
+            displayAlert: false, /* Hiển thị cảnh báo khi huỷ*/
+            htmlToastSuccess: "", /* Hiển thị thông báo lưu dữ liệu thành công */
+            htmlError: "", /* Hiển thị lỗi cảnh báo input */
 
-            /* Hiển thị modal */
-            displayModal: false,
-
-            /* Hiển thị cảnh báo khi huỷ*/
-            displayAlert: false,
-  
-            /* Hiển thị thông báo lưu dữ liệu thành công */
-            htmlToastSuccess: "",
-
-            /* Hiển thị lỗi cảnh báo input */
-            htmlError: "",
-
-            /* Danh sách năm */
-            years: [],
+            
+            years: [], /* Danh sách năm */
 
             checkfixedAssetName: {
                 hasError: false
@@ -1465,29 +1502,31 @@ export default {
         selectAll: {
             /*
                 @param {}
-                @returns this.assets ? this.selectedFixedAssetById.length == this.assets.length : false;
+                @returns this.assets ? this.selectedFixedAssetByIds.length == this.assets.length : false;
             */
             get: function () {
-                return this.assetsFilter ? this.selectedFixedAssetById.length == this.assetsFilter.length : false;
+                return this.assets ? this.selectedFixedAssetByIds.length == this.assets.length : false;
             },
             /*
                 @param {fixed_asset_id}
                 @returns void
             */
             set: function (value) {
-                var selectedFixedAssetById = [];
+                var selectedFixedAssetByIds = [];
 
                 if (value) {
                     
-                    this.assetsFilter.forEach(function (asset) {
-                        selectedFixedAssetById.push(asset.fixed_asset_id);
+                    this.assets.forEach(function (asset) {
+                        selectedFixedAssetByIds.push(asset.fixed_asset_id);
                     });
                 }
 
-                this.selectedFixedAssetById = selectedFixedAssetById;
+                this.selectedFixedAssetByIds = selectedFixedAssetByIds;
             }
         },
 
+        //#region computed Modal
+        //#endregion computed Modal 
     },
 
 

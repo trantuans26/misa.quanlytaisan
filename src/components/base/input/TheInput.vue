@@ -22,7 +22,6 @@ export default {
     methods: {
         /**
         * validate dữ liệu
-        * Author: NVHThai (21/09/2022)
         */
         validateInputBlur(){
             this.borderRed = true;

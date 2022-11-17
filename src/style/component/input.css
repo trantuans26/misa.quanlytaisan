@@ -104,13 +104,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     position: relative;
 }
 
-.input--quantity::before {
-    content: '';
-    position: absolute;
-    background-color: #ed4337;
-    display: block;
-}
-
 .input--modal {
     font-size: 14px;
 }
