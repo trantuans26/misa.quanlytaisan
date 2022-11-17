@@ -100,7 +100,7 @@
             </div>
 
             <div class="function__list">
-                <button class="btn btn__add function__item--maleft" @click="openModal()">+ Thêm tài sản</button>
+                <button class="btn btn__add function__item--maleft" @click="openModal(), this.titleModal = 'Thêm tài sản'">+ Thêm tài sản</button>
 
                 <button class="btn btn__excel function__item--maleft" data-title="Xuất bảng tài sản">
                     <i class="icon icon--excel"></i>
@@ -295,7 +295,7 @@
 
             <!-- BEGIN: Header modal -->
             <header class="modal__section modal__header">
-                Thêm tài sản
+                {{this.titleModal}}
             </header>
             <!-- END: Header modal -->
 
@@ -349,11 +349,11 @@
                                         <div class="drilldown__name"><b>Tên bộ phận sử dụng</b></div>
                                     </li>
                                     <li class="drilldown__item drilldown__item--modal" 
-                                        :class="{'drilldown__item--selected': department.department_code == this.assetModal.departmentCode}"
+                                        :class="{'drilldown__item--selected': department.department_id == this.assetModal.departmentId}"
                                         v-for='department in this.departments'
                                         tabindex="0"
                                         @click="selectValueDepartment(department)"
-                                        :key="department"
+                                        :key="department.department_id"
                                         v-on:change.enter="selectValueDepartment(department), this.department.show = false"
                                     >
                                         <div class="drilldown__id">{{department.department_code}}</div>
@@ -402,10 +402,10 @@
                                         <div class="drilldown__name"><b>Tên loại tài sản</b></div>
                                     </li>
                                     <li class="drilldown__item drilldown__item--modal" 
-                                        :class="{'drilldown__item--selected': category.code == this.assetModal.categoryCode}"
+                                        :class="{'drilldown__item--selected': category.fixed_asset_category_id == this.assetModal.categoryId}"
                                         v-for='category in this.categories'
                                         @click="selectValueCategory(category)"
-                                        :key="category"
+                                        :key="category.fixed_asset_category_id"
                                     >
                                         <div class="drilldown__id">{{category.fixed_asset_category_code}}</div>
                                         <div class="drilldown__name">{{category.fixed_asset_category_name}}</div>
@@ -460,7 +460,7 @@
                             Số năm sử dụng <em>*</em>
                         </label>
                         <input 
-                            v-model.trim="assetModal.purchaseDate" 
+                            v-model.trim="assetModal.lifeTime" 
                             class="input input--textright input__spin--hide input--modal" 
                             v-on:keypress="this.numbersOnly"
                             ref="input"
@@ -631,6 +631,7 @@ export default {
 
     updated() {
         this.deleteDisable();
+        this.updateDepreciationYear();
     },
 
     beforeUnmount() {
@@ -654,16 +655,14 @@ export default {
             Date: 30/10/2022 
         */
         loadAPI() {
-            let me = this;
-
             try {
                 // Sử dụng axios get all data
                 axios
                 .get(`${Resource.Url.FixedAssets}`)
                 .then((resource) => {
-                    me.totalAllAssets = resource.data.length; // Lấy tổng số bản ghi
+                    this.totalAllAssets = resource.data.length; // Lấy tổng số bản ghi
 
-                    setTimeout(() => me.isDisplayLoading = false, 500); // Ẩn loading data
+                    setTimeout(() => this.isDisplayLoading = false, 500); // Ẩn loading data
                 })
                 .catch((error) => {
                     console.log(error);
@@ -673,7 +672,7 @@ export default {
                 axios
                 .get(`${Resource.Url.FixedAssets}/filter?keyword=${this.filter.keyword}&fixedAssetCategoryId=${this.filter.fixedAssetCategoryId}&departmentId=${this.filter.departmentId}&limit=500&offset=1`)
                 .then((resource) => {
-                    me.updateTotalPageIndex(resource.data.length);
+                    this.updateTotalPageIndex(resource.data.length);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -683,7 +682,7 @@ export default {
                 axios
                 .get(`${Resource.Url.FixedAssets}/filter?keyword=${this.filter.keyword}&fixedAssetCategoryId=${this.filter.fixedAssetCategoryId}&departmentId=${this.filter.departmentId}&limit=${this.filter.pageSize}&offset=${this.filter.pageIndex}`)
                 .then((resource) => {
-                    me.assets = resource.data;
+                    this.assets = resource.data;
                 })
                 .catch((error) => {
                     console.log(error);
@@ -743,10 +742,12 @@ export default {
             Modified Date: 4/11/2022 
         */
         selectValueCategory(option) {
-            if(option.code == this.assetModal.categoryCode) {
+            if(option.fixed_asset_category_id == this.assetModal.categoryId) {
+                this.assetModal.categoryId = null;
                 this.assetModal.categoryCode = null
                 this.assetModal.categoryName = null
             } else {
+                this.assetModal.categoryId = option.fixed_asset_category_id;
                 this.assetModal.categoryCode = option.fixed_asset_category_code;
                 this.assetModal.categoryName = option.fixed_asset_category_name;     
             }
@@ -779,10 +780,12 @@ export default {
             Modified Date: 4/11/2022 
         */
         selectValueDepartment(option) {
-            if(option.code == this.assetModal.departmentCode) {
+            if(option.department_id == this.assetModal.departmentId) {
+                this.assetModal.department_id = null;
                 this.assetModal.departmentCode = null
                 this.assetModal.departmentName = null
             } else {
+                this.assetModal.departmentId = option.department_id;
                 this.assetModal.departmentCode = option.department_code;
                 this.assetModal.departmentName = option.department_name;     
             }
@@ -814,6 +817,49 @@ export default {
         //#endregion Bộ phận sử dụng
 
         //#region method Modal 
+        /* Thêm 1 tài sản
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 17/11/2022 
+        */
+        insertFixedAsset() {
+            try {
+                axios
+                .post(Resource.Url.FixedAssets, {
+                    "fixed_asset_code": this.assetModal.fixedAssetCode,
+                    "fixed_asset_name": this.assetModal.fixedAssetName,
+                    "department_id": this.assetModal.departmentId,
+                    "department_code": this.assetModal.departmentCode,
+                    "department_name": this.assetModal.departmentName,
+                    "fixed_asset_category_id": this.assetModal.CategoryId,
+                    "fixed_asset_category_code": this.assetModal.categoryCode,
+                    "fixed_asset_category_name": this.assetModal.categoryName,
+                    "purchase_date": this.assetModal.purchaseDate,
+                    "cost": this.assetModal.cost,
+                    "quantity": this.assetModal.quantity,
+                    "depreciation_rate": this.assetModal.depreciationRate,
+                    "tracked_year": this.assetModal.trackedYear,
+                    "life_time": this.assetModal.lifeTime,
+                    "production_year": this.assetModal.productionYear,
+                    "active": 0
+                })
+                .then(() => {
+                    //đóng form add
+                    this.btnDetroyToastAttentionAddOnclick();
+
+                    // tải lại dữ liệu
+                    this.$parent.getDataAPI();
+
+                    // hiện thông báo thêm thành công
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        },
         //#region Modal click events 
         /* Mở modal
             @param {}
@@ -1061,8 +1107,20 @@ export default {
             let rate = this.assetModal.depreciationRate;
             if (rate != 0) {
                 let tmpRate = parseFloat(rate.replace(',', '.'));
+                if (tmpRate > 100) tmpRate = 100;
                 let showRate = this.formatRateType(tmpRate);
                 this.assetModal.depreciationRate = showRate;
+            }
+        },
+
+        updateDepreciationYear() {
+            let rate = this.assetModal.depreciationRate;
+            let cost = this.assetModal.cost;
+            if (rate != 0 && cost != 0) {
+                let tmpRate = parseFloat(rate.replace(',', '.'));
+                let tmpCost = cost.replace(/[^0-9]/g, '');
+                let value = (tmpRate* 0.01) * tmpCost;
+                this.assetModal.depreciation = this.formatCostType(value);
             }
         },
         /**
@@ -1114,6 +1172,7 @@ export default {
             this.assetModal.trackedYear = trackedYear;
             this.assetModal.productionYear = purchaseDate;
             this.assetModal.purchaseDate = purchaseDate;
+            this.titleModal = 'Sửa tài sản'
         },
 
         /* Tổng số lượng
@@ -1454,16 +1513,29 @@ export default {
             //#endregion Table
 
             //#region Data Modal 
-            titleModal: '',
+            titleModal: '', // Chủ đề modal
+            textFixedAssetCode: Resource.TextVi.Modal.FixedAssetCode,
+            textFixedAssetName: Resource.TextVi.Modal.FixedAssetName,
+            textDepartmentCode: Resource.TextVi.Modal.DepartmentCode,
+            textDepartmentName: Resource.TextVi.Modal.DepartmentName,
+            textFixedAssetCategoryCode: Resource.TextVi.Modal.FixedAssetCategoryCode,
+            textFixedAssetCategoryName: Resource.TextVi.Modal.FixedAssetCategoryName,
+            textQuantity: Resource.TextVi.Modal.Quantity,
+            textCost: Resource.TextVi.Modal.Cost,
+            textDepreciationRate: Resource.TextVi.Modal.DepreciationRate,
+            textPurchaseDate: Resource.TextVi.Modal.PurchaseDate,
             assetModal: { // Dữ liệu form modal
                 fixedAssetCode: 'TS00001',
                 fixedAssetName: '',
+                departmentId: '',
                 departmentCode: '',
                 departmentName: '',
+                categoryId: '',
                 categoryCode: '',
                 categoryName: '',
                 quantity: 0,
                 cost: 0,
+                lifeTime: 0,
                 purchaseDate: new Date().toISOString().substring(0,10),
                 depreciationRate: 0,
                 depreciation: 0,
