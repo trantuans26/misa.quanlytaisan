@@ -28,8 +28,8 @@
   border: 6px solid #f3f3f3; /* Light grey */
   border-top: 6px solid rgb(26, 164, 200); 
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   animation: spin 2s linear infinite;
 }
 

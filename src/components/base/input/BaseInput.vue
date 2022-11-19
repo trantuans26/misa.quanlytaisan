@@ -1,8 +1,12 @@
 <template>
-    <input :type="type" class="input" :class="[className, {borderred: borderRed}]" :placeholder="placeholder"
-        :tabindex="tabindex" :value="modelValue" @input="(event)=> $emit('update:modelValue',event.target.value)"
+    <input class="input input--modal" 
+        v-bind:class="[className, {'input--error': this.checkfixedAssetName.hasError}]" 
+        v-model="content"
+        @input="(event)=> $emit('update:modelValue',event.target.value)"
         @blur="validateInputBlur()"
         :style="style"
+        :placeholder="placeholder"
+        type="text" 
         >
 </template>
 

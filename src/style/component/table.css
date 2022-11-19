@@ -48,6 +48,20 @@ th::selection {
     overflow-x: auto;
 }
 
+.table__content--empty {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.table__content--empty div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
 .table__content::-webkit-scrollbar {
     width: 3px;
 }
@@ -76,6 +90,7 @@ th::selection {
     padding: 0 14px 0 16px;  
     scroll-snap-align: start;
 }
+
 
 .table__row:hover {
     background-color: rgba(26, 164, 200, .2);

@@ -1,6 +1,6 @@
 <template>
     <div class="content">
-        <!-- BEGIN: Function -->
+        <!-- Begin: Function -->
         <div class="function">
             <div class="function__list">
                 <div class="function__item function__item--search function__item--maright">
@@ -118,7 +118,7 @@
         </div>
         <!-- END: Function -->
 
-        <!-- BEGIN: Table -->  
+        <!-- Begin: Table -->  
         <div class="table">
             <div class="table__header table__item">
                 <table>
@@ -140,8 +140,11 @@
                 </table>
             </div>
 
-            <div class="table__content">
-                <table>
+            <div class="table__content" :class="{'table__content--empty': this.assetsNoLimit.length == 0}">
+                <div class="" v-show="this.assetsNoLimit.length == 0">
+                    <i class="icon--tableEmpty"></i>
+                </div>
+                <table v-show="this.assetsNoLimit.length != 0">
                     <tbody>
                         <tr 
                             class="table__row" 
@@ -236,14 +239,24 @@
                                             <i class="icon icon--pagingleft"></i>
                                         </div>
                                         <div class="pagination__item pagination__item--value">
-                                            <div class="pagination__subitem pagination__subitem--selected"><b>{{this.filter.pageIndex}}</b></div>
-                                            
                                             <div class="pagination__subitem"
-                                                v-show="this.filter.totalPage > 2"
-                                            >...</div>
+                                                v-show="this.filter.pageIndex > 1"
+                                                @click="this.filter.pageIndex = 1, this.loadAPI()"
+                                            >1</div>
 
+                                            <div class="pagination__subitem" 
+                                                @click="this.filter.pageIndex -= 1, this.loadAPI()" 
+                                                v-show="this.filter.pageIndex > 2"
+                                            >{{this.filter.pageIndex - 1}}</div>
+
+                                            <div class="pagination__subitem pagination__subitem--selected"><b>{{this.filter.pageIndex}}</b></div>
+
+                                            <div class="pagination__subitem" 
+                                                v-show="this.filter.pageIndex < 24 && this.filter.totalPage != 1 && this.filter.totalPage != this.filter.pageIndex"
+                                                @click="this.filter.pageIndex += 1, this.loadAPI()">{{this.filter.pageIndex + 1}}</div>
+                                        
                                             <div class="pagination__subitem"
-                                                v-show="this.filter.totalPage != 1"
+                                                v-show="this.filter.totalPage != 1  && this.filter.pageIndex != 25 && (this.filter.pageIndex+1) < this.filter.totalPage"
                                                 @click="this.filter.pageIndex = this.filter.totalPage, this.loadAPI()"
                                             >{{this.filter.totalPage}}</div>
                                         </div>
@@ -259,19 +272,19 @@
                             <td class="table__col--left table__col--department">
 
                             </td>
-                            <td class="table__col--right table__col--quantity">
+                            <td class="table__col--right table__col--quantity" v-show="this.assetsNoLimit != 0">
                                 {{formatCostType(sumQuantity())}}
                             </td>
-                            <td class="table__col--right table__col--cost">
+                            <td class="table__col--right table__col--cost" v-show="this.assetsNoLimit != 0">
                                 {{formatCostType(sumCost())}}
                             </td>
-                            <td class="table__col--right tabel__col--depreciation">
+                            <td class="table__col--right tabel__col--depreciation" v-show="this.assetsNoLimit != 0">
                                 {{formatCostType(sumDepreciation())}}
                             </td>
-                            <td class="table__col--right table__col--residual">
+                            <td class="table__col--right table__col--residual" v-show="this.assetsNoLimit != 0">
                                 {{formatCostType(sumCost() - sumDepreciation())}}
                             </td>
-                            <td class="table-col--right table__col--function">
+                            <td class="table-col--right table__col--function" v-show="this.assetsNoLimit != 0">
                                 
                             </td>
                         </tr>
@@ -284,23 +297,20 @@
         <TheDelete/>
     </div>
 
-    <!-- BEGIN: Modal -->
+    <!-- Begin: Modal -->
     <div class="modal" :class="{'modal--open': displayModal}">
-        <form class="modal__main"  @submit.prevent="onSubmit()">
-            <!-- BEGIN: Close modal -->
+        <form class="modal__main"  @submit.prevent="this.titleModal == '' ? onSubmit() : onSubmit()">
+
             <div class="modal__section modal__close" @click="closeModal()">
                 <i class="icon icon--close"></i>
             </div>
-            <!-- END: Close modal -->
 
-            <!-- BEGIN: Header modal -->
             <header class="modal__section modal__header">
                 {{this.titleModal}}
             </header>
-            <!-- END: Header modal -->
 
-            <!-- BEGIN: Body modal -->
-            <div class="modal__section modal__body">
+            <!-- Begin: Modal body -->
+            <div class="modal__section modal__content">
                 <div class="modal__line">
                     <div class="modal__item">
                         <label class="modal__label">
@@ -324,14 +334,13 @@
                 
                 <!-- Bộ phận sử dụng -->
                 <div class="modal__line">
-                    <div 
-                        class="modal__item"
-                        @click="this.department.showModal = !this.department.showModal"
-                    >
+                    <div class="modal__item">
                         <label class="modal__label">
                             Mã bộ phận sử dụng <em>*</em>
                         </label>
-                        <div class="modal__input--icon">
+                        <div class="modal__input--icon"
+                            @click="this.department.showModal = !this.department.showModal"
+                        >
                             <input 
                                 v-model.trim="assetModal.departmentCode"  
                                 v-bind:class="{'input--error': this.checkDepartmentCode.hasError}" 
@@ -377,13 +386,13 @@
 
                 <!-- Loại tài sản -->
                 <div class="modal__line">
-                    <div class="modal__item"
-                       @click="this.category.showModal = !this.category.showModal"
-                    >
+                    <div class="modal__item">
                         <label class="modal__label">
                             Mã loại tài sản <em>*</em>
                         </label>
-                        <div class="modal__input--icon">
+                        <div class="modal__input--icon"
+                            @click="this.category.showModal = !this.category.showModal"
+                        >
                             <input 
                                 v-model.trim="this.assetModal.categoryCode"  
                                 v-bind:class="{'input--error': this.checkFixedAssetCategoryCode.hasError}" 
@@ -448,10 +457,12 @@
                             Nguyên giá <em>*</em>
                         </label>
                         <input class="input input--textright input__spin--hide input--modal" 
+                            ref="Cost"
                             type="text"  
-                            @keypress="this.numbersOnly"                       
-                            v-model.trim="assetModal.cost"
-                            @keyup="validateCostType()" 
+                            v-model="assetModal.cost"
+                            @keypress="this.numbersOnly, validate($event)"                       
+                            @keyup="(assetModal.cost = this.formatCurrency(assetModal.cost)), this.setDepreciationYear()"
+                            @focus="focusSelected('Cost')"
                         >
                     </div>
     
@@ -475,11 +486,11 @@
                             Tỷ lệ hao mòn (%) <em>*</em>
                         </label>
                         <div class="modal__input--icon">
-                            <input 
-                                v-model.trim="assetModal.depreciationRate" 
-                                class="input input--haveicon input--textright input__spin--hide input--modal" 
-                                @keypress="this.numbersOnly"
+                            <input class="input input--haveicon input--textright input__spin--hide input--modal" 
                                 type="text"
+                                v-model.trim="assetModal.depreciationRate"   
+                                @keypress="this.numbersOnly, this.validate($event, 1)"
+                                @keyup="assetModal.depreciationRate = this.formatDecimal(assetModal.depreciationRate), setDepreciationYear()"
                                 @change="validateRateType()" 
                             >
                             <i class="icon icon--multidrop"></i>
@@ -535,24 +546,19 @@
                     </div>
                 </div>
             </div>
-            <!-- END: Body modal -->
+            <!-- END: Modal body -->
 
-            <!-- BEGIN: Footer modal -->
+            <!-- Begin: Modal footer -->
             <footer class="modal__section modal__footer">
                 <button type="submit" class="btn btn__save btn__save--space">Lưu</button>
                 <div tabindex="0" type="cancel" @click="closeModal()" class="btn btn__cancel" >Hủy</div> 
                 <button v-on:focus="tabRollback()" class="btn__tabRollback"></button>
             </footer>
-            <!-- END: Footer modal -->
+            <!-- END: Modal footer -->
         </form>
 
-        <!-- BEGIN: Success toast modal -->
-        <div id="toast__box" v-html="htmlToastSuccess">
-        </div>
-        <!-- END: Success toast modal -->
-
-        <!-- BEGIN: Alert close modal -->
-        <div class="alert__box" :class="{'alert__box--open': displayAlert}">
+        <!-- Begin: Alert close modal -->
+        <div class="alert__box" :class="{'alert__box--open': isDisplayAlert}">
             <div class="alert__content">
                 <div class="alert__body">
                     <i class="icon icon--alert"></i>
@@ -564,12 +570,33 @@
                 </div>
             </div>
         </div>
+
+        <div class="alert__box" :class="{'alert__box--open': this.isDisplayValidate}">
+            <div class="alert__content">
+                <div class="alert__body">
+                    <i class="icon icon--alert"></i>
+                    <div class="alert__title">{{this.textValidate}}!</div>
+                </div>
+                <div class="alert__footer">
+                    <button class="btn btn__save alert__button--space" @click="this.isDisplayValidate = false">Đóng</button>
+                </div>
+            </div>
+        </div>  
         <!-- END: Alert close modal -->
 
+        <!-- Begin: Success toast modal -->
+        <div id="toast__box" v-html="htmlToastSaveSuccess">
+        </div>
+        <!-- END: Success toast modal -->
     </div>
     <!-- END: Modal -->
 
     <TheLoading v-show="isDisplayLoading" />
+
+    <!-- Begin: Success toast modal -->
+    <div id="toast__box" v-html="htmlToastDeleteSuccess">
+    </div>
+    <!-- END: Success toast modal -->
 </template>
 
 <script>
@@ -578,12 +605,14 @@ import Resource from "@/lib/resource";
 import TheDelete from "@/components/function/TheDelete.vue";
 import moment from 'moment'
 import TheLoading from "@/components/base/loading/TheLoading.vue";
+/* import BaseInput from "@/components/base/input/BaseInput.vue"; */
 
 export default {
     name: "AssetList",
     components: {
         TheDelete,
         TheLoading,
+/*         BaseInput, */
     },
 
     // Chưa truy cập vào data
@@ -632,6 +661,12 @@ export default {
     updated() {
         this.deleteDisable();
         this.updateDepreciationYear();
+        
+        console.log('Date');
+        console.log(new Date());
+
+        console.log('Date convert');
+        console.log(new Date().toISOString().substring(0,10));
     },
 
     beforeUnmount() {
@@ -646,8 +681,6 @@ export default {
     },
 
     methods: {
-        //#region Method Table Pagination
-        //#endregion
         /* Tải dữ liệu API
             @param {}
             @returns void
@@ -673,6 +706,7 @@ export default {
                 .get(`${Resource.Url.FixedAssets}/filter?keyword=${this.filter.keyword}&fixedAssetCategoryId=${this.filter.fixedAssetCategoryId}&departmentId=${this.filter.departmentId}&limit=500&offset=1`)
                 .then((resource) => {
                     this.updateTotalPageIndex(resource.data.length);
+                    this.assetsNoLimit = resource.data;
                 })
                 .catch((error) => {
                     console.log(error);
@@ -816,7 +850,7 @@ export default {
         },
         //#endregion Bộ phận sử dụng
 
-        //#region method Modal 
+        //#region Method Modal 
         /* Thêm 1 tài sản
             @param {}
             @returns void
@@ -832,26 +866,29 @@ export default {
                     "department_id": this.assetModal.departmentId,
                     "department_code": this.assetModal.departmentCode,
                     "department_name": this.assetModal.departmentName,
-                    "fixed_asset_category_id": this.assetModal.CategoryId,
+                    "fixed_asset_category_id": this.assetModal.categoryId,
                     "fixed_asset_category_code": this.assetModal.categoryCode,
                     "fixed_asset_category_name": this.assetModal.categoryName,
+/*                     "purchase_date": new Date().toISOString().substring(0,10), */
                     "purchase_date": this.assetModal.purchaseDate,
-                    "cost": this.assetModal.cost,
+                    "cost": 82452889.1186,
+/*                     "cost": this.assetModal.cost.replace(/[^0-9]/g, ''), */
                     "quantity": this.assetModal.quantity,
-                    "depreciation_rate": this.assetModal.depreciationRate,
+                    "depreciation_rate": 8.6,
+/*                     "depreciation_rate": parseFloat(this.assetModal.depreciationRate.replace(',', '.')), */
                     "tracked_year": this.assetModal.trackedYear,
                     "life_time": this.assetModal.lifeTime,
-                    "production_year": this.assetModal.productionYear,
+                    "production_year": this.assetModal.trackedYear,
                     "active": 0
                 })
                 .then(() => {
-                    //đóng form add
-                    this.btnDetroyToastAttentionAddOnclick();
+                    /* Close modal */
 
-                    // tải lại dữ liệu
-                    this.$parent.getDataAPI();
+                    // Reload data
+                    this.loadAPI();
 
-                    // hiện thông báo thêm thành công
+                    // Display success toast message 
+                    this.showSuccessToast();
                 })
                 .catch((error) => {
                     console.log(error);
@@ -861,6 +898,18 @@ export default {
             }
         },
         //#region Modal click events 
+        /* Tab rollback về mã tài sản
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 23/10/2022 
+        */
+        tabRollback() {
+            setTimeout(() => {
+                this.$refs.focusMe.focus();
+            }, 1);
+        },
+
         /* Mở modal
             @param {}
             @returns void
@@ -892,7 +941,7 @@ export default {
             Date: 23/10/2022 
         */
         openAlert() {
-            this.displayAlert = true;
+            this.isDisplayAlert = true;
         },
 
         /* Đồng ý cảnh báo huỷ
@@ -903,14 +952,14 @@ export default {
         */
         acceptAlert() {
             this.displayModal = false;
-            this.displayAlert = false;
-            this.htmlToastSuccess = "",
+            this.isDisplayAlert = false;
+            this.htmlToastSaveSuccess = "",
             this.htmlError = "",
             this.checkfixedAssetName.hasError = false,
             this.checkDepartmentCode.hasError = false,
             this.checkFixedAssetCategoryCode.hasError = false,
             this.assetModal = {
-                fixedAssetCode: 'TS',
+                fixedAssetCode: 'TS' + parseInt(Math.random()*112345),
                 fixedAssetName: '',
                 departmentCode: '',
                 departmentName: '',
@@ -918,6 +967,7 @@ export default {
                 categoryName: '',
                 quantity: 0,
                 cost: 0,
+                lifeTime: 0,
                 depreciationRate: 0,
                 depreciation: 0,
                 trackedYear: new Date().getFullYear(),
@@ -933,7 +983,7 @@ export default {
             Date: 23/10/2022 
         */
         closeAlert() {
-            this.displayAlert = false;
+            this.isDisplayAlert = false;
         },
         //#endregion Modal click events 
 
@@ -945,7 +995,7 @@ export default {
             Date: 23/10/2022 
         */
         addHTMLToast() {
-            this.htmlToastSuccess = " <div class='toast__item'><div class='toast__icon'><i class='icon icon--success'></i></div><div class='toast__text'>Lưu dữ liệu thành công</div></div>"
+            this.htmlToastSaveSuccess = " <div class='toast__item'><div class='toast__icon'><i class='icon icon--success'></i></div><div class='toast__text'>Lưu dữ liệu thành công</div></div>"
         },
 
         /* Hiển thị thông báo thêm dữ liệu thành công
@@ -956,7 +1006,7 @@ export default {
         */
         showSuccessToast() {
             this.addHTMLToast();
-                setTimeout(() => this.htmlToastSuccess = "", 5000)
+                setTimeout(() => this.htmlToastSaveSuccess = "", 5000)
         },
 
         /* Check dữ liệu khi lưu
@@ -966,78 +1016,174 @@ export default {
             Date: 23/10/2022 
         */
         onSubmit() {
-            if(this.assetModal.fixedAssetName.trim() != "" && this.assetModal.departmentCode.trim() != "" && this.assetModal.categoryCode.trim() != "") {
-                this.checkfixedAssetName.hasError = false;
-                this.checkdepartmentCode.hasError = false;
-                this.checkMaLoaiTS.hasError = false;
-                this.showSuccessToast();
-                console.log(this.assetModal);
-            } else if (this.assetModal.fixedAssetName.trim() == "" && this.assetModal.departmentCode.trim() == "" && this.assetModal.categoryCode.trim() == "") {
-                this.checkfixedAssetName.hasError = true;
-                this.checkdepartmentCode.hasError = true;
-                this.checkMaLoaiTS.hasError = true;
-            } else if (this.assetModal.fixedAssetName.trim() == "" && this.assetModal.departmentCode.trim() == "") {
-                this.checkdepartmentCode.hasError = true;
-                this.checkfixedAssetName.hasError = true;
-                this.checkMaLoaiTS.hasError = false; 
-            } else if (this.assetModal.fixedAssetName.trim() == "" && this.assetModal.categoryCode.trim() == "") {
-                this.checkdepartmentCode.hasError = false;
-                this.checkfixedAssetName.hasError = true;
-                this.checkMaLoaiTS.hasError = true;
-            }
-            else if (this.assetModal.departmentCode.trim() == "" && this.assetModal.categoryCode.trim() == "") {
-                this.checkMaLoaiTS.hasError = true;
-                this.checkdepartmentCode.hasError = true;
-                this.checkfixedAssetName.hasError = false;
-            } else if (this.assetModal.fixedAssetName.trim() == "") {
-                this.checkfixedAssetName.hasError = true;
-                this.checkdepartmentCode.hasError = false;
-                this.checkMaLoaiTS.hasError = false;
-            } else if (this.assetModal.departmentCode.trim() == "") {
-                this.checkdepartmentCode.hasError = true;
-                this.checkMaLoaiTS.hasError = false;
-                this.checkfixedAssetName.hasError = false;
-            } else if(this.assetModal.categoryCode.trim() == "") {
-                this.checkMaLoaiTS.hasError = true;
-                this.checkdepartmentCode.hasError = false;
-                this.checkfixedAssetName.hasError = false;
+            try {
+                this.validateModal();
+            } catch (error) {
+                console.error(error);
             }
         },
         //#endregion Modal processing ui
 
         //#region Modal processing data
+        /* Tăng số lượng
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 31/10/2022 
+        */
         increaseQuantity() {
-            if(this.assetModal.quantity < 100)
+            try {
+                if(this.assetModal.quantity < 100)
                 this.assetModal.quantity++;
-        },
-
-        decreaseQuantity() {
-            if(this.assetModal.quantity > 0)
-                this.assetModal.quantity--;
-        },
-
-        increaseDepreciationRate() {
-            let tmp = this.assetModal.depreciationRate;
-            console.log('Truoc:' + tmp);
-            if(tmp == 0) {
-                tmp += 0.01;
-            } else {
-                tmp = parseFloat(tmp.replace(/\./g,"").replace(',', '.'));
-                if(tmp < 100)
-                    tmp += 0.01;
+            } catch (error) {
+                console.log(error);
             }
-            this.assetModal.depreciationRate = this.formatRateType(tmp);
         },
 
+        /* Giảm số lượng
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 31/10/2022 
+        */
+        decreaseQuantity() {
+            try {
+                if(this.assetModal.quantity > 0)
+                    this.assetModal.quantity--;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        /* Tăng tỷ lệ hao mòn
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 31/10/2022 
+        */
+        increaseDepreciationRate() {
+            try {
+                let tmp = this.assetModal.depreciationRate;
+                console.log('Truoc:' + tmp);
+                if(tmp == 0) {
+                    tmp += 0.01;
+                } else {
+                    tmp = parseFloat(tmp.replace(/\./g,"").replace(',', '.'));
+                    if(tmp < 100)
+                        tmp += 0.01;
+                }
+                this.assetModal.depreciationRate = this.formatRateType(tmp);
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        /* Giảm tỷ lệ hao mòn
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 31/10/2022 
+        */
         decreaseDepreciationRate() {
-            this.assetModal.depreciationRate = parseFloat(this.assetModal.depreciationRate.replace(/\./g,"").replace(',', '.')); 
-            if(this.assetModal.depreciationRate > 0)
-                this.assetModal.depreciationRate -= 0.01;
-            this.assetModal.depreciationRate = this.formatRateType(this.assetModal.depreciationRate);
+            try {
+                this.assetModal.depreciationRate = parseFloat(this.assetModal.depreciationRate.replace(/\./g,"").replace(',', '.')); 
+                if(this.assetModal.depreciationRate > 0)
+                  this.assetModal.depreciationRate -= 0.01;
+                this.assetModal.depreciationRate = this.formatRateType(this.assetModal.depreciationRate);
+            } catch (error) {
+                console.log(error);
+            }
         },
         //#endregion Modal processing data
 
         //#region Modal validate data
+        /* handler key number
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 31/10/2022 
+         */
+        validate(evt, type) {
+        var regex = /[0-9]/g;
+        if (type) {
+            regex = /[0-9|,]/g;
+        }
+        var theEvent = evt || window.event;
+
+        // Handle paste
+        if (theEvent.type === "paste") {
+            key = event.clipboardData.getData("text/plain");
+        } else {
+            // Handle key press
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+        }
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+        },
+
+        /**
+         * format tiền
+         * CreatedBy: Đỗ Mạnh Hà - 01/01/2022
+         */
+        formatCurrency(value) {
+            if (value == null || value == 0 || value == "") return "0";
+            let num = this.formatNum(value + "") + "";
+            return num.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        },
+
+        formatDecimal(value) {
+            if (value == null || value == 0 || value == "") return "0";
+            value = value.replace(/[^0-9-|,]+/g, "");
+            if (value.charAt(0) === "0" && value.charAt(1) !== ",") {
+                return this.formatDecimal(value.slice(1) + "");
+            }
+            let count = 0;
+            for (let i = 0; i < value.length; i++) {
+                if (value.charAt(i) === ",") {
+                count++;
+                if (count > 1) {
+                    value = value.slice(0, i) + value.slice(i + 1);
+                    return this.formatDecimal(value + "");
+                }
+                }
+            }
+            let num = value;
+            return num;
+        },
+        /**
+         * reset text
+         * CreatedBy: Đỗ Mạnh Hà - 01/01/2022
+         */
+        focusSelected(refName) {
+        if (refName == "DepartmentId" || refName == "FixedAssetCategoryId") {
+            this.$refs[refName].$el.querySelector(".dx-texteditor-input").select();
+        } else {
+            this.$refs[refName].select();
+        }
+        },
+
+        formatNum(value) {
+            if (value == null || value == 0 || value == "") return "0";
+            let num = value.replace(/[^0-9-]+/g, "");
+            return parseInt(num);
+        },
+
+        setDepreciationYear() {
+            let tmpDR = this.assetModal.depreciationRate + "";
+            tmpDR = tmpDR.replaceAll(",", ".");
+            this.assetModal.depreciation = (
+                0.01 *
+                this.formatNum(this.assetModal.Cost + "") *
+                parseFloat(tmpDR)
+            ).toFixed(0);
+            this.assetModal.depreciation = this.formatCurrency(
+                this.assetModal.depreciation + ""
+            );
+        },
+        
         /* Định dạng dữ liệu cho giá (200000 => 200.000)
             @param {}
             @returns void
@@ -1066,16 +1212,83 @@ export default {
                 return number;
         },
 
-        /* Tab rollback về mã tài sản
+        /* Validate dữ liệu modal trống hoặc trùng mã
             @param {}
             @returns void
             Author: Tuan 
-            Date: 23/10/2022 
+            Date: 31/10/2022 
         */
-        tabRollback() {
-            setTimeout(() => {
-                this.$refs.focusMe.focus();
-            }, 1);
+        validateModal() {
+            try {
+                var check = false;
+                for (var i = 0; i < this.assetsNoLimit.length; i++) {
+                    if(this.assetModal.fixedAssetCode == this.assetsNoLimit[i].fixed_asset_code)
+                        check = true;
+                }
+
+                if(check) {
+                    this.isDisplayValidate = true;
+                    this.textValidate = 'Mã tài sản đã tồn tại';
+                }
+                else if(!this.checkValidInputEmpty(this.assetModal.fixedAssetCode) ||
+                    !this.checkValidInputEmpty(this.assetModal.fixedAssetName) ||
+                    !this.checkValidInputEmpty(this.assetModal.departmentId) ||
+                    !this.checkValidInputEmpty(this.assetModal.categoryId) ||
+                    !this.checkValidInputEmpty(this.assetModal.quantity) ||
+                    !this.checkValidInputEmpty(this.assetModal.cost) ||
+                    !this.checkValidInputEmpty(this.assetModal.lifeTime) || 
+                    !this.checkValidInputEmpty(this.assetModal.depreciationRate) 
+                ) {
+                    this.isDisplayValidate = true;
+                    this.textValidate = 'Dữ liệu không được để trống';
+                } else {
+                    this.insertFixedAsset();
+
+                    this.assetModal = {
+                        fixedAssetCode: 'TS' + parseInt(Math.random()*112345),
+                        fixedAssetName: '',
+                        departmentCode: '',
+                        departmentName: '',
+                        categoryCode: '',
+                        categoryName: '',
+                        quantity: 0,
+                        cost: 0,
+                        depreciationRate: 0,
+                        depreciation: 0,
+                        lifeTime: 0,
+                        trackedYear: new Date().getFullYear(),
+                        purchaseDate: new Date().toISOString().substring(0,10),
+                        productionYear: new Date().getFullYear(),
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        /* Validate input trống
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 31/10/2022 
+        */
+        checkValidInputEmpty(value) {
+            try {
+                if(value == undefined){
+                    return false;
+                }
+                else if (value == null) {
+                    return false;
+                }
+                else if(value == ""){
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            } catch (error) {
+                console.log(error);
+            }
         },
 
         /* Input type="text" chỉ viết số
@@ -1134,9 +1347,36 @@ export default {
             }
         },
         //#endregion Modal validate input
-        //#endregion method Modal
+        //#endregion Method Modal
 
         //#region Method Table 
+        /* add html thêm dữ liệu thành công
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 23/10/2022 
+        */
+        addHTMLDeleteToast() {
+            this.htmlToastDeleteSuccess = " <div class='toast__item'><div class='toast__icon'><i class='icon icon--success'></i></div><div class='toast__text'>Xoá dữ liệu thành công</div></div>"
+        },
+
+        /* Hiển thị thông báo xoá dữ liệu thành công
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 23/10/2022 
+        */
+        showDeleteSuccessToast() {
+            this.addHTMLDeleteToast();
+                setTimeout(() => this.htmlToastDeleteSuccess = "", 5000)
+        },
+
+        /* formatDate
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 23/10/2022 
+        */
         formatDate(value){
             if (value) {
                 console.log(value);
@@ -1393,10 +1633,12 @@ export default {
 			return  this.assets.slice(from, to);
 		},
 
-        /**
-         * Về trang trước
-         * NDDAT (25/09/2022)
-         */
+        /* Về trang trước
+            @param {PageSize}
+            @returns void
+            Author: Tuan 
+            Date: 7/11/2022 
+        */
         prevPage() {
             if(this.filter.pageIndex > 1){
                 this.filter.pageIndex--;
@@ -1404,10 +1646,12 @@ export default {
             }  
         },
 
-        /**
-         * Sang trang sau
-         * NDDAT (25/09/2022)
-         */
+        /* Tới trang sau
+            @param {PageSize}
+            @returns void
+            Author: Tuan 
+            Date: 7/11/2022 
+        */
         nextPage() {
             if(this.filter.pageIndex < this.filter.totalPage){
                 this.filter.pageIndex++;
@@ -1415,22 +1659,29 @@ export default {
             }    
         },
 
-        /**
-         * Tới trang được chọn
-         * NDDAT (25/09/2022)
-         * @param {int} page số trang
-         */
+        /* Tới trang được chọn
+            @param {PageSize}
+            @returns void
+            Author: Tuan 
+            Date: 7/11/2022 
+        */
         toPage(page) {
             this.page = page
         },
 
+        /*  Cập nhật tổng số trang
+            @param {PageSize}
+            @returns void
+            Author: Tuan 
+            Date: 7/11/2022 
+        */
         updateTotalPageIndex(filterLength) {
             if(filterLength <= this.filter.pageSize || this.filter.pageSize == -1) 
                 this.filter.totalPage = 1;
             else if(filterLength % this.filter.pageSize == 0)
                 this.filter.totalPage = filterLength / this.filter.pageSize;
             else 
-                this.filter.totalPage =  (filterLength - (filterLength % this.filter.pageSize)) / this.filter.pageSize + 1;
+                this.filter.totalPage = ((filterLength - (filterLength % this.filter.pageSize)) / this.filter.pageSize) + 1;
         },
         //#endregion Table
 
@@ -1456,14 +1707,15 @@ export default {
             isDisplayLoading: false, // Toggle loading khi load dữ liệu
 
             //#region Data Table
-            totalAllAssets: 0,
-            assets: [],
-            assetsNoLimit: [],
+            htmlToastDeleteSuccess: '', // html thông báo xoá thành công
+            totalAllAssets: 0, // Tổng số tài sản
+            assets: [], // Danh sách tải sản filter và phân trang
+            assetsNoLimit: [], // Danh sách tải sản filter
             //#region Data table filter
             filter: {
-                keyword: "",
-                departmentId: "",
-                fixedAssetCategoryId: "",
+                keyword: "", // Từ khoá cần tìm kiếm
+                departmentId: "", // Id phòng ban
+                fixedAssetCategoryId: "", // Id loại tài sản
                 pageIndex: 1, // Trang đang chọn
                 pageSize: 20,  // Số dòng trong 1 trang
                 totalPage: 0, // Tổng số trang
@@ -1474,15 +1726,15 @@ export default {
             showPageSize: false,
             pageSizes: [20, 50, 100, 200],
             //#endregion table pagination
-            selectedFixedAssetByIds: [],
+            selectedFixedAssetByIds: [], // Danh sách Id tài sản được chọn trong table
 
-            categories: [],
+            categories: [], // Danh sách loại tài sản
 
-            departments: [],
+            departments: [], // Danh sách phòng ban
 
-            function: {
+            function: { // Data chức năng xoá
                 delete: {
-                    empty: false,
+                    empty: false, 
                     a: false,
                     multi: false,
                     quantity: '',
@@ -1491,28 +1743,26 @@ export default {
                 },
             },
 
-            /* BEGIN: Data loại tài sản */
-            category: {
-                showFilter: false,
-                showModal: false,
-                filter: 'Loại tài sản',
-                value: {
-                    code: null,
-                    name: null,
-                }
+            category: { // Data loại tài sản
+                showFilter: false, // Show combobox lọc tài sản
+                showModal: false, // Show combobox chọn tài sản trong modal
+                filter: 'Loại tài sản', // Giá trị hiển thị trên filter
             },
-            /* END: Data loại tài sản */
 
-            /* BEGIN: Data bộ phận sử dụng */
-            department: {
-                showFilter: false,
-                showModal: false,
-                filter: 'Bộ phận sử dụng',
+            department: { // Data bộ phận sử dụng
+                showFilter: false, // Show combobox lọc phòng ban
+                showModal: false, // Show combobox chọn phòng ban trong modal
+                filter: 'Bộ phận sử dụng', // Giá trị hiển thị trên filter
             },
-            /* END: Data bộ phận sử dụng */
             //#endregion Table
 
-            //#region Data Modal 
+            //#region Data modal 
+            displayModal: false, /* Hiển thị modal */
+            isDisplayAlert: false, /* Hiển thị cảnh báo khi huỷ*/
+            htmlToastSaveSuccess: "", /* Hiển thị thông báo lưu dữ liệu thành công */
+            htmlError: "", /* Hiển thị lỗi cảnh báo input */
+            isDisplayValidate: false, // Toggle thông báo validate dữ liệu
+            textValidate: '', // Dữ liệu thông báo
             titleModal: '', // Chủ đề modal
             textFixedAssetCode: Resource.TextVi.Modal.FixedAssetCode,
             textFixedAssetName: Resource.TextVi.Modal.FixedAssetName,
@@ -1544,15 +1794,7 @@ export default {
             },
             //#endregion Data Modal
 
-            
-            displayModal: false, /* Hiển thị modal */
-            displayAlert: false, /* Hiển thị cảnh báo khi huỷ*/
-            htmlToastSuccess: "", /* Hiển thị thông báo lưu dữ liệu thành công */
-            htmlError: "", /* Hiển thị lỗi cảnh báo input */
-
-            
-            years: [], /* Danh sách năm */
-
+            //#region Fixing
             checkfixedAssetName: {
                 hasError: false
             },
@@ -1562,11 +1804,12 @@ export default {
             checkFixedAssetCategoryCode: {
                 hasError: false
             },
+            //#endregion Fixing
         }
     },
 
     computed: {
-        /* Chọn dòng
+        /* Chọn tất cả dòng
             Object
             Author: Tuan 
             Date: 30/10/2022 
@@ -1577,7 +1820,9 @@ export default {
                 @returns this.assets ? this.selectedFixedAssetByIds.length == this.assets.length : false;
             */
             get: function () {
-                return this.assets ? this.selectedFixedAssetByIds.length == this.assets.length : false;
+                if (this.assetsNoLimit.length != 0)
+                    return this.assets ? this.selectedFixedAssetByIds.length == this.assets.length : false;
+                else return false;
             },
             /*
                 @param {fixed_asset_id}
@@ -1596,22 +1841,10 @@ export default {
                 this.selectedFixedAssetByIds = selectedFixedAssetByIds;
             }
         },
-
-        //#region computed Modal
-        //#endregion computed Modal 
     },
-
-
-
-
-
 }
 </script>
 
 <style scoped>
-
-
-
-
 
 </style>
