@@ -1,19 +1,20 @@
 <template>
-    <input class="input input--modal" 
-        v-bind:class="[className, {'input--error': this.checkfixedAssetName.hasError}]" 
+    <input class="input input--modal"
+        reft="inputTxt" 
+        type="text" 
+        :class="[className, {'input--error': hasError}]" 
         v-model="content"
-        @input="(event)=> $emit('update:modelValue',event.target.value)"
-        @blur="validateInputBlur()"
+        @input="bindingDataInput"
+        @blur="checkNullValue"
         :style="style"
         :placeholder="placeholder"
-        type="text" 
         >
 </template>
 
 <script>
 export default {
-    name: "TheInput",
-    props: ['type', 'className', 'placeholder', 'tabindex', 'modelValue', 'style'],
+    name: "BaseInput",
+    props: ["controlledContent","title","placeholder","tag","fieldName"],
 
     updated() {
         /**
@@ -34,7 +35,8 @@ export default {
    
     data() {
         return {
-            borderRed:false
+            borderRed:false,
+            hasError: false,
         }
     },
 }

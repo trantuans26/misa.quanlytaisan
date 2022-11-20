@@ -444,6 +444,7 @@
                                 class="input input--quantity input--haveicon input--textright input--modal" 
                                 ref="input" 
                                 type="text"
+                                maxlength="3"
                                 @keypress="this.numbersOnly"                       
                             >
                             <i class="icon icon--multidrop"></i>
@@ -459,9 +460,8 @@
                         <input class="input input--textright input__spin--hide input--modal" 
                             ref="Cost"
                             type="text"  
-                            v-model="assetModal.cost"
-                            @keypress="this.numbersOnly, validate($event)"                       
-                            @keyup="(assetModal.cost = this.formatCurrency(assetModal.cost)), this.setDepreciationYear()"
+                            v-model="costFormat"
+                            @keypress="validate($event)"                       
                             @focus="focusSelected('Cost')"
                         >
                     </div>
@@ -487,15 +487,16 @@
                         </label>
                         <div class="modal__input--icon">
                             <input class="input input--haveicon input--textright input__spin--hide input--modal" 
+                                ref="DepreciationRate"
                                 type="text"
-                                v-model.trim="assetModal.depreciationRate"   
-                                @keypress="this.numbersOnly, this.validate($event, 1)"
-                                @keyup="assetModal.depreciationRate = this.formatDecimal(assetModal.depreciationRate), setDepreciationYear()"
-                                @change="validateRateType()" 
+                                v-model="depreciationRateFormat"   
+                                @keypress="onlyNumbers, this.validate($event, 1)"
+                                @keyup="this.assetModal.depreciationRate > 100 ? this.assetModal.depreciationRate = 99 : false"
+                                maxlength="5"
                             >
                             <i class="icon icon--multidrop"></i>
-                            <span class="spin spin--up" @mousedown="this.increaseDepreciationRate()"></span>
-                            <span class="spin spin--down" @mousedown="this.decreaseDepreciationRate()"></span>
+                            <span class="spin spin--up" @mousedown="increaseDepreciationRate()"></span>
+                            <span class="spin spin--down" @mousedown="decreaseDepreciationRate()"></span>
                         </div>
 
                     </div>
@@ -505,7 +506,7 @@
                             Giá trị hao mòn năm <em>*</em>
                         </label>
                         <input 
-                            v-model.trim="assetModal.depreciation" 
+                            :value="UpdateDepreciationYear()"
                             class="input input--textright input--disable input--modal" 
                             ref="input" 
                             type="text"
@@ -622,7 +623,7 @@ export default {
     // Truy cập vào data nhưng chưa vào DOM
     created() {
         try {
-            this.isDisplayLoading = true; // Hiển thị loading data
+/*             this.isDisplayLoading = true; // Hiển thị loading data */
 
             axios.get(`${Resource.Url.FixedAssetCategories}`)
             .then((resource) => {
@@ -660,11 +661,9 @@ export default {
 
     updated() {
         this.deleteDisable();
-        this.updateDepreciationYear();
         
         console.log('Date');
         console.log(new Date());
-
         console.log('Date convert');
         console.log(new Date().toISOString().substring(0,10));
     },
@@ -1063,16 +1062,9 @@ export default {
         */
         increaseDepreciationRate() {
             try {
-                let tmp = this.assetModal.depreciationRate;
-                console.log('Truoc:' + tmp);
-                if(tmp == 0) {
-                    tmp += 0.01;
-                } else {
-                    tmp = parseFloat(tmp.replace(/\./g,"").replace(',', '.'));
-                    if(tmp < 100)
-                        tmp += 0.01;
+                if(this.assetModal.depreciationRate < 100) {
+                    this.assetModal.depreciationRate = parseFloat(this.assetModal.depreciationRate) + 1
                 }
-                this.assetModal.depreciationRate = this.formatRateType(tmp);
             } catch (error) {
                 console.log(error);
             }
@@ -1086,10 +1078,9 @@ export default {
         */
         decreaseDepreciationRate() {
             try {
-                this.assetModal.depreciationRate = parseFloat(this.assetModal.depreciationRate.replace(/\./g,"").replace(',', '.')); 
-                if(this.assetModal.depreciationRate > 0)
-                  this.assetModal.depreciationRate -= 0.01;
-                this.assetModal.depreciationRate = this.formatRateType(this.assetModal.depreciationRate);
+                if(this.assetModal.depreciationRate > 0) {
+                    this.assetModal.depreciationRate = parseFloat(this.assetModal.depreciationRate) - 1
+                }
             } catch (error) {
                 console.log(error);
             }
@@ -1307,45 +1298,11 @@ export default {
             }
         },
 
-        validateCostType() {
-            let cost = this.assetModal.cost;
-            if (cost != 0) {
-                let tmpCost = cost.replace(/[^0-9]/g, '');
-                let showCost = this.formatCostType(tmpCost);
-                this.assetModal.cost = showCost;
-            }
+
+        UpdateDepreciationYear() {
+            return this.assetModal.depreciation.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         },
 
-        validateRateType() {
-            let rate = this.assetModal.depreciationRate;
-            if (rate != 0) {
-                let tmpRate = parseFloat(rate.replace(',', '.'));
-                if (tmpRate > 100) tmpRate = 100;
-                let showRate = this.formatRateType(tmpRate);
-                this.assetModal.depreciationRate = showRate;
-            }
-        },
-
-        updateDepreciationYear() {
-            let rate = this.assetModal.depreciationRate;
-            let cost = this.assetModal.cost;
-            if (rate != 0 && cost != 0) {
-                let tmpRate = parseFloat(rate.replace(',', '.'));
-                let tmpCost = cost.replace(/[^0-9]/g, '');
-                let value = (tmpRate* 0.01) * tmpCost;
-                this.assetModal.depreciation = this.formatCostType(value);
-            }
-        },
-        /**
-         * Hàm formart số  
-         */
-        formartNumber(number) {
-            if (number && !isNaN(number)) {
-                return number.toString().replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1.");
-            } else {
-                return number;
-            }
-        },
         //#endregion Modal validate input
         //#endregion Method Modal
 
@@ -1756,7 +1713,8 @@ export default {
             },
             //#endregion Table
 
-            //#region Data modal 
+            //#region Data Modal 
+            hasError: false,
             displayModal: false, /* Hiển thị modal */
             isDisplayAlert: false, /* Hiển thị cảnh báo khi huỷ*/
             htmlToastSaveSuccess: "", /* Hiển thị thông báo lưu dữ liệu thành công */
@@ -1839,6 +1797,46 @@ export default {
                 }
 
                 this.selectedFixedAssetByIds = selectedFixedAssetByIds;
+            }
+        },
+
+        // Thực hiện format trường Nguyên giá đồng thời tính lại giá trị hao mòn năm
+        costFormat: {
+            get: function() {
+                if (this.assetModal.cost == null || this.assetModal.cost == 0 || this.assetModal.cost == "") return "0";
+                return this.formatCurrency(this.assetModal.cost);
+            },
+                // setter
+            set: function(number) {
+/*                 number = this.formatToInt(number); */
+                number = this.formatNum(number);
+                this.assetModal.cost = number;
+                if (this.assetModal.cost != 0) {
+                    this.assetModal.depreciation = (this.assetModal.depreciationRate/100 * this.assetModal.cost);
+                    this.assetModal.depreciation = Math.floor(this.assetModal.depreciation);
+                }
+            }
+        },
+
+        // Thực hiện format tỷ lệ hao mòn đồng thời tính lại giá trị hao mòn năm
+        depreciationRateFormat: {
+            get: function() {
+                let rate = (this.assetModal.depreciationRate/1).toFixed(2).replaceAll('.', ',');
+                if (rate == null || rate == '0' || rate == "") 
+                    return "00,00";  
+                return this.formatDecimal(rate);
+            },
+
+            set: function(number) {
+                number = parseFloat(number.replaceAll(',', '.'));
+                if (isNaN(number))
+                    this.assetModal.depreciationRate = 0;
+                this.assetModal.depreciationRate =  number;
+                if (this.assetModal.depreciationRate != 0) {
+                    this.assetModal.depreciation = (this.assetModal.depreciationRate/100 * this.assetModal.cost);
+                    this.assetModal.depreciation = Math.floor(this.assetModal.depreciation);
+                }
+
             }
         },
     },
