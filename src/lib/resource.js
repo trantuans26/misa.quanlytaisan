@@ -9,32 +9,38 @@ export default {
         FixedAssetCategories:"http://localhost:28533/api/v1/FixedAssetCategories",
     },
 
+    // Các thông báo exception gửi về từ backend hiện ra cho người dùng
+    ExceptionMsg:{
+        BADREQUEST: "Dữ liệu đầu vào không hợp lệ.", 
+        UNAUTHORIZED: "Hệ thống MISA chưa được ủy quyền.",
+        FORBIDDEN: "Không có quyền truy cập tài nguyên này.",
+        NOTFOUND:"Server không tìm thấy bất kì tài nguyên nào.", 
+        NTERNALSERVERERROR:"Có lỗi xảy ra phía máy chủ. Vui lòng liên hệ MISA!.", 
+    },
+
     // Các thông báo nếu nhập thiếu
     IsEmpty: {
-        code: "Cần phải nhập thông tin Mã tài sản",
-        name: "Cần phải nhập thông tin Tên tài sản",
-        department: "Cần phải nhập thông tin Mã bộ phận sử dụng",
-        category: "Cần phải nhập thông tin Mã loại tài sản",
-        quantity: "Cần phải nhập thông tin Số lượng",
-        cost: "Cần phải nhập thông tin Nguyên giá",
-        depreciation_rate: "Cần phải nhập thông tin Tỉ lệ hao mòn",
-        purchase_date: "Cần phải nhập thông tin Ngày mua",
-        production_date: "Cần phải nhập thông tin Ngày bắt đầu sử dụng",
-        life_time: "Cần phải nhập thông tin Số năm sử dụng",
-        depreciation_year: "Cần phải nhập thông tin Giá trị hao mòn năm",
-        voucher_code: "Cần phải nhập thông tin Mã chứng từ",
-        voucher_date: "Cần phải nhập thông tin Ngày bắt đầu sử dụng",
-        increment_date: "Cần phải nhập thông tin Ngày ghi tăng",
+        code: "Cần phải nhập thông tin Mã tài sản.",
+        name: "Cần phải nhập thông tin Tên tài sản.",
+        department: "Cần phải nhập thông tin Mã bộ phận sử dụng.",
+        category: "Cần phải nhập thông tin Mã loại tài sản.",
+        quantity: "Cần phải nhập thông tin Số lượng.",
+        cost: "Cần phải nhập thông tin Nguyên giá.",
+        depreciation_rate: "Cần phải nhập thông tin Tỉ lệ hao mòn.",
+        purchase_date: "Cần phải nhập thông tin Ngày mua.",
+        production_date: "Cần phải nhập thông tin Ngày bắt đầu sử dụng.",
+        life_time: "Cần phải nhập thông tin Số năm sử dụng.",
+        depreciation_year: "Cần phải nhập thông tin Giá trị hao mòn năm.",
     },
 
     // Error Message
     ErrorMsg: {
-        DepreciationRateEqualToOneDevideLifeTime: "Tỉ lệ hao mòn phải bằng 1/Số năm sử dụng", // Mã lỗi tỷ lệ hao mòn 
-        DepreciationYearLessThanOrEqualToCost: "Hao mòn năm phải nhỏ hơn hoặc bằng nguyên giá", // Mã lỗi hao mòn năm nhỏ hơn hoặc bằng nguyên giá
-        CloseMsg: "Bạn có muốn hủy bỏ khai báo tài sản này?", // Lời nhắn khi đóng
-        CloseEditedMsg: "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?", // Lời nhắn khi đóng mà trước đó đã sửa đổi
-        ValidateEmpty: "Cần phải nhập thông tin: ", // Lời nhắn khi nhập thiếu
-        ValidateDuplicateCode: "Mã tài sản đã tồn tại", // Lời nhắn khi trùng mã tài sản
+        DepreciationRateEqualToOneDevideLifeTime: "Tỉ lệ hao mòn phải bằng 1/Số năm sử dụng.", // Mã lỗi tỷ lệ hao mòn 
+        DepreciationYearLessThanOrEqualToCost: "Hao mòn năm phải nhỏ hơn hoặc bằng nguyên giá.", // Mã lỗi hao mòn năm nhỏ hơn hoặc bằng nguyên giá
+        CloseMsg: "Bạn có muốn hủy bỏ khai báo tài sản này?.", // Lời nhắn khi đóng
+        CloseEditedMsg: "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?.", // Lời nhắn khi đóng mà trước đó đã sửa đổi
+        ValidateEmpty: "Cần phải nhập thông tin: .", // Lời nhắn khi nhập thiếu
+        ValidateDuplicateCode: "Mã tài sản đã tồn tại.", // Lời nhắn khi trùng mã tài sản
     },
         
     TextVi:{

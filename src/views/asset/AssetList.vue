@@ -574,7 +574,7 @@
             <!-- END: Modal footer -->
         </form>
 
-        <!-- Begin: Alert close modal -->
+        <!-- Begin: Alert modal -->
         <div class="alert__box" :class="{'alert__box--open': isDisplayAlert}">
             <div class="alert__content">
                 <div class="alert__body">
@@ -592,14 +592,26 @@
             <div class="alert__content alert__content--validate">
                 <div class="alert__body alert__body--validate" :style="{height: this.heightAlertValidate + 'px'}">
                     <i class="icon icon--alert"></i>
-                    <span class="alert__title alert__title--validate" v-html="this.errorMessage"></span>
+                    <div class="alert__title alert__title--validate" v-html="this.errorMessage"></div>
                 </div>
                 <div class="alert__footer">
-                    <button class="btn btn__save alert__button--space" @click="validateShow = false">Đóng</button>
+                    <button class="btn btn__save alert__button--space" @click="validateShow = false, focusFirst()">Đóng</button>
                 </div>
             </div>
         </div>  
-        <!-- END: Alert close modal -->
+
+        <div class="alert__box" :class="{'alert__box--open': validateBackendShow}">
+            <div class="alert__content">
+                <div class="alert__body">
+                    <i class="icon icon--alert"></i>
+                    <div class="alert__title">{{this.textExceptionMsg}}</div>
+                </div>
+                <div class="alert__footer">
+                    <button class="btn btn__save alert__button--space" @click="validateBackendShow = false, focusFirst()">Đóng</button>
+                </div>
+            </div>
+        </div>  
+        <!-- END: Alert modal -->
 
         <!-- Begin: Success toast modal -->
         <div id="toast__box" v-html="htmlToastSaveSuccess">
@@ -614,6 +626,7 @@
     <div id="toast__box" v-html="htmlToastDeleteSuccess">
     </div>
     <!-- END: Success toast modal -->
+
 </template>
 
 <script>
@@ -652,10 +665,6 @@ export default {
             })
             .catch((error) => {
                 console.log('error' + error.status);
-                this.handleException(
-                    error.status,
-                    error.userMsg
-                );
             });
 
             axios.get(`${Resource.Url.Departments}`)
@@ -664,10 +673,6 @@ export default {
             })
             .catch((error) => {
                 console.log('error' + error.status);
-                this.handleException(
-                    error.status,
-                    error.userMsg
-                );
             });
 
             this.loadAPI(); 
@@ -729,10 +734,6 @@ export default {
                 })
                 .catch((error) => {
                     console.log('error' + error.status);
-                    this.handleException(
-                        error.status,
-                        error.userMsg
-                        );
                 });
 
                 // Lấy dữ liệu filter 
@@ -745,10 +746,6 @@ export default {
                 })
                 .catch((error) => {
                     console.log('error' + error.status);
-                    this.handleException(
-                        error.status,
-                        error.userMsg
-                    );
                 });
 
                 // Lấy dữ liệu filter and paging
@@ -759,10 +756,6 @@ export default {
                 })
                 .catch((error) => {
                     console.log('error' + error.status);
-                    this.handleException(
-                        error.status,
-                        error.userMsg
-                        );
                 });
             } catch (e) {
                 console.log(e);
@@ -934,11 +927,8 @@ export default {
                     this.showSuccessToast();
                 })
                 .catch((error) => {
-                    console.log('error' + error.status);
-                    this.handleException(
-                        error.status,
-                        error.userMsg
-                    );
+                    var status = error.response.status;
+                    this.handleException(status);
                 });
             } catch (error) {
                 console.log(error);
@@ -977,7 +967,6 @@ export default {
                 })
                 .then(() => {
                     /* Close modal */
-
                     // Reload data
                     this.loadAPI();
 
@@ -985,11 +974,8 @@ export default {
                     this.showSuccessToast();
                 })
                 .catch((error) => {
-                    console.log('error' + error.status);
-                    this.handleException(
-                        error.status,
-                        error.userMsg
-                    );
+                    var status = error.response.status;
+                    this.handleException(status);
                 });
             } catch (error) {
                 console.log(error);
@@ -1003,6 +989,16 @@ export default {
             Date: 23/10/2022 
         */
         tabRollback() {
+            this.focusFirst();
+        },
+
+        /* Focus ô input đầu tiên
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 23/10/2022 
+        */
+        focusFirst() {
             setTimeout(() => {
                 this.$refs.focusMe.focus();
             }, 1);
@@ -1017,9 +1013,7 @@ export default {
         openModal() {
             this.displayModal = true;
             this.assetModal.fixedAssetCode += parseInt(Math.random()*112345);
-            setTimeout(() => {
-                this.$refs.focusMe.focus();
-            }, 200);
+            this.focusFirst();
         },
 
         /* Đóng modal
@@ -1119,7 +1113,6 @@ export default {
         */
         onSubmit() {
             this.isSubmited = true;
-
             try {
                 if (this.titleModal == 'Thêm tài sản') {
                     if(this.validateData()) {
@@ -1923,39 +1916,31 @@ export default {
         },
         //#endregion Chức năng
     
-        /**
-         * Hàm xử lý exception gửi về từ backend hiện ra cho người dùng
-         * Author: Tuan (21/11/2022)
-         * @param {int} status: trạng thái bên backend trả về
-         * @param {arr} moreInfo: Mảng các lỗi do người dùng nhập thiếu từ backend trả về
-         * @param {string} userMsg: Lỗi từ backend trả về hiển thị cho người dùng
+        /*  Hàm xử lý exception gửi về từ backend hiện ra cho người dùng
+            @param {int} status: trạng thái bên backend trả về
+            @returns void
+            Date: 21/11/2022 
          */
-        handleException(status, userMsg) {
+        handleException(status) {
             try {
                 switch (status) {
                 case Enum.StatusCode.BADREQUEST:
-                    this.titleFormValid = Resource.TitleToast.TitleFormValidate;
-                    this.moreInfo[0] = userMsg;
-                    this.isShowDialogToastValid = true;
+                    this.textExceptionMsg = Resource.ExceptionMsg.BADREQUEST;
                     break;
                 case Enum.StatusCode.FORBIDDEN:
-                    this.titleFormException = Resource.TitleException.FORBIDDEN;
-                    this.isShowDialogToastException = true;
+                    this.textExceptionMsg = Resource.ExceptionMsg.FORBIDDEN;
                     break;
                 case Enum.StatusCode.NOTFOUND:
-                    this.titleFormException = Resource.TitleException.NOTFOUND;
-                    this.isShowDialogToastException = true;
+                    this.textExceptionMsg = Resource.ExceptionMsg.NOTFOUND;
                     break;
                 case Enum.StatusCode.UNAUTHORIZED:
-                    this.titleFormException = Resource.TitleException.UNAUTHORIZED;
-                    this.isShowDialogToastException = true;
+                    this.textExceptionMsg = Resource.ExceptionMsg.UNAUTHORIZED;
                     break;
                 case Enum.StatusCode.NTERNALSERVERERROR:
-                    this.titleFormException =
-                    Resource.TitleException.NTERNALSERVERERROR;
-                    this.isShowDialogToastException = true;
+                    this.textExceptionMsg = Resource.ExceptionMsg.NTERNALSERVERERROR;
                     break;
                 }
+                this.validateBackendShow = true;
             } catch (error) {
                 console.log(error);
             }
@@ -2024,6 +2009,7 @@ export default {
             errorMessage: "", // Thông điệp hiện trong dialog cảnh báo lỗi validate
             validateShow: false, // Có hiển thị dialog cảnh báo lỗi validate thiếu hay không
             validateProShow: false, // Có hiển thị dialog cảnh báo lỗi validate nghiệp vụ hay không
+            validateBackendShow: false,
             hasError: false,
             displayModal: false, /* Hiển thị modal */
             isDisplayAlert: false, /* Hiển thị cảnh báo khi huỷ*/
@@ -2077,6 +2063,9 @@ export default {
             checkFixedAssetCategoryCode: {
                 hasError: false
             },
+
+            textExceptionMsg: "", // Thông điệp trong cảnh báo lỗi backend
+            backendError: false, // Có hiển thị dialog cảnh báo lỗi từ backend không
             //#endregion Fixing
         }
     },
