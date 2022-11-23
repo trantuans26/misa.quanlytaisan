@@ -28,13 +28,17 @@
     border: 1.5px solid #1aa4c8;
 }
 
+.input:focus +.message--hasError {
+    display: none;
+}
+
 .input--disable {
     background-color: #f5f4f4;
     pointer-events: none;
 }
 
 .input--error {
-    border: 2px solid #ed4337 !important;
+    border: 1.5px solid #ed4337;
 }
 
 /* Begin: Search input */

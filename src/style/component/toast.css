@@ -38,6 +38,7 @@
     align-items: center;
     animation: sideInLeft ease 0.5s, faceOut linear 1s 4s;
     font-family: Roboto Regular;
+    z-index: 999;
 }
 
 .toast__icon {

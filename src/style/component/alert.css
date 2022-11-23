@@ -25,11 +25,23 @@
     animation: popFromCenter 300ms ease-in-out forwards;
 }
 
+.alert__content--validate {
+
+}
+
 .alert__body {
     display: flex;
     height: 40px;
     align-items: center;
     padding: 64px 80px 32px 40px;
+
+}
+
+.alert__body--validate {
+    height: 20px;
+    padding: 52px 24px 44px 40px;
+    align-items:unset;
+    margin-bottom: 20px;
 }
 
 .alert__body--delete {
@@ -39,6 +51,15 @@
 
 .alert__title {
     padding-left: 24px;
+    width: 267px;
+    line-height: 16px;
+    text-overflow: unset;
+}
+
+.alert__title--validate {
+    width: 290px;
+    margin-top: -20px;
+    line-height: 20px;
 }
 
 .alert__title--delete {
