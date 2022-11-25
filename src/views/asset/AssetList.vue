@@ -722,7 +722,7 @@ export default {
             Date: 30/10/2022 
         */
         loadAPI() {
-            this.isDisplayLoading = true;
+/*             this.isDisplayLoading = true; */
             try {
                 // Sử dụng axios get all data
                 axios
@@ -738,7 +738,7 @@ export default {
 
                 // Lấy dữ liệu filter 
                 axios
-                .get(`${Resource.Url.FixedAssets}/filter?keyword=${this.filter.keyword}&fixedAssetCategoryId=${this.filter.fixedAssetCategoryId}&departmentId=${this.filter.departmentId}&limit=500&offset=1`)
+                .get(`${Resource.Url.FixedAssets}/filter?keyword=${this.filter.keyword}&fixedAssetCategoryId=${this.filter.fixedAssetCategoryId}&departmentId=${this.filter.departmentId}&pageSize=600&pageIndex=1`)
                 .then((resource) => {
                     this.updateTotalPageIndex(resource.data.length);
                     this.assetsNoLimit = resource.data;
@@ -750,7 +750,7 @@ export default {
 
                 // Lấy dữ liệu filter and paging
                 axios
-                .get(`${Resource.Url.FixedAssets}/filter?keyword=${this.filter.keyword}&fixedAssetCategoryId=${this.filter.fixedAssetCategoryId}&departmentId=${this.filter.departmentId}&limit=${this.filter.pageSize}&offset=${this.filter.pageIndex}`)
+                .get(`${Resource.Url.FixedAssets}/filter?keyword=${this.filter.keyword}&fixedAssetCategoryId=${this.filter.fixedAssetCategoryId}&departmentId=${this.filter.departmentId}&pageSize=${this.filter.pageSize}&pageIndex=${this.filter.pageIndex}`)
                 .then((resource) => {
                     this.assets = resource.data;
                 })
