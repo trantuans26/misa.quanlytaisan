@@ -19,22 +19,11 @@
                 <div class="alert__title alert__title--delete"><b>{{this.function.delete.quantity}}</b> tài sản đã được chọn. Bạn có muốn xoá các tài sản này khỏi danh sách?</div>
             </div>
             <div class="alert__footer">
-                <button class="btn btn__save alert__button--space" @click="toggleAlertDeleteRecords()">Đóng</button>
+                <button class="btn btn__outline" @click="toggleAlertDeleteRecords()">Không</button>
+                <button class="btn btn__save alert__button--space" @click="toggleAlertDeleteRecords(), deleteFixedAssets()">Xoá</button>
             </div>
         </div>
     </div>  
-
-    <div class="alert__box" :class="{'alert__box--open': this.isDisplayDeleteSuccess}">
-        <div class="alert__content">
-            <div class="alert__body alert__body--delete">
-                <i class="icon icon--alert"></i>
-                <div class="alert__title alert__title--delete"><b>{{this.function.delete.quantity}}</b> tài sản đã được chọn. Bạn có muốn xoá các tài sản này khỏi danh sách?</div>
-            </div>
-            <div class="alert__footer">
-                <button class="btn btn__save alert__button--space" @click="toggleAlertDeleteRecords()">Đóng</button>
-            </div>
-        </div>
-    </div>
 </template>
 
 <script>
@@ -54,6 +43,18 @@ export default {
 
     created() {
         
+    },
+
+    updated() {
+        this.$parent.resetPageIndex();
+    },
+
+    beforeUnmount() {
+        this.$parent.resetPageIndex();
+    },
+
+    unmounted() {
+        this.$parent.resetPageIndex();
     },
 
     methods: {
@@ -83,6 +84,29 @@ export default {
                 console.log(error);
             }
         },
+
+        deleteFixedAssets() {
+            try {
+                let tmp = this.$parent.selectedFixedAssetByIds.toString();
+
+                axios
+                .post(`${Resource.Url.FixedAssets}/deleteBatch`, {
+                    "fixedAssetIDs": tmp,
+                })
+                .then(() => {
+                    // Reload data
+                    this.$parent.loadAPI();
+                    this.$parent.selectedFixedAssetByIds = [];
+                    // Display success toast message 
+                    this.$parent.showDeleteSuccessToast();
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }
     },
 
     data() {

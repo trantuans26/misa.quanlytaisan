@@ -43,6 +43,20 @@ export default {
         ValidateDuplicateCode: "Mã tài sản đã tồn tại.", // Lời nhắn khi trùng mã tài sản
     },
         
+    TitleModal: {
+        Insert: "Thêm tài sản",
+        Update: "Sửa tài sản"
+    },
+
+    TitleFunction: {
+        Insert: "Thêm tài sản",
+        Export: "Xuất khẩu tài sản",
+        Delete: "Xoá tài sản",
+        CategoryFilter: "Loại tài sản",
+        DepartmentFilter: "Bộ phận sử dụng",
+        Search: "Tìm kiếm tài sản"
+    },
+
     TextVi:{
         Modal:{
             FixedAssetCode: "Mã tài sản",

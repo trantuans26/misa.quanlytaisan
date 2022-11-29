@@ -21,8 +21,11 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, .16);
     border-radius: 5px;
     width: 422px;
-/*     animation: modalFadeIn ease 0.3s; */
     animation: popFromCenter 300ms ease-in-out forwards;
+}
+
+.alert__box--update .alert__content {
+    width: 475px;
 }
 
 .alert__content--validate {
@@ -35,6 +38,10 @@
     align-items: center;
     padding: 64px 80px 32px 40px;
 
+}
+
+.alert__box--update .alert__body {
+    padding: 76px 80px 32px 40px;
 }
 
 .alert__body--validate {
@@ -56,9 +63,14 @@
     text-overflow: unset;
 }
 
+.alert__box--update .alert__title {
+    width: 315px;
+
+}
+
 .alert__title--validate {
-    width: 290px;
-    margin-top: -20px;
+    width: 293px;
+    margin-top: -4px;
     line-height: 20px;
 }
 

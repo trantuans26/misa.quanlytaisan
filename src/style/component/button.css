@@ -52,6 +52,19 @@
     background-color: #1aa4c8;  
     color: white;
 }
+
+.btn__sub {
+    background-color: rgb(245, 245, 245);
+    color: rgb(73, 182, 209);
+    border: 1.6px solid rgb(73, 182, 209);
+    margin-left: 16px;
+    box-shadow: none;
+}
+
+.btn__sub:hover {
+    background-color: rgb(209, 237, 244);
+}
+
 /* BEGIN: BUTTON FUNCTION */
 .btn__excel,
 .btn__del {

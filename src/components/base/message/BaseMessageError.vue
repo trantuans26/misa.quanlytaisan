@@ -1,5 +1,5 @@
 <template>
-    <div class="message--hasError" hidden>{{text}} không thể để trống!</div>
+    <div class="message--hasError" hidden>{{text}} không được để trống!</div>
 </template>
 
 <script>

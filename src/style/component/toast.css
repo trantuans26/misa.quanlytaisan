@@ -30,14 +30,16 @@
     box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
     padding: 8px 16px 8px;
     margin-top: 20px;
-    margin-right: 20px;
+    margin-right: 17px;
     border-radius: 4px;
+    height: 56px;
     width: 320px;
     background-color: #FFFF;
     display: flex;
     align-items: center;
     animation: sideInLeft ease 0.5s, faceOut linear 1s 4s;
     font-family: Roboto Regular;
+    font-size: 14px;
     z-index: 999;
 }
 

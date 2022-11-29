@@ -63,19 +63,18 @@ th::selection {
 
 
 .table__content::-webkit-scrollbar {
-    width: 3px;
+	width: 6px;
+	background-color: rgb(237, 237, 237);
 }
 
 .table__content::-webkit-scrollbar-thumb {
-    background-color: rgb(205, 211, 214, 0.7);
-    background-clip: padding-box;
-    box-sizing: border-box;
-    border-radius: 2px;
+	background-color: rgb(160, 160, 160);
 /*     border-right: 2.4px solid rgba(0, 0, 0, 0); */
 }
 
 .table__content::-webkit-scrollbar-track {
-    background-color:#f5f5f5;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+	background-color: rgb(237, 237, 237);
 }
 
 .table__content table {
@@ -121,7 +120,7 @@ th::selection {
 
 /* BEGIN: Footer */
 .table__footer {
-    border-top: 2px solid #f1f1f1;
+  /*   border-top: 2px solid #f1f1f1; */
     height: 40px;
     z-index: 1; 
     position: sticky;
@@ -286,8 +285,7 @@ th::selection {
 }
 
 .table__col--function {
-    margin-left: 1%;
-    width: 6.4%;
+    width: 7.1%;
 }
 
 
