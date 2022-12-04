@@ -17,6 +17,7 @@
                         @click="makeActive(item.style)"
                         :key="item"
                         :class="item.style"
+                        :data-title="item.title"
                     >
                         <router-link :to="item.route">
                             <i class="icon" :class="item.icon"></i>

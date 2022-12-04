@@ -99,7 +99,8 @@
     display: block;
 }
 
-.drilldown__item:hover {
+.drilldown__item:hover,
+.drilldown__item:focus {
     background-color: rgb(199, 224, 245);
 }
 

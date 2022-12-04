@@ -45,7 +45,8 @@ export default {
         
     TitleModal: {
         Insert: "Thêm tài sản",
-        Update: "Sửa tài sản"
+        Update: "Sửa tài sản",
+        Replication: "Nhân bản tài sản",
     },
 
     TitleFunction: {

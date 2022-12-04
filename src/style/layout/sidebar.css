@@ -180,3 +180,8 @@
     bottom: -3.5vh;
     right: -12%;
 } 
+
+.sidebar--minimize [data-title]:after {
+    bottom: 1vh;
+    right: -160%;
+} 
