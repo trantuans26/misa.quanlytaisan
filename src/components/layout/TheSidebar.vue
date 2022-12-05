@@ -39,7 +39,7 @@
             <div class="sidebar__top">
                 <div class="sidebar__logo">
                     <i class="icon icon--logo"></i>
-                    <h1>MISA QLTS</h1>
+                    <h1>APP QLTS</h1>
                 </div>
 
                 <ul class="sidebar__list" 

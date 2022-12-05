@@ -11,6 +11,7 @@
 @import url(./component/checkbox.css);
 @import url(./component/drilldown.css);
 @import url(./component/alert.css);
+@import url(./component/combobox.css);
 
 #container {
     display: flex;

@@ -15,7 +15,7 @@
     display: block;
 }
 
-.drilldown__normal {
+.drilldown--normal {
     width: 100%; 
     font-size: 13px;
 }
@@ -64,7 +64,6 @@
 
 .drilldown__box {
     margin: 4px;
-    overflow: auto;   
     max-height: 216px;
     position: relative;
 }
@@ -80,6 +79,7 @@
     height: 36px;
     align-items: center;
     outline: none;
+
 }
 
 .drilldown__item--header,

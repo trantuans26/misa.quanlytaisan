@@ -3,67 +3,6 @@
         <!-- Begin: Function -->
         <div class="function">
             <div class="function__list">
-                <div class="function__item function__item--search function__item--maright">
-                    <div class="combobox__icon" @click="searchKeyword()"> 
-                        <i class="icon icon--search"></i>
-                    </div>
-                    
-                    <input class="input input--search" 
-                        v-on:keyup.enter="searchKeyword()"
-                        v-model.trim="this.filter.keyword" 
-                        type="text" 
-                        placeholder="Tìm kiếm tài sản"
-                    >
-                </div>
-
-                <bCombobox  cbbClass="function__item function__item--category function__item--filter function__item--maright"
-                    inputClass="input--filter"
-                    :filter="this.category.filter"
-                    drilldownClass="drilldown--normal"
-                >
-                    <template #drilldown>
-                        <ul class="drilldown__box" >    
-                            <li 
-                                class="drilldown__item" 
-                                tabindex="0" 
-                                :class="{'drilldown__item--selected': item.fixed_asset_category_name == this.category.filter}"
-                                v-for='item in this.categories'
-                                @click="filterCategory(item)"
-                                v-on:change.enter="filterCategory(item)"
-                                :key="item"
-                            >
-                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                                <div class="drilldown__name">{{item.fixed_asset_category_name}}</div>
-                            </li>
-                        </ul>
-                    </template>
-                </bCombobox>
-
-                <bCombobox  cbbClass="function__item function__item--department function__item--filter function__item--maright"
-                    inputClass="input--filter"
-                    :filter="this.department.filter"
-                    drilldownClass="drilldown--normal"
-                >
-                    <template #drilldown>
-                        <ul class="drilldown__box" >
-                            <li 
-                                class="drilldown__item" 
-                                tabindex="0" 
-                                :class="{'drilldown__item--selected': item.department_name == this.department.filter}"
-                                v-for='item in this.departments'
-                                @click="filterDepartment(item)" 
-                                v-on:change.enter="filterDepartment(item), this.department.showFilter = false"
-                                :key="item"
-                            >
-                                <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                                <div class="drilldown__name">{{item.department_name}}</div>
-                            </li>
-                        </ul>
-                    </template>
-                </bCombobox>
-            </div>
-
-            <div class="function__list">
                 <button class="btn btn__add function__item--maleft" @click="openModal(), this.titleModal = this.titleModalInsert">+ {{this.titleModalInsert}}</button>
 
                 <button class="btn btn__excel function__item--maleft" data-title="Xuất bảng tài sản">
@@ -656,7 +595,6 @@ import useValidate from '@vuelidate/core'
 import {required} from '@vuelidate/validators'
 import TheLoading from "@/components/base/loading/TheLoading.vue";
 import BaseMessageError from "@/components/base/message/BaseMessageError.vue";
-import bCombobox from "@/components/base/combobox/BCombobox.vue";
 
 export default {
     name: "AssetList",
@@ -664,7 +602,6 @@ export default {
         TheDelete,
         TheLoading,
         BaseMessageError,
-        bCombobox,
     },
 
     // Khởi tạo một đối instance(đối tượng), chưa thiết lập data, event
